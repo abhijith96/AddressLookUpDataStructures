@@ -5,9 +5,7 @@
 #include "IpAllocator.h"
 
 
-IPAddress IpAllocator::FindNetwork(IPAddress ipAddress) {
-    return IPAddress(0);
-}
+
 
 void IpAllocator::AllocateSubNet(MacID macId, int capacity) {
 

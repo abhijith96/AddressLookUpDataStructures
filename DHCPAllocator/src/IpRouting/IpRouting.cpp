@@ -8,6 +8,6 @@ IpRouting::IpRouting() {
 
 }
 
-IPAddress IpRouting::FindNetworkIp(IPAddress hostIpAddress) {
-    return IPAddress(0);
+std::optional<IPAddress> FindNetworkIp(IPAddress hostIpAddress){
+    return {};
 }
