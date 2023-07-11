@@ -3,12 +3,14 @@
 //
 
 #include "DSModelSingleton.h"
-#include <DHCPAllocator/src/Models/DSModelTreeImpl.h>
+#include "DHCPAllocator/src/Models/DSModelTreeImpl/DSModelTreeImpl.h"
 
+
+DSModelSingleton* DSModelSingleton::dsModelSingleton_ = nullptr;
 
 DSModelSingleton & DSModelSingleton::GetSingletonInstance(std::string modelType) {
     if(!dsModelSingleton_){
-        dsModelSingleton_ = new DSModelSingleton();
+        dsModelSingleton_ = new DSModelSingleton(modelType);
     }
     return *dsModelSingleton_;
 }
@@ -17,6 +19,10 @@ DSModel &DSModelSingleton::GetDSModel() {
     return *dsModel_;
 }
 
-DSModelSingleton::DSModelSingleton() {
-    dsModel_ = std::make_unique<DSModel>(DSModelTreeImpl());
+DSModelSingleton::DSModelSingleton(std::string dsModelType) {
+
+    if(dsModelType == "tree")
+        dsModel_ = std::make_unique<DSModel>(DSModelTreeImpl());
+    else
+        throw std::invalid_argument("Not implemented");
 }

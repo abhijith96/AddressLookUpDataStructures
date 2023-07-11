@@ -7,7 +7,7 @@
 
 #include <variant>
 #include <DHCPAllocator/src/Models/DSModelmpl.h>
-#include <DHCPAllocator/src/Models/DSModelTreeImpl.h>
+#include "DHCPAllocator/src/Models/DSModelTreeImpl/DSModelTreeImpl.h"
 #include  <DHCPAllocator/src/Models/SubnetHost.h>
 #include  <DHCPAllocator/src/Models/Subnet.h>
 #include <memory>
@@ -16,7 +16,7 @@
 class DSModel {
 
 private:
-   std::unique_ptr<DSModelmpl> dsModelmpl_;
+   std::unique_ptr<DSModelTreeImpl> dsModelmpl_;
 
 public:
 

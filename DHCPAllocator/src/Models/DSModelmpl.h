@@ -76,7 +76,7 @@ public:
 
    virtual MacID GetMacAddressOfHost(ip_t hostIpAddress) = 0;
 
-   virtual ~DSModelmpl() = 0;
+   virtual ~DSModelmpl()  {}
 
 };
 

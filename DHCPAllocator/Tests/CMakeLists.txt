@@ -1,1 +1,2 @@
 add_executable(TestIpRange TestIpRange.cpp)
+target_link_libraries(TestIpRange PUBLIC Models)

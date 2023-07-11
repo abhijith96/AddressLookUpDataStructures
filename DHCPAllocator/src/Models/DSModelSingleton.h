@@ -17,7 +17,7 @@ private:
    static DSModelSingleton* dsModelSingleton_;
    std::unique_ptr<DSModel> dsModel_;
 
-   DSModelSingleton();
+   DSModelSingleton(std::string dsModelType);
 
 
 

@@ -1,0 +1,1 @@
+add_library(DSModelTreeImpl DSModelTreeImpl.cpp TreeMapValueObject.cpp TreeMapValueObjectForUnusedObjectInArray.cpp)

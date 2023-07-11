@@ -2,7 +2,7 @@
 // Created by Abhijith  K A on 11/07/23.
 //
 
-#include "IPAddress.h"
+#include "DHCPAllocator/src/Models/IPAddress.h"
 
 IPAddress::IPAddress(ip_t value) :value_(value){
 
