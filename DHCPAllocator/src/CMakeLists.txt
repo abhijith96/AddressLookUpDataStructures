@@ -1,3 +1,5 @@
+add_subdirectory(IpAllocator)
+add_subdirectory(IpRouting)
+add_subdirectory(Models)
 add_executable(Main main.cpp)
-add_library(IpRange IpRange.cpp)
-target_link_libraries(Main PRIVATE Boost::json gtest::gtest IpRange)
+target_link_libraries(Main PUBLIC Boost::json gtest::gtest)

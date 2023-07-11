@@ -5,14 +5,18 @@
 #include <iostream>
 #include <boost/icl/interval_map.hpp>
 #include <string>
-#include <DHCPAllocator/src/IpRange.h>
+#include <unordered_map>
 
 
 
 
 int main(){
 
-    IpRange ipRange;
+
+
+    std::map<int, int> map;
+
+
 
 
      boost::icl::interval_map<int,std::string> intervalMap;
