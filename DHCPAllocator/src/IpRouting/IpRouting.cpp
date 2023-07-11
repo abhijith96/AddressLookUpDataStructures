@@ -9,5 +9,6 @@ IpRouting::IpRouting() {
 }
 
 std::optional<IPAddress> FindNetworkIp(IPAddress hostIpAddress){
+
     return {};
 }
