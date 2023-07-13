@@ -22,13 +22,6 @@ class DSModelTreeImpl : public DSModelmpl {
 std::map<ip_t,TreeMapValueObject> treemap_;
 std::vector<TreeMapValueObjectForUnusedObjectInArray> free_slots_list_;
 
-
-private:
-
-    std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator> GetBestFitIp(int requiredCapacity);
-    void UpdateFreeSlotsList(std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator iter,
-                                              int requiredCapacity, ip_t newStartIp);
-
 public:
 
     DSModelTreeImpl() = default;
@@ -93,9 +86,14 @@ public:
      * @return
      */
 
-     MacID GetMacAddressOfHost(ip_t hostIpAddress);
+     MacID GetMacAddressOfHost(ip_t hostIpAddress) override;
 
+    std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator> GetBestFitIp(int requiredCapacity);
+    void UpdateFreeSlotsList(std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator iter, int requiredCapacity);
 
+    [[maybe_unused]] void SetFreeSlots(ip_t startIp, int freeCapacity);
+
+    std::vector<TreeMapValueObjectForUnusedObjectInArray> GetFreeSlotsList();
 };
 
 

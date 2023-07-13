@@ -2,6 +2,7 @@
 // Created by Abhijith  K A on 11/07/23.
 //
 
+#include <iostream>
 #include "DSModelTreeImpl.h"
 #include "DHCPAllocator/src/Models/DSModelmpl.h"
 
@@ -10,6 +11,13 @@ ip_t DSModelTreeImpl::InsertSubnet(MacID subNetMacId, int capacity) {
 
     if(free_slots_list_.empty()){
 
+    }else{
+        std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator> requiredSlotItr = GetBestFitIp(capacity);
+        if(requiredSlotItr.has_value()){
+            UpdateFreeSlotsList(*requiredSlotItr, capacity);
+            treemap_.insert({(*requiredSlotItr)->GetStartIP(), TreeMapValueObject(capacity, subNetMacId)});
+        }else{
+        }
     }
 }
 
@@ -38,60 +46,48 @@ MacID DSModelTreeImpl::GetMacAddressOfHost(ip_t hostIpAddress) {
 }
 
 std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator> DSModelTreeImpl::GetBestFitIp(int requiredCapacity) {
-
-
-    auto compare = [] (const TreeMapValueObjectForUnusedObjectInArray& arrayItem, const TreeMapValueObjectForUnusedObjectInArray requiredItem){
+    auto compare = [](const TreeMapValueObjectForUnusedObjectInArray& arrayItem, const TreeMapValueObjectForUnusedObjectInArray& requiredItem) {
         return arrayItem.GetCapacity() < requiredItem.GetCapacity();
     };
 
     TreeMapValueObjectForUnusedObjectInArray dummmyForRequiredCapacity{0,requiredCapacity};
+    auto iter = std::lower_bound(free_slots_list_.begin(), free_slots_list_.end(), dummmyForRequiredCapacity, compare);
 
-    auto iter = std::lower_bound(
-            free_slots_list_.begin(), free_slots_list_.end(),dummmyForRequiredCapacity, compare
-            );
-    if(iter == free_slots_list_.end()){
-        if(requiredCapacity > free_slots_list_.back().GetCapacity()){
-            return std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator>{};
-        }
-        else{
-            return free_slots_list_.begin();
-        }
+    if (iter != free_slots_list_.end() && iter->GetCapacity() >= requiredCapacity) {
+        return iter;
+    } else {
+        return std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator>{};
     }
-    else{
-
-        if(iter->GetCapacity() == requiredCapacity){
-            return iter;
-        }
-        else{
-            ++iter;
-            if(iter != free_slots_list_.end()){
-                return iter;
-            }
-            return std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator>{};
-        }
-    }
-
 }
 
+
 void DSModelTreeImpl::UpdateFreeSlotsList(std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator iter,
-                                          int requiredCapacity, ip_t newStartIp) {
+                                          int requiredCapacity) {
     if(iter->GetCapacity() == requiredCapacity){
         free_slots_list_.erase(iter);
-
     }
 
     else{
         int newCapacity = iter->GetCapacity() - requiredCapacity;
+        ip_t newStartIp = iter->GetStartIP() + requiredCapacity;
         TreeMapValueObjectForUnusedObjectInArray newIpSlot{newStartIp, newCapacity};
         free_slots_list_.erase(iter);
-
-        auto compare = [] (const TreeMapValueObjectForUnusedObjectInArray& arrayItem, const TreeMapValueObjectForUnusedObjectInArray requiredItem){
-            return arrayItem.GetCapacity() < requiredItem.GetCapacity();
-        };
-
-        CompareTreeMapValueObjectForUnusedObjectInArray compare2{};
-        auto iterToElementBeforeNewItem = std::lower_bound(free_slots_list_.begin(), free_slots_list_.end(),newIpSlot, compare2);
-        free_slots_list_.insert(iterToElementBeforeNewItem + 1, newIpSlot);
-
+        SetFreeSlots(newStartIp, newCapacity);
     }
+}
+
+[[maybe_unused]] void DSModelTreeImpl::SetFreeSlots(ip_t startIp, int freeCapacity) {
+    TreeMapValueObjectForUnusedObjectInArray newObj(startIp, freeCapacity);
+
+    auto insertPos = std::lower_bound(free_slots_list_.begin(), free_slots_list_.end(), newObj,
+                                      [](const TreeMapValueObjectForUnusedObjectInArray& lhs,
+                                         const TreeMapValueObjectForUnusedObjectInArray& rhs) {
+                                          return lhs.GetCapacity() < rhs.GetCapacity();
+                                      });
+
+    free_slots_list_.insert(insertPos, newObj);
+}
+
+std::vector<TreeMapValueObjectForUnusedObjectInArray> DSModelTreeImpl::GetFreeSlotsList() {
+    return free_slots_list_;
 }

@@ -15,7 +15,6 @@ int TreeMapValueObject::GetCapacity() const {
 }
 
 
-
 MacID TreeMapValueObject::GetMacAddress() const {
     return macId_;
 }
