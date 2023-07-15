@@ -1,0 +1,302 @@
+//
+// Created by Abhijith  K A on 14/07/23.
+//
+
+#include  <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VebTreeWithHashMap/VEBTreeWithHashMap.h>
+
+
+template <typename ValueType>
+VEBTreeWithHashMap<ValueType>::VEBTreeWithHashMap(veb_hm_t universe) :root_veb_tree_(
+      std::move(std::make_unique<VEBTreeWithHashMapNode<ValueType>>(universe))
+        ){
+
+}
+
+template <typename ValueType>
+veb_hm_t VEBTreeWithHashMap<ValueType>::High(veb_hm_t key, veb_hm_t universe) {
+   veb_hm_t sqrt =  static_cast<veb_hm_t>(std::sqrt(universe));
+   return key / sqrt;
+}
+
+template <typename ValueType>
+veb_hm_t  VEBTreeWithHashMap<ValueType>::Low(veb_hm_t key, veb_hm_t universe) {
+    veb_hm_t sqrt =  static_cast<veb_hm_t>(std::sqrt(universe));
+    return key % sqrt;
+}
+
+template <typename ValueType>
+veb_hm_t VEBTreeWithHashMap<ValueType>::Index(veb_hm_t clusterIndex, veb_hm_t lowKey, veb_hm_t universe) {
+    veb_hm_t clusterCount =  static_cast<veb_hm_t>(std::sqrt(universe));
+    return clusterIndex * clusterCount + lowKey;
+}
+
+template <typename ValueType>
+std::tuple<bool, veb_hm_t, ValueType> VEBTreeWithHashMap<ValueType>::FindKey(veb_hm_t key){
+
+    if(root_veb_tree_.get()) {
+
+        VEBTreeWithHashMapNode<ValueType> *currentNode = root_veb_tree_.get();
+        while (true) {
+            if (!currentNode->IsSet()) {
+                return {false, key, {}};
+            }
+            if (key < currentNode->GetMinKey() || key > currentNode->GetMaxKey()) {
+                return {false, key, {}};
+            }
+            if (key == currentNode->GetMinKey()) {
+                return {true, currentNode->GetMinKey(), currentNode->GetMinValue()};
+            }
+            if (key == currentNode->GetMaxKey()) {
+                return {true, currentNode->GetMaxKey(), currentNode->GetMaxValue()};
+            }
+
+            veb_hm_t clusterIndex = High(key, currentNode->GetUniverse());
+            veb_hm_t clusterKey = Low(key, currentNode->GetUniverse());
+
+            if (currentNode->IsClusterSet(clusterIndex)) {
+                currentNode = &currentNode->GetCluster(clusterIndex);
+                key = clusterKey;
+            } else {
+                return {false, key, {}};
+            }
+        }
+    }
+    return {false, key, {}};
+}
+
+template <typename ValueType>
+void  VEBTreeWithHashMap<ValueType>::Insert(veb_hm_t key, ValueType value){
+    InsertHelper(*root_veb_tree_, key, value);
+}
+template <typename ValueType>
+void VEBTreeWithHashMap<ValueType>::Delete(veb_hm_t key){
+    DeleteHelper(*root_veb_tree_, key);
+}
+
+template <typename ValueType>
+std::tuple<VEBTreeNodeKeyType, veb_hm_t, ValueType> VEBTreeWithHashMap<ValueType>::Successor(veb_hm_t key){
+    return GetSuccessorHelper(*root_veb_tree_, key);
+}
+
+template <typename ValueType>
+std::tuple<VEBTreeNodeKeyType, veb_hm_t , ValueType> VEBTreeWithHashMap<ValueType>::Predecessor(veb_hm_t key){
+    return GetPredecessorHelper(*root_veb_tree_, key);
+}
+
+template <typename ValueType>
+void  VEBTreeWithHashMap<ValueType>::InsertHelper(VEBTreeWithHashMapNode<ValueType>& currentNode, veb_hm_t key, ValueType value){
+    if(key > currentNode.GetUniverse()){
+        return;
+    }
+    if(!currentNode.IsSet()){
+        currentNode.SetMinKey(key);
+        currentNode.SetMaxKey(key);
+        currentNode.SetMaxValue(value);
+        currentNode.SetMinValue(value);
+        return;
+    }
+    if(currentNode.GetMaxKey() == currentNode.GetMinKey()){
+        if(key > currentNode.GetMinKey()){
+            currentNode.SetMaxKey(key);
+            currentNode.SetMaxValue(value);
+        }
+        else if(key < currentNode.GetMinKey()){
+            currentNode.SetMinKey(key);
+            currentNode.SetMinValue(value);
+        }
+        return;
+    }
+    if(key < currentNode.GetMinKey()){
+        veb_hm_t temp = currentNode.GetMinKey();
+        ValueType tempValueType = currentNode.GetMinValue();
+        currentNode.SetMinKey(key);
+        currentNode.SetMinValue(value);
+        key = temp;
+        value = tempValueType;
+    }
+    if(key > currentNode.GetMaxKey()){
+        veb_hm_t maxKeyCopy = currentNode.GetMaxKey();
+        ValueType maxValCopy = currentNode.GetMaxValue();
+        currentNode.SetMaxKey(key);
+        currentNode.SetMaxValue(value);
+        key = maxKeyCopy;
+        value = maxValCopy;
+    }
+
+    veb_hm_t clusterIndex = High(key, currentNode.GetUniverse());
+    veb_hm_t lowIndex = Low(key, currentNode.GetUniverse());
+
+    if(currentNode.IsClusterSet(clusterIndex)){
+        InsertHelper(currentNode.GetCluster(clusterIndex), lowIndex, value);
+    }
+    else{
+        currentNode.SetCluster(clusterIndex);
+        if(!currentNode.IsSummarySet())
+            currentNode.SetSummary();
+        InsertHelper(currentNode.GetCluster(clusterIndex), lowIndex, value);
+        InsertHelper(currentNode.GetSummary(), clusterIndex, value);
+    }
+
+}
+
+template <typename ValueType>
+void  VEBTreeWithHashMap<ValueType>::DeleteHelper(VEBTreeWithHashMapNode<ValueType>& currentNode, veb_hm_t key){
+    if(!currentNode.IsSet()) return;
+
+    if(key < currentNode.GetMinKey() || key > currentNode.GetMaxKey()) return;
+
+    if(currentNode.GetMaxKey() == currentNode.GetMinKey()){
+        if(key == currentNode.GetMaxKey()){
+            currentNode.Unset();
+        }
+        return;
+    }
+    if(!currentNode.IsSummarySet()){
+        if(currentNode.GetMaxKey() == key){
+            currentNode.SetMaxKey(currentNode.GetMinKey());
+            currentNode.SetMaxValue(currentNode.GetMinValue());
+        }
+        else if(currentNode.GetMinKey() == key){
+            currentNode.SetMinKey(currentNode.GetMaxKey());
+            currentNode.SetMinValue(currentNode.GetMaxValue());
+        }
+        return;
+    }
+    if(currentNode.GetMaxKey() == key){
+        veb_hm_t  newMaxKeyCluster = currentNode.GetSummary().GetMaxKey();
+        veb_hm_t newMaxKeyIndex = currentNode.GetCluster(newMaxKeyCluster).GetMaxKey();
+        ValueType newMaxValue = currentNode.GetCluster(newMaxKeyCluster).GetMaxValue();
+        veb_hm_t newMaxKeyIndexInCurrentUniverse = Index(newMaxKeyCluster, newMaxKeyIndex, currentNode.GetUniverse());
+        currentNode.SetMaxKey(newMaxKeyIndexInCurrentUniverse);
+        currentNode.SetMaxValue(newMaxValue);
+        key = newMaxKeyIndexInCurrentUniverse;
+    }
+
+    else if(currentNode.GetMinKey() == key){
+        veb_hm_t newMinKeyCluster = currentNode.GetSummary().GetMinKey();
+        veb_hm_t newMinKeyIndex = currentNode.GetCluster(newMinKeyCluster).GetMinKey();
+        veb_hm_t newMinValue = currentNode.GetCluster(newMinKeyCluster).GetMinValue();
+        veb_hm_t  newMinKeyIndexInCurrentUniverse = Index(newMinKeyCluster, newMinKeyIndex, currentNode.GetUniverse());
+        currentNode.SetMinKey(newMinKeyIndexInCurrentUniverse);
+        currentNode.SetMinValue(newMinValue);
+        key = newMinKeyIndexInCurrentUniverse;
+    }
+
+    veb_hm_t clusterIndex = High(key, currentNode.GetUniverse());
+    veb_hm_t lowIndex = Low(key, currentNode.GetUniverse());
+
+    DeleteHelper(currentNode.GetCluster(clusterIndex), lowIndex);
+    if(!currentNode.GetCluster(clusterIndex).IsSet()){
+        currentNode.UnsetCluster(clusterIndex);
+        DeleteHelper(currentNode.GetSummary(), clusterIndex);
+        if(!currentNode.GetSummary().IsSet()){
+            currentNode.UnsetSummary();
+        }
+    }
+}
+
+template <typename ValueType>
+std::tuple<VEBTreeNodeKeyType, veb_hm_t, ValueType>  VEBTreeWithHashMap<ValueType>::GetSuccessorHelper(VEBTreeWithHashMapNode<ValueType>& currentNode, veb_hm_t key){
+    if(currentNode.IsSet()) {
+        if (currentNode.GetMaxKey() < key) {
+            return {VEBTreeNodeKeyType::POSITIVE_INFINITY, veb_hm_t{}, ValueType{}};
+        }
+        if (currentNode.GetMaxKey() == key) {
+            return {VEBTreeNodeKeyType::NORMAL, currentNode.GetMaxKey(), currentNode.GetMaxValue()};
+        }
+        if (currentNode.GetMinKey() >= key) {
+            return {VEBTreeNodeKeyType::NORMAL, currentNode.GetMinKey(), currentNode.GetMinValue()};
+        }
+
+        veb_hm_t clusterIndex = High(key, currentNode.GetUniverse());
+        veb_hm_t lowIndex = Low(key, currentNode.GetUniverse());
+        if (currentNode.IsClusterSet(clusterIndex) &&
+            Index(clusterIndex, currentNode.GetCluster(clusterIndex).GetMaxKey(), currentNode.GetUniverse()) >= key) {
+            auto [nodeType, keyFromCluster, value] = GetSuccessorHelper(currentNode.GetCluster(clusterIndex), lowIndex);
+            veb_hm_t clusterKeyIndexInCurrentUniverse = Index(clusterIndex, keyFromCluster, currentNode.GetUniverse());
+            return {nodeType, clusterKeyIndexInCurrentUniverse, value};
+        }
+
+        if (currentNode.IsSummarySet()) {
+            if (clusterIndex + 1 >= currentNode.GetSubUniverse()) {
+                return {VEBTreeNodeKeyType::NORMAL, currentNode.GetMaxKey(), currentNode.GetMaxValue()};
+            } else {
+                auto [nodeType, nextClusterIndex, nextClusterValue] = GetSuccessorHelper(currentNode.GetSummary(),
+                                                                                         clusterIndex + 1);
+                if (nodeType == VEBTreeNodeKeyType::NORMAL) {
+                    veb_hm_t minKeyInNextCluster = currentNode.GetCluster(nextClusterIndex).GetMinKey();
+                    veb_hm_t minKeyIndexInCurrentUniverse = Index(nextClusterIndex, minKeyInNextCluster,
+                                                                  currentNode.GetUniverse());
+                    return {nodeType, minKeyIndexInCurrentUniverse,
+                            currentNode.GetCluster(nextClusterIndex).GetMinValue()};
+                } else {
+                    return {VEBTreeNodeKeyType::NORMAL, currentNode.GetMaxKey(), currentNode.GetMaxValue()};
+                }
+            }
+        } else {
+            return {VEBTreeNodeKeyType::NORMAL, currentNode.GetMaxKey(), currentNode.GetMaxValue()};
+        }
+
+    }
+    else{
+
+        return {VEBTreeNodeKeyType::POSITIVE_INFINITY, veb_hm_t{}, ValueType{}};
+    }
+}
+
+template <typename ValueType>
+std::tuple<VEBTreeNodeKeyType, veb_hm_t, ValueType>  VEBTreeWithHashMap<ValueType>::GetPredecessorHelper(VEBTreeWithHashMapNode<ValueType>& currentNode, veb_hm_t key){
+
+    if(currentNode.IsSet()){
+        if(currentNode.GetMinKey() > key){
+            return {VEBTreeNodeKeyType::NEGATIVE_INFINITY, veb_hm_t{}, ValueType{}};
+        }
+        if(currentNode.GetMinKey() == key){
+            return {VEBTreeNodeKeyType::NORMAL, currentNode.GetMinKey(), currentNode.GetMinValue()};
+        }
+        if(currentNode.GetMaxKey() <= key){
+            return {VEBTreeNodeKeyType::NORMAL, currentNode.GetMaxKey(), currentNode.GetMaxValue()};
+        }
+
+        veb_hm_t  clusterIndex = High(key, currentNode.GetUniverse());
+        veb_hm_t  lowIndex = Low(key, currentNode.GetUniverse());
+        if(currentNode.IsClusterSet(clusterIndex) && Index(clusterIndex, currentNode.GetCluster(clusterIndex).GetMinKey(),currentNode.GetUniverse()) <= key){
+            auto [nodeType, keyFromCluster, value] = GetPredecessorHelper(currentNode.GetCluster(clusterIndex), lowIndex);
+            veb_hm_t clusterKeyIndexInCurrentUniverse = Index(clusterIndex, keyFromCluster, currentNode.GetUniverse());
+            return {nodeType, clusterKeyIndexInCurrentUniverse, value};
+        }
+        else{
+            if(currentNode.IsSummarySet()){
+                if(clusterIndex == 0){
+                    return {VEBTreeNodeKeyType::NORMAL, currentNode.GetMinKey(), currentNode.GetMinValue()};
+                }
+                else{
+                    auto [nodeType, previousClusterIndex, previousClusterValue] = GetSuccessorHelper(currentNode.GetSummary(),
+                                                                                             clusterIndex - 1);
+                    if(nodeType == VEBTreeNodeKeyType::NORMAL){
+                        veb_hm_t maxKeyInPreviousCluster = currentNode.GetCluster(previousClusterIndex).GetMaxKey();
+                        veb_hm_t maxKeyIndexInCurrentUniverse = Index(previousClusterIndex, maxKeyInPreviousCluster, currentNode.GetUniverse());
+                        return {nodeType, maxKeyIndexInCurrentUniverse, currentNode.GetCluster(previousClusterIndex).GetMaxValue()};
+                    }
+                    else{
+                        return {VEBTreeNodeKeyType::NORMAL, currentNode.GetMinKey(), currentNode.GetMinValue()};
+                    }
+                }
+            }
+            else{
+                return {VEBTreeNodeKeyType::NORMAL, currentNode.GetMinKey(), currentNode.GetMinValue()};
+            }
+        }
+    }
+    else{
+
+        return {VEBTreeNodeKeyType::NEGATIVE_INFINITY, veb_hm_t{}, ValueType{}};
+    }
+
+}
+
+template class VEBTreeWithHashMap<int>;
+template class VEBTreeWithHashMap<veb_hm_t>;
+
+
+

@@ -1,0 +1,12 @@
+add_executable(TestVebTreeInsertAndDelete TestVebTreeInsertAndDelete.cpp)
+target_link_libraries(TestVebTreeInsertAndDelete PUBLIC VEBTreeMap GTest::GTest)
+
+add_executable(TestVebTreeSuccessorAndPredecessor TestVebTreeSuccessorAndPredecessor.cpp)
+target_link_libraries(TestVebTreeSuccessorAndPredecessor PUBLIC VEBTreeMap GTest::GTest)
+
+add_executable(TestVebTreeWithHashMapInsertAndDelete TestVebTreeWithHashMapInsertAndDelete.cpp)
+target_link_libraries(TestVebTreeWithHashMapInsertAndDelete PUBLIC VEBTreeWithHashMap GTest::GTest)
+
+add_executable(TestVebTreeWithHashMapSuccessorAndPredecessor TestVebTreeWithHashMapSuccessorAndPredecessor.cpp)
+target_link_libraries(TestVebTreeWithHashMapSuccessorAndPredecessor
+        PUBLIC VEBTreeWithHashMap GTest::GTest)
