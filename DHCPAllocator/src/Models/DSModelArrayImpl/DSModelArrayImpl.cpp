@@ -84,7 +84,19 @@ void DSModelArrayImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
 }
 
 std::pair<bool, ip_t> DSModelArrayImpl::GetNetWorkIP(ip_t hostIp) {
-    return {false, 0}; //todo main
+
+    auto subnet_it = subnet_routing_map_.upper_bound(hostIp);  // get the first subnet IP greater than hostIP (binary search on flat map)
+
+    if (subnet_it != subnet_routing_map_.begin()) {
+        --subnet_it;  // get the previous subnet IP
+        ip_t subnet_ip = subnet_it->first;
+        ArrayValueObject arrayValueObject = subnet_it->second;
+
+        if (hostIp < subnet_ip + arrayValueObject.GetCapacity() - 1 ) { //  -1 to ignore the broadcast IP
+            return { true, subnet_ip };
+        }
+    }
+    return {false, 0};
 }
 
 std::pair<bool, ip_t> DSModelArrayImpl::GetHostIpAddress(MacID macId, ip_t subnet_ip) {
