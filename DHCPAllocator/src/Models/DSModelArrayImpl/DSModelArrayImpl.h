@@ -42,7 +42,7 @@ public:
 
     DSModelArrayImpl() = default;
 
-    std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, int capacity) override;
+    std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, ip_t capacity) override;
 
     std::pair<bool, ip_t> InsertSubnetHost(MacID host_mac_id, ip_t subnet_ip) override;
 

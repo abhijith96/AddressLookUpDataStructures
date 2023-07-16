@@ -11,7 +11,7 @@ constexpr veb_key_t universe = 16;
 using veb_value_t = uint32_t;
 
 
-class VEBTest : public ::testing::Test {
+class DSModelVebTreeImplTest : public ::testing::Test {
 protected:
     void SetUp() override {
     }
@@ -86,7 +86,7 @@ protected:
 
 };
 
-TEST_F(VEBTest, Construction) {
+TEST_F(DSModelVebTreeImplTest, Construction) {
 
     EXPECT_NO_THROW(
             vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe)
@@ -94,7 +94,7 @@ TEST_F(VEBTest, Construction) {
 
 }
 
-TEST_F(VEBTest, InsertOneElement) {
+TEST_F(DSModelVebTreeImplTest, InsertOneElement) {
 
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     vebTreeMap->Insert(2, 100);
@@ -108,7 +108,7 @@ TEST_F(VEBTest, InsertOneElement) {
 
 }
 
-TEST_F(VEBTest, InsertTwoElement) {
+TEST_F(DSModelVebTreeImplTest, InsertTwoElement) {
 
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     vebTreeMap->Insert(2, 100);
@@ -130,7 +130,7 @@ TEST_F(VEBTest, InsertTwoElement) {
 
 }
 
-TEST_F(VEBTest, InsertEightElementEven) {
+TEST_F(DSModelVebTreeImplTest, InsertEightElementEven) {
 
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(0,8,2);
@@ -140,7 +140,7 @@ TEST_F(VEBTest, InsertEightElementEven) {
 
 }
 
-TEST_F(VEBTest, InsertEightElementEvenTwice) {
+TEST_F(DSModelVebTreeImplTest, InsertEightElementEvenTwice) {
 
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(0,8,2);
@@ -151,7 +151,7 @@ TEST_F(VEBTest, InsertEightElementEvenTwice) {
 
 }
 
-TEST_F(VEBTest, InsertEightElementEvenFourElementsTwice) {
+TEST_F(DSModelVebTreeImplTest, InsertEightElementEvenFourElementsTwice) {
 
     // Checks that Insert does not overwrite
 
@@ -167,7 +167,7 @@ TEST_F(VEBTest, InsertEightElementEvenFourElementsTwice) {
 }
 
 
-TEST_F(VEBTest, InsertEightElementEvenReverse) {
+TEST_F(DSModelVebTreeImplTest, InsertEightElementEvenReverse) {
 
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(0,8,2);
@@ -178,7 +178,7 @@ TEST_F(VEBTest, InsertEightElementEvenReverse) {
 
 }
 
-TEST_F(VEBTest, InsertEightElementOdd) {
+TEST_F(DSModelVebTreeImplTest, InsertEightElementOdd) {
 
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(1,8,2);
@@ -188,7 +188,7 @@ TEST_F(VEBTest, InsertEightElementOdd) {
 
 }
 
-TEST_F(VEBTest, InsertEightElementOddReverse) {
+TEST_F(DSModelVebTreeImplTest, InsertEightElementOddReverse) {
 
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(1,8,2);
@@ -199,7 +199,7 @@ TEST_F(VEBTest, InsertEightElementOddReverse) {
 
 }
 
-TEST_F(VEBTest, InsertSixteenElements) {
+TEST_F(DSModelVebTreeImplTest, InsertSixteenElements) {
 
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(0,16,1);
@@ -209,7 +209,7 @@ TEST_F(VEBTest, InsertSixteenElements) {
 
 }
 
-TEST_F(VEBTest, InsertSixteenElementsReverse) {
+TEST_F(DSModelVebTreeImplTest, InsertSixteenElementsReverse) {
 
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(0,16,1);
@@ -220,7 +220,7 @@ TEST_F(VEBTest, InsertSixteenElementsReverse) {
 
 }
 
-TEST_F(VEBTest, Insert256Elements) {
+TEST_F(DSModelVebTreeImplTest, Insert256Elements) {
 
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(256);
     auto keys = GenerateSeries(0,256,1);
@@ -230,13 +230,13 @@ TEST_F(VEBTest, Insert256Elements) {
 
 }
 
-TEST_F(VEBTest, DeleteFromEmptyTree){
+TEST_F(DSModelVebTreeImplTest, DeleteFromEmptyTree){
 
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     EXPECT_NO_THROW(vebTreeMap->Delete(1));
 }
 
-TEST_F(VEBTest, DeleteOneElement){
+TEST_F(DSModelVebTreeImplTest, DeleteOneElement){
 
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     vebTreeMap->Insert(1, 100);
@@ -248,7 +248,7 @@ TEST_F(VEBTest, DeleteOneElement){
 
 }
 
-TEST_F(VEBTest, InsertEightOddElementsAndDeleteThem){
+TEST_F(DSModelVebTreeImplTest, InsertEightOddElementsAndDeleteThem){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(1,8,2);
     auto values = GenerateSeries(100, 8, 1);
@@ -258,7 +258,7 @@ TEST_F(VEBTest, InsertEightOddElementsAndDeleteThem){
     EXPECT_TRUE(CheckElementsAreNotPresent(keys, values));
 }
 
-TEST_F(VEBTest, InsertEightEvenElementsAndDeleteThem){
+TEST_F(DSModelVebTreeImplTest, InsertEightEvenElementsAndDeleteThem){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(0,8,2);
     auto values = GenerateSeries(100, 8, 1);
@@ -268,7 +268,7 @@ TEST_F(VEBTest, InsertEightEvenElementsAndDeleteThem){
     EXPECT_TRUE(CheckElementsAreNotPresent(keys, values));
 }
 
-TEST_F(VEBTest, InsertSixteenElementsAndDeleteThem){
+TEST_F(DSModelVebTreeImplTest, InsertSixteenElementsAndDeleteThem){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(0,16,1);
     auto values = GenerateSeries(100, 16, 1);
@@ -278,7 +278,7 @@ TEST_F(VEBTest, InsertSixteenElementsAndDeleteThem){
     EXPECT_TRUE(CheckElementsAreNotPresent(keys, values));
 }
 
-TEST_F(VEBTest, InsertEightOddElementsAndDeleteThemInReverse){
+TEST_F(DSModelVebTreeImplTest, InsertEightOddElementsAndDeleteThemInReverse){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(1,8,2);
     auto values = GenerateSeries(100, 8, 1);
@@ -289,7 +289,7 @@ TEST_F(VEBTest, InsertEightOddElementsAndDeleteThemInReverse){
     EXPECT_TRUE(CheckElementsAreNotPresent(keys, values));
 }
 
-TEST_F(VEBTest, InsertSixteenElementsAndDeleteThemReverse){
+TEST_F(DSModelVebTreeImplTest, InsertSixteenElementsAndDeleteThemReverse){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(0,16,1);
     auto values = GenerateSeries(100, 16, 1);
@@ -300,7 +300,7 @@ TEST_F(VEBTest, InsertSixteenElementsAndDeleteThemReverse){
     EXPECT_TRUE(CheckElementsAreNotPresent(keys, values));
 }
 
-TEST_F(VEBTest, InsertSixteenElementsAndDeleteFour){
+TEST_F(DSModelVebTreeImplTest, InsertSixteenElementsAndDeleteFour){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(0,16,1);
     auto values = GenerateSeries(100, 16, 1);
@@ -312,7 +312,7 @@ TEST_F(VEBTest, InsertSixteenElementsAndDeleteFour){
     EXPECT_TRUE(CheckElementsAreNotPresent(keys_2, values_2));
 }
 
-TEST_F(VEBTest, InsertSixteenElementsAndDeleteFourteen){
+TEST_F(DSModelVebTreeImplTest, InsertSixteenElementsAndDeleteFourteen){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(0,16,1);
     auto values = GenerateSeries(100, 16, 1);
@@ -329,7 +329,7 @@ TEST_F(VEBTest, InsertSixteenElementsAndDeleteFourteen){
     EXPECT_TRUE(CheckElementsAreNotPresent(keys_3,values_3));
 }
 
-TEST_F(VEBTest, InsertEightEvenElementsAndDeleteThemInReverse){
+TEST_F(DSModelVebTreeImplTest, InsertEightEvenElementsAndDeleteThemInReverse){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
     auto keys = GenerateSeries(0,8,2);
     auto values = GenerateSeries(100, 8, 1);
@@ -340,7 +340,7 @@ TEST_F(VEBTest, InsertEightEvenElementsAndDeleteThemInReverse){
     EXPECT_TRUE(CheckElementsAreNotPresent(keys, values));
 }
 
-TEST_F(VEBTest, Insert256ElementsAndDeleteThem){
+TEST_F(DSModelVebTreeImplTest, Insert256ElementsAndDeleteThem){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(256);
     auto keys = GenerateSeries(0,256,1);
     auto values = GenerateSeries(100, 256, 1);
@@ -350,7 +350,7 @@ TEST_F(VEBTest, Insert256ElementsAndDeleteThem){
     EXPECT_TRUE(CheckElementsAreNotPresent(keys, values));
 }
 
-TEST_F(VEBTest, Insert256ElementsAndDeleteThemInReverse){
+TEST_F(DSModelVebTreeImplTest, Insert256ElementsAndDeleteThemInReverse){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(256);
     auto keys = GenerateSeries(0,256,1);
     auto values = GenerateSeries(100, 256, 1);
@@ -361,7 +361,7 @@ TEST_F(VEBTest, Insert256ElementsAndDeleteThemInReverse){
     EXPECT_TRUE(CheckElementsAreNotPresent(keys, values));
 }
 
-TEST_F(VEBTest, Insert256ElementsAndDelete128OddOnes){
+TEST_F(DSModelVebTreeImplTest, Insert256ElementsAndDelete128OddOnes){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(256);
     auto keys = GenerateSeries(0,256,1);
     auto values = GenerateSeries(100, 256, 1);
@@ -377,7 +377,7 @@ TEST_F(VEBTest, Insert256ElementsAndDelete128OddOnes){
 
 }
 
-TEST_F(VEBTest, Insert256ElementsAndDelete128EvenOnes){
+TEST_F(DSModelVebTreeImplTest, Insert256ElementsAndDelete128EvenOnes){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(256);
     auto keys = GenerateSeries(0,256,1);
     auto values = GenerateSeries(100, 256, 1);
@@ -393,7 +393,7 @@ TEST_F(VEBTest, Insert256ElementsAndDelete128EvenOnes){
 
 }
 
-TEST_F(VEBTest, Universe32){
+TEST_F(DSModelVebTreeImplTest, Universe32){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(32);
     auto keys = GenerateSeries(0,32,1);
     auto values = GenerateSeries(100, 32, 1);
@@ -408,7 +408,7 @@ TEST_F(VEBTest, Universe32){
     EXPECT_TRUE(CompareElements(keys_not_deleted, values_not_deleted));
 }
 
-TEST_F(VEBTest, Universe32DeleteOdd){
+TEST_F(DSModelVebTreeImplTest, Universe32DeleteOdd){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(32);
     auto keys = GenerateSeries(0,32,1);
     auto values = GenerateSeries(100, 32, 1);
@@ -423,7 +423,7 @@ TEST_F(VEBTest, Universe32DeleteOdd){
     EXPECT_TRUE(CompareElements(keys_not_deleted, values_not_deleted));
 }
 
-TEST_F(VEBTest, Universe32DeleteOddReverse){
+TEST_F(DSModelVebTreeImplTest, Universe32DeleteOddReverse){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(32);
     auto keys = GenerateSeries(0,32,1);
     auto values = GenerateSeries(100, 32, 1);
@@ -440,7 +440,7 @@ TEST_F(VEBTest, Universe32DeleteOddReverse){
     EXPECT_TRUE(CompareElements(keys_not_deleted, values_not_deleted));
 }
 
-TEST_F(VEBTest, Universe128Delete){
+TEST_F(DSModelVebTreeImplTest, Universe128Delete){
     vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(128);
     auto keys = GenerateSeries(0,128,1);
     auto values = GenerateSeries(100, 128, 1);

@@ -6,89 +6,142 @@
 #include <map>
 #include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelVebTreeImpl.h>
 
-constexpr veb_key_t universe = 16;
 
-using veb_value_t = uint32_t;
+using veb_value_t = VEBTreeValueObject;
 
 
-class VEBTest : public ::testing::Test {
+class DSModelVebTreeImplTest : public ::testing::Test {
 protected:
     void SetUp() override {
+        
+        vebTreeMap = std::make_unique<DSModelVebTreeImpl>(ipRange);
     }
 
-    std::vector<veb_key_t> GenerateSeries(veb_key_t start, veb_key_t count, veb_key_t increment) {
-        std::vector<veb_key_t> result;
+    std::vector<std::pair<ip_t,ip_t >> GenerateSeries(ip_t start, ip_t count, ip_t increment) {
+        std::vector<std::pair<ip_t,ip_t >> result;
         result.resize(count);
-        veb_key_t current_val = start;
+        ip_t current_val = start;
         for(auto& i : result){
-            i = current_val;
-            current_val += increment;
+            i = {current_val, current_val + increment};
+            current_val += increment + 1;
         }
         return result;
     }
 
-    void InsertElements (const std::vector<veb_key_t>& keys, const std::vector<veb_value_t>& values){
+    void InsertElements (const std::vector<ip_t>& keys, const std::vector<ip_t>& values){
         for(size_t i = 0; i < keys.size(); ++i){
-            veb_key_t  key = keys[i];
-            veb_key_t value = values.at(i);
-            vebTreeMap->Insert(key, value);
-            map_.insert({key, value});
+            ip_t  key = keys[i];
+            auto value = VEBTreeValueObject{static_cast<ip_t>(i)};
+            vebTreeMap->InsertSubnet(MacID{1}, static_cast<ip_t>(values[i]));
         }
     }
 
-    void DeleteElements (const std::vector<veb_key_t>& keys, const std::vector<veb_value_t>& values){
+    void DeleteElements (const std::vector<ip_t>& keys){
         for(size_t i = 0; i < keys.size(); ++i){
-            veb_key_t  key = keys[i];
-            veb_key_t value = values.at(i);
-            vebTreeMap->Delete(key);
-            map_.erase(key);
+            ip_t  key = keys[i];
+            vebTreeMap->DeleteSubnet(key);
         }
     }
-    bool CompareElements(const std::vector<veb_key_t>& keys, const std::vector<veb_value_t>& values){
-        for(size_t i = 0; i < keys.size(); ++i){
-            veb_key_t  key = keys[i];
-            veb_key_t value = values.at(i);
-            bool status;
-            veb_value_t vebValue;
-            std::tie (status, vebValue) = vebTreeMap->FindKey(key);
-            auto iter = map_.find(key);
-            if(iter == map_.end()){
-                return false;
-            }
-            else if(!status) return false;
-            else if(vebValue != iter->second){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    bool CheckElementsAreNotPresent(const std::vector<veb_key_t>& keys, const std::vector<veb_value_t>& values){
-        for(size_t i = 0; i < keys.size(); ++i){
-            veb_key_t  key = keys[i];
-            veb_key_t value = values.at(i);
-            bool status;
-            veb_value_t vebValue;
-            std::tie (status, vebValue) = vebTreeMap->FindKey(key);
-            auto iter = map_.find(key);
-            if(iter != map_.end() || status){
-                return false;
-            }
-        }
-        return true;
-    }
+//    bool CompareElements(const std::vector<ip_t>& keys, const std::vector<veb_value_t>& values){
+//        for(size_t i = 0; i < keys.size(); ++i){
+//            ip_t  key = keys[i];
+//            ip_t value = values.at(i);
+//            bool status;
+//            veb_value_t vebValue;
+//            std::tie (status, vebValue) = vebTreeMap->FindKey(key);
+//            auto iter = map_.find(key);
+//            if(iter == map_.end()){
+//                return false;
+//            }
+//            else if(!status) return false;
+//            else if(vebValue != iter->second){
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+//
+//    bool CheckElementsAreNotPresent(const std::vector<ip_t>& keys, const std::vector<veb_value_t>& values) {
+//        for (size_t i = 0; i < keys.size(); ++i) {
+//            ip_t key = keys[i];
+//            ip_t value = values.at(i);
+//            bool status;
+//            veb_value_t vebValue;
+//            std::tie(status, vebValue) = vebTreeMap->FindKey(key);
+//            auto iter = map_.find(key);
+//            if (iter != map_.end() || status) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
     void TearDown() override {
         vebTreeMap.reset();
     }
     std::unique_ptr<DSModelVebTreeImpl> vebTreeMap;
-    std::map<veb_key_t , veb_value_t > map_;
+    IpRange ipRange {IPAddress{0}, IPAddress{1024}};
+    
 
 };
 
+TEST_F(DSModelVebTreeImplTest, SimpleTest){
+
+    {
+        ip_t networkIp;
+        bool isPresent;
+        std::tie(isPresent, networkIp) = vebTreeMap->GetNetWorkIP(std::numeric_limits<ip_t>::max() - 1);
+        EXPECT_FALSE(isPresent);
+    }
+
+
+
+
+
+    {
+        auto [isSubNetInserted, subNetIp ] = vebTreeMap->InsertSubnet(MacID{0}, 10);
+        ip_t networkIp;
+        bool isPresent;
+        std::tie(isPresent, networkIp) = vebTreeMap->GetNetWorkIP(3);
+        EXPECT_EQ(networkIp, 0);
+
+    }
+
+    {
+        ip_t networkIp;
+        bool isPresent;
+        std::tie(isPresent, networkIp) = vebTreeMap->GetNetWorkIP(9);
+        EXPECT_EQ(networkIp, 0);
+    }
+
+    {
+        ip_t networkIp;
+        bool isPresent;
+        std::tie(isPresent, networkIp) = vebTreeMap->GetNetWorkIP(10);
+        EXPECT_FALSE(isPresent);
+    }
+
+    auto [isSubNetInserted, subNetIp ] = vebTreeMap->InsertSubnet(MacID{1}, 10);
+
+    EXPECT_EQ(subNetIp, 10);
+
+    {
+        ip_t networkIp;
+        bool isPresent;
+        std::tie(isPresent, networkIp) = vebTreeMap->GetNetWorkIP(10);
+        EXPECT_EQ(networkIp, 10);
+    }
+
+    {
+        ip_t networkIp;
+        bool isPresent;
+        std::tie(isPresent, networkIp) = vebTreeMap->GetNetWorkIP(10);
+        EXPECT_EQ(networkIp, 10);
+    }
 
 
 }
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

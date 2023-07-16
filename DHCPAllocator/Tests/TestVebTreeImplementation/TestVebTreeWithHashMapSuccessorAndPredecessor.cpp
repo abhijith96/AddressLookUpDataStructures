@@ -10,7 +10,7 @@ constexpr veb_hm_t  universe = 16;
 
 using veb_value_t = uint32_t;
 
-class VEBTest : public ::testing::Test {
+class DSModelVebTreeImplTest : public ::testing::Test {
 protected:
     void SetUp() override {
     }
@@ -115,7 +115,7 @@ protected:
 
 };
 
-TEST_F(VEBTest, SuccesorOfEmptyTree) {
+TEST_F(DSModelVebTreeImplTest, SuccesorOfEmptyTree) {
 
     vebTreeMap = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(universe);
 
@@ -125,7 +125,7 @@ EXPECT_TRUE(nodeType == VEBTreeNodeKeyType::POSITIVE_INFINITY);
 
 }
 
-TEST_F(VEBTest, SuccesorOfTreeWithOneVal) {
+TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithOneVal) {
 
     vebTreeMap = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(universe);
 
@@ -154,7 +154,7 @@ EXPECT_EQ(sucVal_3, 1);
 
 }
 
-TEST_F(VEBTest, SuccesorOfTreeWithEightElements) {
+TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithEightElements) {
 
     vebTreeMap = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(universe);
 
@@ -171,7 +171,7 @@ EXPECT_TRUE(CheckIfSuccessorsMatch(keys, keys, values));
 
 }
 
-TEST_F(VEBTest, SuccesorOfTreeWithEightElementsOdd) {
+TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithEightElementsOdd) {
 
     vebTreeMap = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(universe);
 
@@ -187,7 +187,7 @@ EXPECT_TRUE(CheckIfSuccessorsMatch(sucInput, sucKeysOutput, sucValuesOutput));
 
 }
 
-TEST_F(VEBTest, SuccesorOfTreeWithFourElements) {
+TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithFourElements) {
 
     vebTreeMap = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(universe);
 
@@ -203,7 +203,7 @@ EXPECT_TRUE(CheckIfSuccessorsMatch(sucInput, sucKeysOutput, sucValuesOutput));
 
 }
 
-TEST_F(VEBTest, SuccesorOfTreeWithUniverse256) {
+TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithUniverse256) {
 
     vebTreeMap = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(256);
 
@@ -221,7 +221,7 @@ EXPECT_TRUE(CheckIfSuccessorsMatch(sucInput, sucKeysOutput, sucValuesOutput));
 
 }
 
-TEST_F(VEBTest, PredecessorOfEmptyTree) {
+TEST_F(DSModelVebTreeImplTest, PredecessorOfEmptyTree) {
 
     vebTreeMap = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(universe);
 
@@ -231,7 +231,7 @@ EXPECT_TRUE(nodeType == VEBTreeNodeKeyType::NEGATIVE_INFINITY);
 
 }
 
-TEST_F(VEBTest, PredecessorOfTreeWithOneVal) {
+TEST_F(DSModelVebTreeImplTest, PredecessorOfTreeWithOneVal) {
 
     vebTreeMap = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(universe);
 
@@ -259,7 +259,7 @@ EXPECT_EQ(sucVal_3, 1);
 
 }
 
-TEST_F(VEBTest, PredecessorOfTreeWithEightElements) {
+TEST_F(DSModelVebTreeImplTest, PredecessorOfTreeWithEightElements) {
 
     vebTreeMap = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(universe);
 
@@ -276,7 +276,7 @@ EXPECT_TRUE(CheckIfPredecessorsMatch(keys, keys, values));
 
 }
 
-TEST_F(VEBTest, PredecessorOfTreeWithSixteen) {
+TEST_F(DSModelVebTreeImplTest, PredecessorOfTreeWithSixteen) {
 
     vebTreeMap = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(universe);
 

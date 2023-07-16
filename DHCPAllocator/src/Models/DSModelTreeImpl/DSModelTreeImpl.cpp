@@ -5,7 +5,7 @@
 #include <iostream>
 #include "DSModelTreeImpl.h"
 
-std::pair<bool, ip_t> DSModelTreeImpl::InsertSubnet(MacID sub_net_mac_id, int capacity) {
+std::pair<bool, ip_t> DSModelTreeImpl::InsertSubnet(MacID sub_net_mac_id, ip_t capacity) {
     std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator> requiredSlotItr = GetBestFitIp(capacity);
 
     if (requiredSlotItr.has_value()) {

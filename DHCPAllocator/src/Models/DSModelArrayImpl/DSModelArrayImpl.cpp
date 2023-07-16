@@ -4,7 +4,7 @@
 
 #include "DSModelArrayImpl.h"
 
-std::pair<bool, ip_t> DSModelArrayImpl::InsertSubnet(MacID sub_net_mac_id, int capacity) {
+std::pair<bool, ip_t> DSModelArrayImpl::InsertSubnet(MacID sub_net_mac_id, ip_t capacity) {
 
     std::optional<std::vector<FreeSlotObject>::iterator> required_slot_iter_optional = GetBestFitIp(capacity);
 

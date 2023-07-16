@@ -39,7 +39,7 @@ public:
     * @param subnet
     * returns starting ip address of subnet inserted
     */
-    std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, int capacity) override;
+    std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, ip_t capacity) override;
 
 
     /**

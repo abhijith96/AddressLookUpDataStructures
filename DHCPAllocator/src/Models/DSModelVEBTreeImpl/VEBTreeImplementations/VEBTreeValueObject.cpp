@@ -12,6 +12,10 @@ VEBTreeValueObject::VEBTreeValueObject() :capacity_(1){
 
 }
 
+ip_t VEBTreeValueObject::GetCapacity() const {
+    return capacity_;
+}
+
 VEBTreeValueObject::VEBTreeValueObject(const VEBTreeValueObject &other) = default;
 
 VEBTreeValueObject &VEBTreeValueObject::operator=(const VEBTreeValueObject &other) = default;

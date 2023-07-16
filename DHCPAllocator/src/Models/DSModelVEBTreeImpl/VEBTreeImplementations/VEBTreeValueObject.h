@@ -16,6 +16,8 @@ public:
     VEBTreeValueObject();
     VEBTreeValueObject(const VEBTreeValueObject& other);
     VEBTreeValueObject & operator = (const VEBTreeValueObject& other);
+
+    [[nodiscard]] ip_t GetCapacity() const;
 };
 
 

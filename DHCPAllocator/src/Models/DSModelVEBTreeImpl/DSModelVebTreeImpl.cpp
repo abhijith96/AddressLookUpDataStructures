@@ -9,8 +9,8 @@ freeIpStartRange_(0){
 
 }
 
-std::pair<bool, ip_t>  DSModelVebTreeImpl::InsertSubnet(MacID subNetMacId, int capacity) {
-    if(std::numeric_limits<ip_t>::max() - capacity < (freeIpStartRange_)){
+std::pair<bool, ip_t>  DSModelVebTreeImpl::InsertSubnet(MacID subNetMacId, ip_t capacity) {
+    if(std::numeric_limits<ip_t>::max() - capacity > (freeIpStartRange_)){
         ip_t startIP = freeIpStartRange_;
         ip_t startIPInVebTree = ConvertIpAddressFromIpRangeAddressSpaceToVebTreeAddressSpace(startIP);
         vebTreeMap_.Insert(startIPInVebTree, VEBTreeValueObject{static_cast<uint32_t>(capacity)});
@@ -19,7 +19,7 @@ std::pair<bool, ip_t>  DSModelVebTreeImpl::InsertSubnet(MacID subNetMacId, int c
         return {true,startIP};
     }
     else{
-        return {true,std::numeric_limits<ip_t>::max()};
+        return {false,std::numeric_limits<ip_t>::max()};
     }
 }
 
@@ -43,11 +43,16 @@ std::pair<bool, ip_t>  DSModelVebTreeImpl::GetNetWorkIP(ip_t hostIp) {
     auto [vebTreeNodeType, networkIPInVebTree, capacity] = vebTreeMap_.Predecessor(hostIpInVEBTree);
     if(vebTreeNodeType == VEBTreeNodeKeyType::NORMAL){
       ip_t networkIP = ConvertIpAddressFromVebTreeToIpRangeAddressSpace(networkIPInVebTree);
+      ip_t lastIpInNetwork = networkIP + capacity.GetCapacity() - 1;
+      if(hostIp <= lastIpInNetwork)
         return  {true, networkIP};
+      else
+          return {false, std::numeric_limits<ip_t>::max()};
     }
     else{
         return  {false, std::numeric_limits<ip_t>::max()};
     }
+
 
 }
 

@@ -27,7 +27,7 @@ public:
 
    explicit DSModelVebTreeImpl(IpRange ipRange);
 
-    std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, int capacity) override;
+    std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, ip_t capacity) override;
 
     std::pair<bool, ip_t> InsertSubnetHost(MacID hostMacId, ip_t subnetIp) override;
 

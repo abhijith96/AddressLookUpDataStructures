@@ -19,7 +19,7 @@ public:
   * @param subnet
   * returns starting ip address of subnet inserted
   */
-   virtual std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, int capacity) = 0;
+   virtual std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, ip_t capacity) = 0;
 
 
    /**
