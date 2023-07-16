@@ -33,7 +33,7 @@ public:
      * @param subnet
      * returns starting ip address of subnet inserted
      */
-    ip_t InsertSubnet(MacID subNetMacId, int capacity){
+    std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, int capacity){
         return dsModelmpl_->InsertSubnet(subNetMacId, capacity);
     }
 
@@ -45,7 +45,7 @@ public:
      * @return
      */
 
-     ip_t InsertSubnetHost(MacID hostMacId, ip_t subnetIp){
+    std::pair<bool, ip_t> InsertSubnetHost(MacID hostMacId, ip_t subnetIp){
         return dsModelmpl_->InsertSubnetHost(hostMacId, subnetIp);
     }
 
@@ -68,7 +68,7 @@ public:
      */
 
     void DeleteHostFromSubnet(ip_t host_ip) {
-        dsModelmpl_->DeleteHostFromSubnet(host_ip);
+        dsModelmpl_->DeleteHostFromSubnet(host_ip, 0);
     }
 
     /**
@@ -88,7 +88,7 @@ public:
      */
 
     ip_t  GetIpAddress(MacID macId) {
-       return dsModelmpl_->GetIpAddress(macId);
+       return dsModelmpl_->GetHostIpAddress(macId, 0);
     }
 
 
@@ -98,8 +98,8 @@ public:
      * @return
      */
 
-    MacID GetMacAddressOfHost(ip_t hostIpAddress) {
-        return dsModelmpl_->GetMacAddressOfHost(hostIpAddress);
+    std::pair<bool, MacID> GetMacAddressOfHost(ip_t hostIpAddress) {
+        return dsModelmpl_->GetMacAddressOfHost(hostIpAddress, 0);
     }
 
 
