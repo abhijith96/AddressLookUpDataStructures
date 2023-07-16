@@ -3,3 +3,30 @@
 //
 
 #include "Subnet.h"
+
+#include "vector"
+
+Subnet::Subnet(MacID macId, int capacity, ip_t last_assigned_host_ip) :
+        mac_id_(macId), capacity_(capacity), last_assigned_host_ip_(last_assigned_host_ip){
+}
+
+MacID Subnet::GetMacId() const {
+    return mac_id_;
+}
+
+int Subnet::GetCapacity() const {
+    return capacity_;
+}
+
+ip_t Subnet::GetLastAssignedHostIp() const {
+    return last_assigned_host_ip_;
+}
+
+std::vector<ip_t> & Subnet::GetUnusedHostIps()  {
+    return unused_host_ips_;
+}
+
+boost::container::flat_map<ip_t , Host> & Subnet::GetHosts() {
+    return hosts_;
+}
+

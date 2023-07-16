@@ -6,22 +6,23 @@
 #include "DHCPAllocator/src/Models/DSModelmpl.h"
 
 
-ip_t DSModelTreeImpl::InsertSubnet(MacID subNetMacId, int capacity) {
+std::pair<bool, ip_t> DSModelTreeImpl::InsertSubnet(MacID subNetMacId, int capacity) {
 
     if(free_slots_list_.empty()){
 
     }
+    return {false, 0};
 }
 
-ip_t DSModelTreeImpl::InsertSubnetHost(MacID hostMacId, ip_t subnetIp) {
-    return 0;
+std::pair<bool, ip_t> DSModelTreeImpl::InsertSubnetHost(MacID host_mac_id, ip_t subnet_ip) {
+    return {false, 0};
 }
 
 void DSModelTreeImpl::DeleteSubnet(ip_t start_ip) {
 
 }
 
-void DSModelTreeImpl::DeleteHostFromSubnet(ip_t host_ip) {
+void DSModelTreeImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
 
 }
 
@@ -29,13 +30,13 @@ ip_t DSModelTreeImpl::GetNetWorkIP(ip_t hostIp) {
     return 0;
 }
 
-ip_t DSModelTreeImpl::GetIpAddress(MacID macId) {
+ip_t DSModelTreeImpl::GetHostIpAddress(MacID macId, ip_t subnet_ip) {
     return 0;
 }
 
-MacID DSModelTreeImpl::GetMacAddressOfHost(ip_t hostIpAddress) {
-    return MacID(0);
-}
+std::pair<bool, MacID> DSModelTreeImpl::GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) {
+    return {false, MacID(0)};
+};
 
 std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator> DSModelTreeImpl::GetBestFitIp(int requiredCapacity) {
 

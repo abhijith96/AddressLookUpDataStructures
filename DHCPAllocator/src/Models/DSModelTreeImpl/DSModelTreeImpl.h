@@ -37,7 +37,7 @@ public:
     * @param subnet
     * returns starting ip address of subnet inserted
     */
-     ip_t InsertSubnet(MacID subNetMacId, int capacity) override;
+    std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, int capacity) override;
 
 
     /**
@@ -47,7 +47,7 @@ public:
      * @return
      */
 
-     ip_t InsertSubnetHost(MacID hostMacId, ip_t subnetIp);
+    std::pair<bool, ip_t> InsertSubnetHost(MacID hostMacId, ip_t subnetIp);
 
 
     /**
@@ -68,7 +68,7 @@ public:
      * @param host_ip
      */
 
-     void DeleteHostFromSubnet(ip_t host_ip);
+    void DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip);
 
     /**
      * For Router to find network ip of a host
@@ -84,7 +84,7 @@ public:
      * @return
      */
 
-     ip_t  GetIpAddress(MacID macId);
+    ip_t GetHostIpAddress(MacID macId, ip_t subnet_ip);
 
 
     /**
@@ -93,7 +93,7 @@ public:
      * @return
      */
 
-     MacID GetMacAddressOfHost(ip_t hostIpAddress);
+    std::pair<bool, MacID> GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip);
 
 
 };

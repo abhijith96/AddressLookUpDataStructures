@@ -1,0 +1,2 @@
+add_library(DSModelArrayImpl DSModelArrayImpl.cpp ArrayValueObject.cpp FreeSlotObject.cpp)
+target_link_libraries(DSModelArrayImpl PUBLIC boost::boost)
