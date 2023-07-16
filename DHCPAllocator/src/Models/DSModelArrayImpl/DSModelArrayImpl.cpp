@@ -3,6 +3,7 @@
 //
 
 #include "DSModelArrayImpl.h"
+#include <iostream>
 
 std::pair<bool, ip_t> DSModelArrayImpl::InsertSubnet(MacID sub_net_mac_id, int capacity) {
     if(capacity < 3) { //todo check if the check has to be <2 or <3
@@ -10,7 +11,7 @@ std::pair<bool, ip_t> DSModelArrayImpl::InsertSubnet(MacID sub_net_mac_id, int c
         return {false, 0};
     } else {
         // getting the best free slot available
-        std::optional<std::vector<FreeSlotObject>::iterator> required_slot_iter_optional = GetBestFitIp(capacity);
+        auto required_slot_iter_optional = GetBestFitIp(capacity);
 
         if (required_slot_iter_optional.has_value()) {
 
@@ -38,7 +39,7 @@ std::pair<bool, ip_t> DSModelArrayImpl::InsertSubnetHost(MacID host_mac_id, ip_t
 
     auto it = subnets_.find(subnet_ip);
     if (it != subnets_.end()) {
-        Subnet subnet = it->second;
+        Subnet &subnet = it->second;
         return InsertHost(subnet, host_mac_id, subnet_ip);
     }
     return {false, 0};
@@ -60,7 +61,7 @@ bool DSModelArrayImpl::DeleteSubnet(ip_t subnet_ip) {
 
 }
 
-void DSModelArrayImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
+bool DSModelArrayImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
     auto it = subnets_.find(subnet_ip);
     if (it != subnets_.end()) {
 
@@ -85,9 +86,11 @@ void DSModelArrayImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
             //remove mac id to ip mapping
             auto &mac_to_ip_map = subnet.GetHostMacIpMap();
             mac_to_ip_map.erase(host_mac_id);
+
+            return true;
         }
     }
-
+    return false; // if subnet with given start ip
 }
 
 std::pair<bool, ip_t> DSModelArrayImpl::GetNetWorkIP(ip_t hostIp) {
@@ -111,7 +114,7 @@ std::pair<bool, ip_t> DSModelArrayImpl::GetHostIpAddress(MacID macId, ip_t subne
     if (it != subnets_.end()) {
 
         // remove from hosts list in subnet object
-        Subnet subnet = it->second;
+        Subnet &subnet = it->second;
 
         // get host mac to ip map from the subnet
         auto &host_mac_ip_map = subnet.GetHostMacIpMap();
@@ -130,9 +133,10 @@ std::pair<bool, ip_t> DSModelArrayImpl::GetHostIpAddress(MacID macId, ip_t subne
 }
 
 std::pair<bool, MacID> DSModelArrayImpl::GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) {
+    std::cout << "GetMacAddressOfHost - host ip: " << hostIpAddress << ", subnet ip: " << subnet_ip << std::endl;
     auto it = subnets_.find(subnet_ip);
     if (it != subnets_.end()) {
-        Subnet subnet = it->second;
+        Subnet &subnet = it->second;
         boost::container::flat_map<ip_t, Host> &hosts = subnet.GetHosts();
         auto host_it = hosts.find(hostIpAddress);
         if (host_it != hosts.end()) {
@@ -194,9 +198,9 @@ void DSModelArrayImpl::getFreeIPInSubnet(boost::container::flat_map<ip_t, Host> 
 
 }
 
-std::pair<bool, ip_t>  DSModelArrayImpl::InsertHost(Subnet subnet, MacID host_mac_id, ip_t subnet_ip) {
+std::pair<bool, ip_t>  DSModelArrayImpl::InsertHost(Subnet &subnet, MacID host_mac_id, ip_t subnet_ip) {
 
-    boost::container::flat_map<ip_t , Host> & hosts = subnet.GetHosts();
+    auto &hosts = subnet.GetHosts();
 
     int subnet_capacity = subnet.GetCapacity();
     ip_t broadcast_ip = subnet_ip + subnet_capacity - 1;
@@ -210,6 +214,8 @@ std::pair<bool, ip_t>  DSModelArrayImpl::InsertHost(Subnet subnet, MacID host_ma
         hosts.insert({host_ip, Host(host_ip, host_mac_id, false)});
 
         add_host_mac_ip_mapping(subnet, host_ip, host_mac_id); // add host mac id to ip mapping
+
+        subnet.SetLastAssignedHostIp(host_ip);
 
         return {true, host_ip};
 
@@ -234,9 +240,9 @@ std::pair<bool, ip_t>  DSModelArrayImpl::InsertHost(Subnet subnet, MacID host_ma
     }
 }
 
-void DSModelArrayImpl::add_host_mac_ip_mapping(Subnet subnet, ip_t host_ip, MacID host_mac_id) {
+void DSModelArrayImpl::add_host_mac_ip_mapping(Subnet &subnet, ip_t host_ip, MacID host_mac_id) {
     // add host mac id to ip mapping
 
-    auto & mac_ip_map = subnet.GetHostMacIpMap();
+    auto &mac_ip_map = subnet.GetHostMacIpMap();
     mac_ip_map.insert({host_mac_id, host_ip});
 }

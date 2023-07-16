@@ -42,7 +42,7 @@ bool DSModelTreeImpl::DeleteSubnet(ip_t subnet_ip) {
     subnets_.erase(subnet_ip);
 }
 
-void DSModelTreeImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
+bool DSModelTreeImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
     auto it = subnets_.find(subnet_ip);
     if (it != subnets_.end()) {
         // Remove from hosts list in subnet object

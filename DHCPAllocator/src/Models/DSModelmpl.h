@@ -50,7 +50,7 @@ public:
     * @param host_ip
     */
 
-   virtual void DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) = 0;
+   virtual bool DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) = 0;
 
    /**
     * For Router to find network ip of a host

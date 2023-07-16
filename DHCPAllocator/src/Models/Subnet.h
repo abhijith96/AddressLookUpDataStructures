@@ -29,6 +29,7 @@ public:
     [[nodiscard]] MacID GetMacId() const;
     [[nodiscard]] int GetCapacity() const;
     [[nodiscard]] ip_t GetLastAssignedHostIp() const;
+    void SetLastAssignedHostIp(ip_t last_assigned_host_ip);
     std::vector<ip_t> & GetUnusedHostIps();
     [[nodiscard]] boost::container::flat_map<ip_t , Host> & GetHosts();
 

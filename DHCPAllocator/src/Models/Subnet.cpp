@@ -22,6 +22,10 @@ ip_t Subnet::GetLastAssignedHostIp() const {
     return last_assigned_host_ip_;
 }
 
+void Subnet::SetLastAssignedHostIp(ip_t last_assigned_host_ip) {
+    last_assigned_host_ip_ = last_assigned_host_ip;
+}
+
 std::vector<ip_t> & Subnet::GetUnusedHostIps()  {
     return unused_host_ips_;
 }

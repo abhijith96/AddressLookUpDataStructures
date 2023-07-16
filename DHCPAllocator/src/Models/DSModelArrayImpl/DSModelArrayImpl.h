@@ -42,7 +42,7 @@ public:
 
     bool DeleteSubnet(ip_t subnet_ip) override;
 
-    void DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) override;
+    bool DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) override;
 
     std::pair<bool, ip_t> GetNetWorkIP(ip_t hostIp) override;
 
@@ -52,9 +52,9 @@ public:
 
     void getFreeIPInSubnet(boost::container::flat_map<ip_t, Host> map);
 
-    std::pair<bool, ip_t>  InsertHost(Subnet subnet, MacID host_mac_id, ip_t subnet_ip);
+    std::pair<bool, ip_t>  InsertHost(Subnet &subnet, MacID host_mac_id, ip_t subnet_ip);
 
-    void add_host_mac_ip_mapping(Subnet subnet, ip_t ip, MacID id);
+    void add_host_mac_ip_mapping(Subnet &subnet, ip_t ip, MacID id);
 
     std::optional<std::vector<FreeSlotObject>::iterator> GetBestFitIp(int requiredCapacity);
 

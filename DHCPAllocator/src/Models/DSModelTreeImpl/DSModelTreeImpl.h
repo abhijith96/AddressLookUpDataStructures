@@ -70,7 +70,7 @@ public:
      * @param host_ip
      */
 
-    void DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) override;
+    bool DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) override;
 
     /**
      * For Router to find network ip of a host
