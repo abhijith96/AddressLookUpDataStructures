@@ -62,7 +62,7 @@ public:
      * @param start_ip
      */
 
-     void DeleteSubnet(ip_t start_ip) override;
+    bool DeleteSubnet(ip_t start_ip) override;
 
 
     /**

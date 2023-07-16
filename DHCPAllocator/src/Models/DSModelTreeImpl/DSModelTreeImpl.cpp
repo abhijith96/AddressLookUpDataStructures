@@ -29,7 +29,7 @@ std::pair<bool, ip_t> DSModelTreeImpl::InsertSubnetHost(MacID host_mac_id, ip_t 
     return {false, 0};
 }
 
-void DSModelTreeImpl::DeleteSubnet(ip_t subnet_ip) {
+bool DSModelTreeImpl::DeleteSubnet(ip_t subnet_ip) {
     auto it = subnets_.find(subnet_ip);
     if (it != subnets_.end()) {
         // Remove from hosts list in subnet object

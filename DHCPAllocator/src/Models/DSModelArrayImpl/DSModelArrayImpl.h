@@ -10,12 +10,10 @@
 #include "DHCPAllocator/src/Models/DSModelmpl.h"
 #include "DHCPAllocator/src/Models/MacID.h"
 #include "DHCPAllocator/src/Models/IPAddress.h"
-
-
+#include <DHCPAllocator/src/Models/Subnet.h>
 
 #include <DHCPAllocator/src/Models/DSModelArrayImpl/ArrayValueObject.h>
 #include <DHCPAllocator/src/Models/DSModelArrayImpl/FreeSlotObject.h>
-#include <DHCPAllocator/src/Models/Subnet.h>
 
 #include <boost/container/flat_map.hpp>
 
@@ -34,10 +32,6 @@ class DSModelArrayImpl : public DSModelmpl {
 
 private:
 
-    std::optional<std::vector<FreeSlotObject>::iterator> GetBestFitIp(int requiredCapacity);
-
-    void UpdateFreeSlotsList(std::vector<FreeSlotObject>::iterator iter, int requiredCapacity, ip_t newStartIp);
-
 public:
 
     DSModelArrayImpl() = default;
@@ -46,7 +40,7 @@ public:
 
     std::pair<bool, ip_t> InsertSubnetHost(MacID host_mac_id, ip_t subnet_ip) override;
 
-    void DeleteSubnet(ip_t start_ip) override;
+    bool DeleteSubnet(ip_t subnet_ip) override;
 
     void DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) override;
 
@@ -61,6 +55,15 @@ public:
     std::pair<bool, ip_t>  InsertHost(Subnet subnet, MacID host_mac_id, ip_t subnet_ip);
 
     void add_host_mac_ip_mapping(Subnet subnet, ip_t ip, MacID id);
+
+    std::optional<std::vector<FreeSlotObject>::iterator> GetBestFitIp(int requiredCapacity);
+
+    void UpdateFreeSlotsList(std::vector<FreeSlotObject>::iterator iter, int requiredCapacity);
+
+    [[maybe_unused]] void SetFreeSlots(ip_t startIp, int freeCapacity);
+
+    std::vector<FreeSlotObject> GetFreeSlotsList();
+
 };
 
 

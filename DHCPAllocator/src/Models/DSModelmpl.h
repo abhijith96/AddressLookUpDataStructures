@@ -42,7 +42,7 @@ public:
     * @param start_ip
     */
 
-   virtual void DeleteSubnet(ip_t start_ip) = 0;
+   virtual bool DeleteSubnet(ip_t start_ip) = 0;
 
 
    /**
