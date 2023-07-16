@@ -57,7 +57,7 @@ public:
     * @param hostIp
     * @return the network ip address
     */
-   virtual ip_t  GetNetWorkIP(ip_t hostIp) = 0;
+   virtual std::pair<bool, ip_t> GetNetWorkIP(ip_t hostIp) = 0;
 
 
    /**
@@ -66,7 +66,7 @@ public:
     * @return
     */
 
-   virtual ip_t GetHostIpAddress(MacID macId, ip_t subnet_ip) = 0;
+   virtual std::pair<bool, ip_t> GetHostIpAddress(MacID macId, ip_t subnet_ip) = 0;
 
 
    /**

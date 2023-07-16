@@ -88,11 +88,11 @@ void DSModelTreeImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
     }
 }
 
-ip_t DSModelTreeImpl::GetNetWorkIP(ip_t hostIp) {
-    return 0;
+std::pair<bool, ip_t> DSModelTreeImpl::GetNetWorkIP(ip_t hostIp) {
+    return {false, 0};
 }
 
-ip_t DSModelTreeImpl::GetHostIpAddress(MacID macId, ip_t subnet_ip) {
+std::pair<bool, ip_t> DSModelTreeImpl::GetHostIpAddress(MacID macId, ip_t subnet_ip) {
     auto it = subnets_.find(subnet_ip);
     if (it != subnets_.end()) {
 
@@ -102,7 +102,7 @@ ip_t DSModelTreeImpl::GetHostIpAddress(MacID macId, ip_t subnet_ip) {
         // TODO: Figure out if required or not
         // If yes, figure out how to do (need to iterate and get using mac id)
     }
-    return 0;
+    return {false, 0};
 }
 
 std::pair<bool, MacID> DSModelTreeImpl::GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) {

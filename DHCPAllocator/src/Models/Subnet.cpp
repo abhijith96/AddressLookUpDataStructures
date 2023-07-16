@@ -30,3 +30,7 @@ boost::container::flat_map<ip_t , Host> & Subnet::GetHosts() {
     return hosts_;
 }
 
+std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId> &Subnet::GetHostMacIpMap() {
+    return host_mac_ip_map_;
+}
+

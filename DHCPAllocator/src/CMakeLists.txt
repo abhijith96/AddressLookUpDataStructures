@@ -1,3 +1,4 @@
+add_subdirectory(HTTPServer)
 add_subdirectory(IpAllocator)
 add_subdirectory(IpRouting)
 add_subdirectory(Models)

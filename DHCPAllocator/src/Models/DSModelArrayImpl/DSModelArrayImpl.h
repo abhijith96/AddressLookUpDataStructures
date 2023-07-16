@@ -50,13 +50,17 @@ public:
 
     void DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) override;
 
-    ip_t GetNetWorkIP(ip_t hostIp) override;
+    std::pair<bool, ip_t> GetNetWorkIP(ip_t hostIp) override;
 
-    ip_t GetHostIpAddress(MacID macId, ip_t subnet_ip) override;
+    std::pair<bool, ip_t> GetHostIpAddress(MacID macId, ip_t subnet_ip) override;
 
     std::pair<bool, MacID> GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) override;
 
     void getFreeIPInSubnet(boost::container::flat_map<ip_t, Host> map);
+
+    std::pair<bool, ip_t>  InsertHost(Subnet subnet, MacID host_mac_id, ip_t subnet_ip);
+
+    void add_host_mac_ip_mapping(Subnet subnet, ip_t ip, MacID id);
 };
 
 
