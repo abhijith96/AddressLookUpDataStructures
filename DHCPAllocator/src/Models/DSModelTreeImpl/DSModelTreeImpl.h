@@ -97,7 +97,12 @@ public:
 
     std::pair<bool, MacID> GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) override;
 
+    std::pair<bool, ip_t>  InsertHost(Subnet subnet, MacID host_mac_id, ip_t subnet_ip);
+
+    static void add_host_mac_ip_mapping(Subnet subnet, ip_t ip, MacID id);
+
     std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator> GetBestFitIp(int requiredCapacity);
+
     void UpdateFreeSlotsList(std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator iter, int requiredCapacity);
 
     [[maybe_unused]] void SetFreeSlots(ip_t startIp, int freeCapacity);
