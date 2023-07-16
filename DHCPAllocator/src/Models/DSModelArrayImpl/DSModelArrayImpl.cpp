@@ -63,6 +63,7 @@ std::pair<bool, ip_t> DSModelArrayImpl::InsertSubnetHost(MacID host_mac_id, ip_t
             }
         }
     }
+    return {false, 0};
 }
 
 void DSModelArrayImpl::DeleteSubnet(ip_t subnet_ip) {
@@ -108,7 +109,7 @@ ip_t DSModelArrayImpl::GetHostIpAddress(MacID macId, ip_t subnet_ip) {
         //todo figure out if required or not
         // if yes, figure out how to do (need to iterate and get using mac id)
     }
-
+    return 0;
 }
 
 std::pair<bool, MacID> DSModelArrayImpl::GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) {
