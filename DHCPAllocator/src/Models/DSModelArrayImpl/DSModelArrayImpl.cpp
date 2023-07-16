@@ -248,5 +248,4 @@ void DSModelArrayImpl::add_host_mac_ip_mapping(Subnet subnet, ip_t host_ip, MacI
 
     auto & mac_ip_map = subnet.GetHostMacIpMap();
     mac_ip_map.insert({host_mac_id, host_ip});
-
 }

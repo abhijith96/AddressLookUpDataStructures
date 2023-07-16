@@ -14,20 +14,22 @@
 #include <DHCPAllocator/src/Models/DSModelTreeImpl/TreeMapValueObject.h>
 #include <DHCPAllocator/src/Models/DSModelTreeImpl/TreeMapValueObjectForUnusedObjectInArray.h>
 
+#include <boost/container/flat_map.hpp>
+
 #include <map>
 #include <vector>
+#include <limits>
 
 
 class DSModelTreeImpl : public DSModelmpl {
-std::map<ip_t,TreeMapValueObject> treemap_;
-std::vector<TreeMapValueObjectForUnusedObjectInArray> free_slots_list_;
+//std::map<ip_t,TreeMapValueObject> treemap_;
+//std::vector<TreeMapValueObjectForUnusedObjectInArray> free_slots_list_;
 
+    boost::container::flat_map <ip_t , TreeMapValueObject> subnet_routing_map_;
+    std::unordered_map<ip_t , Subnet> subnets_;
+    std::unordered_map<MacID , ip_t , HashMacId, EqualsMacId> subnet_mac_ip_map_;
 
-private:
-
-    std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator> GetBestFitIp(int requiredCapacity);
-    void UpdateFreeSlotsList(std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator iter,
-                                              int requiredCapacity, ip_t newStartIp);
+    std::vector<TreeMapValueObjectForUnusedObjectInArray> free_slots_list_ {TreeMapValueObjectForUnusedObjectInArray(0, std::numeric_limits<int32_t>::max())};
 
 public:
 
@@ -47,7 +49,7 @@ public:
      * @return
      */
 
-    std::pair<bool, ip_t> InsertSubnetHost(MacID hostMacId, ip_t subnetIp);
+    std::pair<bool, ip_t> InsertSubnetHost(MacID hostMacId, ip_t subnetIp) override;
 
 
     /**
@@ -60,7 +62,7 @@ public:
      * @param start_ip
      */
 
-     void DeleteSubnet(ip_t start_ip);
+     void DeleteSubnet(ip_t start_ip) override;
 
 
     /**
@@ -68,14 +70,14 @@ public:
      * @param host_ip
      */
 
-    void DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip);
+    void DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) override;
 
     /**
      * For Router to find network ip of a host
      * @param hostIp
      * @return the network ip address
      */
-    std::pair<bool, ip_t> GetNetWorkIP(ip_t hostIp);
+    std::pair<bool, ip_t>  GetNetWorkIP(ip_t hostIp) override;
 
 
     /**
@@ -84,7 +86,7 @@ public:
      * @return
      */
 
-    std::pair<bool, ip_t> GetHostIpAddress(MacID macId, ip_t subnet_ip);
+    std::pair<bool, ip_t> GetHostIpAddress(MacID macId, ip_t subnet_ip) override;
 
 
     /**
@@ -93,9 +95,19 @@ public:
      * @return
      */
 
-    std::pair<bool, MacID> GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip);
+    std::pair<bool, MacID> GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) override;
 
+    std::pair<bool, ip_t>  InsertHost(Subnet subnet, MacID host_mac_id, ip_t subnet_ip);
 
+    static void add_host_mac_ip_mapping(Subnet subnet, ip_t ip, MacID id);
+
+    std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator> GetBestFitIp(int requiredCapacity);
+
+    void UpdateFreeSlotsList(std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator iter, int requiredCapacity);
+
+    [[maybe_unused]] void SetFreeSlots(ip_t startIp, int freeCapacity);
+
+    std::vector<TreeMapValueObjectForUnusedObjectInArray> GetFreeSlotsList();
 };
 
 
