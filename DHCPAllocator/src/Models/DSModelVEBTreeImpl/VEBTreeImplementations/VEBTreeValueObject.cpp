@@ -2,7 +2,7 @@
 // Created by Abhijith  K A on 16/07/23.
 //
 
-#include "VEBTreeValueObject.h"
+#include "DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeValueObject.h"
 
 VEBTreeValueObject::VEBTreeValueObject(ip_t capacity) :capacity_(capacity) {
 

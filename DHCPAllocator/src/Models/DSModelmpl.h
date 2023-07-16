@@ -9,6 +9,7 @@
 #include <DHCPAllocator/src/Models/SubnetHost.h>
 #include <DHCPAllocator/src/Models/IPAddress.h>
 #include <DHCPAllocator/src/Models/MacID.h>
+#include <utility>
 
 
 class DSModelmpl{
@@ -18,7 +19,7 @@ public:
   * @param subnet
   * returns starting ip address of subnet inserted
   */
-   virtual ip_t InsertSubnet(MacID subNetMacId, int capacity) = 0;
+   virtual std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, int capacity) = 0;
 
 
    /**
@@ -28,7 +29,7 @@ public:
     * @return
     */
 
-   virtual ip_t InsertSubnetHost(MacID hostMacId, ip_t subnetIp) = 0;
+   virtual std::pair<bool, ip_t> InsertSubnetHost(MacID hostMacId, ip_t subnetIp) = 0;
 
 
    /**
@@ -49,14 +50,14 @@ public:
     * @param host_ip
     */
 
-   virtual void DeleteHostFromSubnet(ip_t host_ip) = 0;
+   virtual void DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) = 0;
 
    /**
     * For Router to find network ip of a host
     * @param hostIp
     * @return the network ip address
     */
-   virtual ip_t  GetNetWorkIP(ip_t hostIp) = 0;
+   virtual std::pair<bool, ip_t> GetNetWorkIP(ip_t hostIp) = 0;
 
 
    /**
@@ -65,7 +66,7 @@ public:
     * @return
     */
 
-   virtual ip_t  GetIpAddress(MacID macId) = 0;
+   virtual std::pair<bool, ip_t> GetHostIpAddress(MacID macId, ip_t subnet_ip) = 0;
 
 
    /**
@@ -74,7 +75,7 @@ public:
     * @return
     */
 
-   virtual MacID GetMacAddressOfHost(ip_t hostIpAddress) = 0;
+   virtual std::pair<bool, MacID> GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) = 0;
 
    virtual ~DSModelmpl()  {}
 

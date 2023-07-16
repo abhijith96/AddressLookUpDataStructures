@@ -1,3 +1,5 @@
+add_subdirectory(TreeImplTests)
 add_subdirectory(TestVebTreeImplementation)
+add_subdirectory(VebTreeImplementationTests)
 add_executable(TestIpRange TestIpRange.cpp)
 target_link_libraries(TestIpRange PUBLIC Models)

@@ -5,6 +5,9 @@
 #ifndef DHCPALLOCATOR_MACID_H
 #define DHCPALLOCATOR_MACID_H
 #include <cstdint>
+#include <ctype.h>
+#include <functional>
+
 
 using mac_id_t = uint64_t;
 
@@ -22,6 +25,23 @@ public:
         return value_;
     }
 
+};
+
+struct HashMacId{
+
+   size_t operator() (const MacID& macId)  const{
+       size_t seed = 31;
+       std::hash<mac_id_t> hasher;
+       seed ^= hasher(macId.GetValue());
+       return seed;
+   }
+};
+
+struct EqualsMacId{
+
+    bool operator() (const MacID& first, const MacID& second) const{
+       return first.GetValue() == second.GetValue();
+    }
 };
 
 

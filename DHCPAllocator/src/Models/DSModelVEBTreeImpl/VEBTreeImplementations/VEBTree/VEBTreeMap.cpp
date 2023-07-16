@@ -4,7 +4,7 @@
 
 #include "VEBTreeMap.h"
 #include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeValueObject.h>
+#include "DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeValueObject.h"
 
 template <typename ValueType>
 VEBTreeMap<ValueType>::VEBTreeMap(veb_key_t universe): root_node_(std::make_unique<VEBTreeNode<ValueType>>(
@@ -26,7 +26,7 @@ std::pair<bool, ValueType> VEBTreeMap<ValueType>::FindKey(veb_key_t key) {
                 return {true, currentNode->GetMaxValue()};
             }
             if(currentKey < currentNode->GetMinKey() || currentKey > currentNode->GetMaxKey()){
-                return {false, 0};
+                return {false, {}};
             }
             if(currentNode->GetUniverseSize() > 2){
                 veb_key_t clusterIndex = High(currentKey, currentNode->GetUniverseSize());
@@ -35,11 +35,11 @@ std::pair<bool, ValueType> VEBTreeMap<ValueType>::FindKey(veb_key_t key) {
                 currentKey = nodeIndex;
             }
             else{
-                return {false, 0};
+                return {false, {}};
             }
         }
         else {
-            return {false, 0};
+            return {false, {}};
         }
     }
 

@@ -5,8 +5,8 @@
 #ifndef DHCPALLOCATOR_VEBTREEVALUEOBJECT_H
 #define DHCPALLOCATOR_VEBTREEVALUEOBJECT_H
 
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeValueObject.h>
-#include <DHCPAllocator/src/Models/IPAddress.h>
+#include "VEBTreeValueObject.h"
+#include "DHCPAllocator/src/Models/IPAddress.h"
 
 class VEBTreeValueObject {
 private:

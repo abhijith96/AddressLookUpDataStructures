@@ -1,0 +1,2 @@
+add_executable(TestSubNetInsertion TestSubNetInsertion.cpp)
+target_link_libraries(TestSubNetInsertion Models gtest::gtest)

@@ -9,22 +9,22 @@ freeIpStartRange_(0){
 
 }
 
-ip_t DSModelVebTreeImpl::InsertSubnet(MacID subNetMacId, int capacity) {
+std::pair<bool, ip_t>  DSModelVebTreeImpl::InsertSubnet(MacID subNetMacId, int capacity) {
     if(std::numeric_limits<ip_t>::max() - capacity < (freeIpStartRange_)){
         ip_t startIP = freeIpStartRange_;
         ip_t startIPInVebTree = ConvertIpAddressFromIpRangeAddressSpaceToVebTreeAddressSpace(startIP);
         vebTreeMap_.Insert(startIPInVebTree, VEBTreeValueObject{static_cast<uint32_t>(capacity)});
         ip_t endIP = startIP + (capacity - 1);
         freeIpStartRange_ = endIP + 1;
-        return startIP;
+        return {true,startIP};
     }
     else{
-        return std::numeric_limits<ip_t>::max();
+        return {true,std::numeric_limits<ip_t>::max()};
     }
 }
 
-ip_t DSModelVebTreeImpl::InsertSubnetHost(MacID hostMacId, ip_t subnetIp) {
-    return 0;
+std::pair<bool, ip_t>  DSModelVebTreeImpl::InsertSubnetHost(MacID hostMacId, ip_t subnetIp) {
+    return {false, 0};
 }
 
 void DSModelVebTreeImpl::DeleteSubnet(ip_t start_ip) {
@@ -38,21 +38,21 @@ void DSModelVebTreeImpl::DeleteHostFromSubnet(ip_t host_ip) {
 
 }
 
-ip_t DSModelVebTreeImpl::GetNetWorkIP(ip_t hostIp) {
+std::pair<bool, ip_t>  DSModelVebTreeImpl::GetNetWorkIP(ip_t hostIp) {
     ip_t hostIpInVEBTree = ConvertIpAddressFromIpRangeAddressSpaceToVebTreeAddressSpace(hostIp);
     auto [vebTreeNodeType, networkIPInVebTree, capacity] = vebTreeMap_.Predecessor(hostIpInVEBTree);
     if(vebTreeNodeType == VEBTreeNodeKeyType::NORMAL){
       ip_t networkIP = ConvertIpAddressFromVebTreeToIpRangeAddressSpace(networkIPInVebTree);
-        return  networkIP;
+        return  {true, networkIP};
     }
     else{
-        return  std::numeric_limits<ip_t>::max();
+        return  {false, std::numeric_limits<ip_t>::max()};
     }
 
 }
 
-ip_t DSModelVebTreeImpl::GetIpAddress(MacID macId) {
-    return 0;
+std::pair<bool, ip_t>  DSModelVebTreeImpl::GetIpAddress(MacID macId) {
+    return {false, 0};
 }
 
 MacID DSModelVebTreeImpl::GetMacAddressOfHost(ip_t hostIpAddress) {
@@ -69,4 +69,16 @@ ip_t DSModelVebTreeImpl::ConvertIpAddressFromIpRangeAddressSpaceToVebTreeAddress
 
 ip_t DSModelVebTreeImpl::ConvertIpAddressFromVebTreeToIpRangeAddressSpace(ip_t ipInVebTree) {
     return ipInVebTree + ipRange_.GetStartIP();
+}
+
+void DSModelVebTreeImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
+
+}
+
+std::pair<bool, ip_t> DSModelVebTreeImpl::GetHostIpAddress(MacID macId, ip_t subnet_ip) {
+    return {false, 0};
+}
+
+std::pair<bool, MacID> DSModelVebTreeImpl::GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) {
+    return {false, MacID{1}};
 }
