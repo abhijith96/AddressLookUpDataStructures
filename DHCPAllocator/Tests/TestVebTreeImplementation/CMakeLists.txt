@@ -13,4 +13,4 @@ target_link_libraries(TestVebTreeWithHashMapSuccessorAndPredecessor
 
 add_executable(TestVebTreeUtils TestVEBTreeUtils.cpp)
 target_link_libraries(TestVebTreeUtils
-        PUBLIC VEBTreeWithHashMap GTest::GTest)
+        PUBLIC VEBTreeWithHashMap VEBTreeMap GTest::GTest)

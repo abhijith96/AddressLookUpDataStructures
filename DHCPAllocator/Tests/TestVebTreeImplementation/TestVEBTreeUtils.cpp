@@ -4,6 +4,9 @@
 
 #include <gtest/gtest.h>
 #include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTree/VEBTreeNode.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMap/VEBTreeWithHashMap.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMap/VEBTreeWithHashMapNode.h>
 
 class VEBUtilsTest : public ::testing::Test {
 protected:
@@ -388,6 +391,20 @@ TEST_F(VEBUtilsTest, TestSplitIntoPowersOfTwoUniverse2power16) {
 
     EXPECT_EQ(high, 256);
     EXPECT_EQ(low , 256);
+}
+
+TEST_F(VEBUtilsTest, SimpleTest) {
+
+
+    uint32_t universe = std::numeric_limits<uint32_t>::max() + 1;
+
+    VEBTreeNode<uint32_t> rootNode{2};
+
+    VEBTreeWithHashMap<uint32_t> rootNodeHashed{2};
+    std::cout<<"size is "<<sizeof rootNode<<"\n";
+
+    std::cout<<"size is hashed tree "<<sizeof rootNodeHashed<<"\n";
+
 }
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -5,17 +5,27 @@
 #ifndef DHCPALLOCATOR_DSMODELVEBTREEIMPL_H
 #define DHCPALLOCATOR_DSMODELVEBTREEIMPL_H
 
-#include "DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTree/VEBTreeNode.h"
-#include "DHCPAllocator/src/Models/DSModelTreeImpl/DSModelTreeImpl.h"
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTree/VEBTreeNode.h>
+#include <DHCPAllocator/src/Models/DSModelTreeImpl/DSModelTreeImpl.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTree/VEBTreeMap.h>
+#include <DHCPAllocator/src/Models/IpRange.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeValueObject.h>
 
 constexpr uint32_t universe_size = std::numeric_limits<int32_t>::max();
 class DSModelVebTreeImpl : public DSModelmpl{
 private:
+    IpRange ipRange_;
+    VEBTreeMap<VEBTreeValueObject> vebTreeMap_;
+    ip_t freeIpStartRange_;
 
+private:
+    ip_t ConvertIpAddressFromIpRangeAddressSpaceToVebTreeAddressSpace(ip_t ipInIpRange);
+
+    ip_t ConvertIpAddressFromVebTreeToIpRangeAddressSpace(ip_t ipInVebTree);
 
 public:
 
-   explicit DSModelVebTreeImpl();
+   explicit DSModelVebTreeImpl(IpRange ipRange);
 
     ip_t InsertSubnet(MacID subNetMacId, int capacity) override;
 

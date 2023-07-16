@@ -2,14 +2,25 @@
 // Created by Abhijith  K A on 13/07/23.
 //
 
-#include "DSModelVebTreeImpl.h"
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelVebTreeImpl.h>
 
-DSModelVebTreeImpl::DSModelVebTreeImpl() {
+DSModelVebTreeImpl::DSModelVebTreeImpl(IpRange ipRange) : ipRange_(ipRange), vebTreeMap_(ipRange_.GetCapacity()),
+freeIpStartRange_(0){
 
 }
 
 ip_t DSModelVebTreeImpl::InsertSubnet(MacID subNetMacId, int capacity) {
-    return 0;
+    if(std::numeric_limits<ip_t>::max() - capacity < (freeIpStartRange_)){
+        ip_t startIP = freeIpStartRange_;
+        ip_t startIPInVebTree = ConvertIpAddressFromIpRangeAddressSpaceToVebTreeAddressSpace(startIP);
+        vebTreeMap_.Insert(startIPInVebTree, VEBTreeValueObject{static_cast<uint32_t>(capacity)});
+        ip_t endIP = startIP + (capacity - 1);
+        freeIpStartRange_ = endIP + 1;
+        return startIP;
+    }
+    else{
+        return std::numeric_limits<ip_t>::max();
+    }
 }
 
 ip_t DSModelVebTreeImpl::InsertSubnetHost(MacID hostMacId, ip_t subnetIp) {
@@ -17,7 +28,10 @@ ip_t DSModelVebTreeImpl::InsertSubnetHost(MacID hostMacId, ip_t subnetIp) {
 }
 
 void DSModelVebTreeImpl::DeleteSubnet(ip_t start_ip) {
-
+    if(start_ip < std::numeric_limits<ip_t>::max()){
+        ip_t startIpInVEBTree = ConvertIpAddressFromIpRangeAddressSpaceToVebTreeAddressSpace(start_ip);
+        DeleteSubnet(startIpInVEBTree);
+    }
 }
 
 void DSModelVebTreeImpl::DeleteHostFromSubnet(ip_t host_ip) {
@@ -25,7 +39,16 @@ void DSModelVebTreeImpl::DeleteHostFromSubnet(ip_t host_ip) {
 }
 
 ip_t DSModelVebTreeImpl::GetNetWorkIP(ip_t hostIp) {
-    return 0;
+    ip_t hostIpInVEBTree = ConvertIpAddressFromIpRangeAddressSpaceToVebTreeAddressSpace(hostIp);
+    auto [vebTreeNodeType, networkIPInVebTree, capacity] = vebTreeMap_.Predecessor(hostIpInVEBTree);
+    if(vebTreeNodeType == VEBTreeNodeKeyType::NORMAL){
+      ip_t networkIP = ConvertIpAddressFromVebTreeToIpRangeAddressSpace(networkIPInVebTree);
+        return  networkIP;
+    }
+    else{
+        return  std::numeric_limits<ip_t>::max();
+    }
+
 }
 
 ip_t DSModelVebTreeImpl::GetIpAddress(MacID macId) {
@@ -38,4 +61,12 @@ MacID DSModelVebTreeImpl::GetMacAddressOfHost(ip_t hostIpAddress) {
 
 DSModelVebTreeImpl::~DSModelVebTreeImpl() {
 
+}
+
+ip_t DSModelVebTreeImpl::ConvertIpAddressFromIpRangeAddressSpaceToVebTreeAddressSpace(ip_t ipInIpRange) {
+    return ipInIpRange - ipRange_.GetStartIP();
+}
+
+ip_t DSModelVebTreeImpl::ConvertIpAddressFromVebTreeToIpRangeAddressSpace(ip_t ipInVebTree) {
+    return ipInVebTree + ipRange_.GetStartIP();
 }

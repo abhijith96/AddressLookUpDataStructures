@@ -5,6 +5,7 @@
 
 #include "VEBTreeNode.h"
 #include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeValueObject.h>
 
 
 template <typename ValueType>
@@ -104,4 +105,6 @@ VEBTreeNode<ValueType> &VEBTreeNode<ValueType>::GetSummary() {
 }
 
 template class VEBTreeNode<uint32_t>;
+
+template class VEBTreeNode<VEBTreeValueObject>;
 

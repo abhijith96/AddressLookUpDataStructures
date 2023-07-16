@@ -4,6 +4,7 @@
 
 #include "VEBTreeMap.h"
 #include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeValueObject.h>
 
 template <typename ValueType>
 VEBTreeMap<ValueType>::VEBTreeMap(veb_key_t universe): root_node_(std::make_unique<VEBTreeNode<ValueType>>(
@@ -323,3 +324,5 @@ VEBTreeMap<ValueType>::PredecessorHelper(VEBTreeNode<ValueType> &currentNode, ve
 }
 
 template class VEBTreeMap<uint32_t>;
+
+template class VEBTreeMap<VEBTreeValueObject>;
