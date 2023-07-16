@@ -75,7 +75,7 @@ public:
      * @param hostIp
      * @return the network ip address
      */
-     ip_t  GetNetWorkIP(ip_t hostIp);
+    std::pair<bool, ip_t> GetNetWorkIP(ip_t hostIp);
 
 
     /**
@@ -84,7 +84,7 @@ public:
      * @return
      */
 
-    ip_t GetHostIpAddress(MacID macId, ip_t subnet_ip);
+    std::pair<bool, ip_t> GetHostIpAddress(MacID macId, ip_t subnet_ip);
 
 
     /**

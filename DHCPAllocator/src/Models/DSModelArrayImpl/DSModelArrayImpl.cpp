@@ -35,34 +35,9 @@ std::pair<bool, ip_t> DSModelArrayImpl::InsertSubnetHost(MacID host_mac_id, ip_t
     auto it = subnets_.find(subnet_ip);
     if (it != subnets_.end()) {
         Subnet subnet = it->second;
-        boost::container::flat_map<ip_t , Host> & hosts = subnet.GetHosts();
-
-        std::vector<ip_t> & unused_host_ips = subnet.GetUnusedHostIps();
-        ip_t last_assigned_host_ip = subnet.GetLastAssignedHostIp();
-        ip_t host_ip = last_assigned_host_ip + 1;
-
-        int subnet_capacity = subnet.GetCapacity();
-        ip_t broadcast_ip = subnet_ip + subnet_capacity - 1;
-
-        //check if the host ip is within the subnet range
-        if (host_ip < broadcast_ip) { // -1 to ignore the broadcast address
-            //put the entry to hosts
-            hosts.insert({host_ip, Host(host_ip, host_mac_id, false)});
-            return {true, host_ip};
-
-        } else {
-            //check if any ip is not assigned in hosts
-            int unused_hosts_size = unused_host_ips.size();
-            if (unused_hosts_size == 0) { // no ip left to assign
-                return {false, 0};
-            } else {
-                host_ip = unused_host_ips.back(); //get an unused host ip from list
-                hosts.insert({host_ip, Host(host_ip, host_mac_id, false)});
-                unused_host_ips.pop_back();  //remove the assigned host ip from unused list
-                return {true, host_ip};
-            }
-        }
+        return InsertHost(subnet, host_mac_id, subnet_ip);
     }
+    return {false, 0};
 }
 
 void DSModelArrayImpl::DeleteSubnet(ip_t subnet_ip) {
@@ -85,29 +60,53 @@ void DSModelArrayImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
         // remove from hosts list in subnet object
         Subnet subnet = it->second;
         boost::container::flat_map<ip_t, Host> &hosts = subnet.GetHosts();
-        hosts.erase(host_ip);
 
-        //add removed host ip to unused host ip list
-        std::vector<ip_t> &unused_host_ips = subnet.GetUnusedHostIps();
-        unused_host_ips.push_back(host_ip);
+        auto host_it = hosts.find(host_ip);
+        if (host_it != hosts.end()) {
+
+            // get mac id before deletion so as to remove mac to ip map
+            Host host = host_it->second;
+            MacID host_mac_id = host.GetMacID();
+
+            //delete host entry from hosts list
+            hosts.erase(host_ip);
+
+            //add the removed host ip entry to unused host ip list
+            std::vector<ip_t> &unused_host_ips = subnet.GetUnusedHostIps();
+            unused_host_ips.push_back(host_ip);
+
+            //remove mac id to ip mapping
+            auto &mac_to_ip_map = subnet.GetHostMacIpMap();
+            mac_to_ip_map.erase(host_mac_id);
+        }
     }
 
 }
 
-ip_t DSModelArrayImpl::GetNetWorkIP(ip_t hostIp) {
-    return 0; //todo main
+std::pair<bool, ip_t> DSModelArrayImpl::GetNetWorkIP(ip_t hostIp) {
+    return {false, 0}; //todo main
 }
 
-ip_t DSModelArrayImpl::GetHostIpAddress(MacID macId, ip_t subnet_ip) {
+std::pair<bool, ip_t> DSModelArrayImpl::GetHostIpAddress(MacID macId, ip_t subnet_ip) {
     auto it = subnets_.find(subnet_ip);
     if (it != subnets_.end()) {
 
         // remove from hosts list in subnet object
         Subnet subnet = it->second;
-        boost::container::flat_map<ip_t, Host> &hosts = subnet.GetHosts();
-        //todo figure out if required or not
-        // if yes, figure out how to do (need to iterate and get using mac id)
+
+        // get host mac to ip map from the subnet
+        auto &host_mac_ip_map = subnet.GetHostMacIpMap();
+        auto host_it = host_mac_ip_map.find(macId);
+
+        if (host_it != host_mac_ip_map.end()) {
+            // get the host ip mapped to the host mac ID
+            ip_t host_ip = host_it->second;
+            return {true, host_ip};
+        }
     }
+
+    // return false if subnet ip does not exist or when the host mac does not exist in the given subnet
+    return {false, 0};
 
 }
 
@@ -188,5 +187,54 @@ void DSModelArrayImpl::UpdateFreeSlotsList(std::vector<FreeSlotObject>::iterator
 }
 
 void DSModelArrayImpl::getFreeIPInSubnet(boost::container::flat_map<ip_t, Host> map) {
+
+}
+
+std::pair<bool, ip_t>  DSModelArrayImpl::InsertHost(Subnet subnet, MacID host_mac_id, ip_t subnet_ip) {
+
+    boost::container::flat_map<ip_t , Host> & hosts = subnet.GetHosts();
+
+    int subnet_capacity = subnet.GetCapacity();
+    ip_t broadcast_ip = subnet_ip + subnet_capacity - 1;
+
+    ip_t last_assigned_host_ip = subnet.GetLastAssignedHostIp();
+    ip_t host_ip = last_assigned_host_ip + 1;
+
+    //check if the host ip is within the subnet range
+    if (host_ip < broadcast_ip) { // -1 to ignore the broadcast address
+        //put the entry to hosts
+        hosts.insert({host_ip, Host(host_ip, host_mac_id, false)});
+
+        add_host_mac_ip_mapping(subnet, host_ip, host_mac_id); // add host mac id to ip mapping
+
+        return {true, host_ip};
+
+    } else {
+        std::vector<ip_t> & unused_host_ips = subnet.GetUnusedHostIps();
+        //check if any ip is not assigned in hosts
+        int unused_hosts_size = unused_host_ips.size();
+
+        if (unused_hosts_size == 0) { // no ip left to assign
+
+            return {false, 0};
+        } else {
+
+            host_ip = unused_host_ips.back(); //get an unused host ip from list
+            hosts.insert({host_ip, Host(host_ip, host_mac_id, false)});
+            unused_host_ips.pop_back();  //remove the assigned host ip from unused list
+
+            add_host_mac_ip_mapping(subnet, host_ip, host_mac_id); // add host mac id to ip mapping
+
+            return {true, host_ip};
+        }
+    }
+
+}
+
+void DSModelArrayImpl::add_host_mac_ip_mapping(Subnet subnet, ip_t host_ip, MacID host_mac_id) {
+    // add host mac id to ip mapping
+
+    auto & mac_ip_map = subnet.GetHostMacIpMap();
+    mac_ip_map.insert({host_mac_id, host_ip});
 
 }

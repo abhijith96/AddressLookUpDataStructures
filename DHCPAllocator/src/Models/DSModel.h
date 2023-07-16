@@ -76,7 +76,7 @@ public:
      * @param hostIp
      * @return the network ip address
      */
-    ip_t  GetNetWorkIP(ip_t hostIp){
+    std::pair<bool, ip_t>   GetNetWorkIP(ip_t hostIp){
         return dsModelmpl_->GetNetWorkIP(hostIp);
     }
 
@@ -87,7 +87,7 @@ public:
      * @return
      */
 
-    ip_t  GetIpAddress(MacID macId) {
+    std::pair<bool, ip_t>   GetIpAddress(MacID macId) {
        return dsModelmpl_->GetHostIpAddress(macId, 0);
     }
 
