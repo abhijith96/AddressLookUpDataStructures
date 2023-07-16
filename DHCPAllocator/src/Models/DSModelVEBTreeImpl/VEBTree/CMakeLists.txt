@@ -1,1 +1,0 @@
-add_library(VEBTreeMap VEBTreeMap.cpp VEBTreeNode.cpp)

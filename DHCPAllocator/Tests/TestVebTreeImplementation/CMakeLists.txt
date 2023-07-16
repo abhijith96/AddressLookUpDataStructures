@@ -10,3 +10,7 @@ target_link_libraries(TestVebTreeWithHashMapInsertAndDelete PUBLIC VEBTreeWithHa
 add_executable(TestVebTreeWithHashMapSuccessorAndPredecessor TestVebTreeWithHashMapSuccessorAndPredecessor.cpp)
 target_link_libraries(TestVebTreeWithHashMapSuccessorAndPredecessor
         PUBLIC VEBTreeWithHashMap GTest::GTest)
+
+add_executable(TestVebTreeUtils TestVEBTreeUtils.cpp)
+target_link_libraries(TestVebTreeUtils
+        PUBLIC VEBTreeWithHashMap GTest::GTest)

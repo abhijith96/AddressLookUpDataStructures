@@ -3,17 +3,18 @@
 //
 
 
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTree/VEBTreeNode.h>
+#include "VEBTreeNode.h"
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
 
 
 template <typename ValueType>
 VEBTreeNode<ValueType>::VEBTreeNode(veb_key_t universe) : universe_(universe), min_(0), max_(0), is_set_(false){
-    veb_key_t subUniverseSize = std::sqrt(universe_);
-    if(subUniverseSize >= 2){
-        summary_ = std::make_unique<VEBTreeNode>(subUniverseSize);
-        sub_clusters_.reserve(subUniverseSize);
-        for(veb_key_t i = 0; i < subUniverseSize;++i){
-            sub_clusters_.emplace_back(std::make_unique<VEBTreeNode>(subUniverseSize));
+    auto [clusterCount, itemsCount] = VEBTreeUtils::SplitIntoSquareOfPowersOfTwo(universe);
+    if(itemsCount >= 2 && clusterCount >= 2){
+        summary_ = std::move(std::make_unique<VEBTreeNode>(clusterCount));
+        sub_clusters_.reserve(clusterCount);
+        for(veb_key_t i = 0; i < clusterCount;++i){
+            sub_clusters_.emplace_back(std::make_unique<VEBTreeNode>(itemsCount));
         }
     }
 }
@@ -60,13 +61,13 @@ bool VEBTreeNode<ValueType>::IsSet() const {
 }
 
 template <typename ValueType>
-void VEBTreeNode<ValueType>::SetMinValue(veb_value_t value) {
-    min_value_ = std::make_unique<veb_value_t>(value);
+void VEBTreeNode<ValueType>::SetMinValue(ValueType value) {
+    min_value_ = std::move(std::make_unique<ValueType>(value));
 }
 
 template <typename ValueType>
-void VEBTreeNode<ValueType>::SetMaxValue(veb_value_t value) {
-    max_value_ = std::make_unique<veb_value_t>(value);
+void VEBTreeNode<ValueType>::SetMaxValue(ValueType value) {
+    max_value_ = std::move(std::make_unique<ValueType>(value));
 }
 
 template <typename ValueType>
@@ -84,16 +85,13 @@ const ValueType &VEBTreeNode<ValueType>::GetMaxValue() {
 template <typename ValueType>
 void VEBTreeNode<ValueType>::UnSet() {
     is_set_ = false;
+    if(min_value_.get()) min_value_.reset();
+    if(max_value_.get()) max_value_.reset();
 }
 
 template <typename ValueType>
 veb_key_t VEBTreeNode<ValueType>::GetUniverseSize() const {
     return universe_;
-}
-
-template <typename ValueType>
-veb_key_t VEBTreeNode<ValueType>::GetClusterCount()  const{
-    return std::sqrt(universe_);
 }
 
 template <typename ValueType>

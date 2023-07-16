@@ -2,32 +2,48 @@
 // Created by Abhijith  K A on 14/07/23.
 //
 
-#include  <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VebTreeWithHashMap/VEBTreeWithHashMap.h>
+#include  "VEBTreeWithHashMap.h"
 
 
 template <typename ValueType>
 VEBTreeWithHashMap<ValueType>::VEBTreeWithHashMap(veb_hm_t universe) :root_veb_tree_(
-      std::move(std::make_unique<VEBTreeWithHashMapNode<ValueType>>(universe))
+      std::move(std::make_unique<VEBTreeWithHashMapNode<ValueType>>(std::bit_ceil(universe)))
         ){
 
 }
 
 template <typename ValueType>
 veb_hm_t VEBTreeWithHashMap<ValueType>::High(veb_hm_t key, veb_hm_t universe) {
-   veb_hm_t sqrt =  static_cast<veb_hm_t>(std::sqrt(universe));
-   return key / sqrt;
+    auto [high, low] = VEBTreeUtils::SplitIntoHighAndLow(key, universe);
+    return high;
+//   veb_hm_t sqrt =  static_cast<veb_hm_t>(std::sqrt(universe));
+//   return key / sqrt;
 }
 
 template <typename ValueType>
 veb_hm_t  VEBTreeWithHashMap<ValueType>::Low(veb_hm_t key, veb_hm_t universe) {
-    veb_hm_t sqrt =  static_cast<veb_hm_t>(std::sqrt(universe));
-    return key % sqrt;
+    auto [high, low] = VEBTreeUtils::SplitIntoHighAndLow(key, universe);
+    return low;
+//    veb_hm_t sqrt =  static_cast<veb_hm_t>(std::sqrt(universe));
+//    return key % sqrt;
 }
 
 template <typename ValueType>
 veb_hm_t VEBTreeWithHashMap<ValueType>::Index(veb_hm_t clusterIndex, veb_hm_t lowKey, veb_hm_t universe) {
-    veb_hm_t clusterCount =  static_cast<veb_hm_t>(std::sqrt(universe));
-    return clusterIndex * clusterCount + lowKey;
+    auto [clusterCount, ItemsCount] = VEBTreeUtils::SplitIntoSquareOfPowersOfTwo(universe);
+    return clusterIndex * ItemsCount + lowKey;
+}
+
+template <typename ValueType>
+veb_hm_t  VEBTreeWithHashMap<ValueType>::GetItemsCount(veb_hm_t universe){
+    auto [clusterCount, ItemsCount] = VEBTreeUtils::SplitIntoSquareOfPowersOfTwo(universe);
+    return ItemsCount;
+}
+
+template <typename ValueType>
+veb_hm_t  VEBTreeWithHashMap<ValueType>::GetClusterCount(veb_hm_t universe){
+    auto [clusterCount, ItemsCount] = VEBTreeUtils::SplitIntoSquareOfPowersOfTwo(universe);
+    return clusterCount;
 }
 
 template <typename ValueType>
@@ -130,9 +146,9 @@ void  VEBTreeWithHashMap<ValueType>::InsertHelper(VEBTreeWithHashMapNode<ValueTy
         InsertHelper(currentNode.GetCluster(clusterIndex), lowIndex, value);
     }
     else{
-        currentNode.SetCluster(clusterIndex);
+        currentNode.SetCluster(clusterIndex, GetItemsCount(currentNode.GetUniverse()));
         if(!currentNode.IsSummarySet())
-            currentNode.SetSummary();
+            currentNode.SetSummary(GetClusterCount(currentNode.GetUniverse()));
         InsertHelper(currentNode.GetCluster(clusterIndex), lowIndex, value);
         InsertHelper(currentNode.GetSummary(), clusterIndex, value);
     }
@@ -218,7 +234,7 @@ std::tuple<VEBTreeNodeKeyType, veb_hm_t, ValueType>  VEBTreeWithHashMap<ValueTyp
         }
 
         if (currentNode.IsSummarySet()) {
-            if (clusterIndex + 1 >= currentNode.GetSubUniverse()) {
+            if (clusterIndex + 1 >= GetClusterCount(currentNode.GetUniverse())) {
                 return {VEBTreeNodeKeyType::NORMAL, currentNode.GetMaxKey(), currentNode.GetMaxValue()};
             } else {
                 auto [nodeType, nextClusterIndex, nextClusterValue] = GetSuccessorHelper(currentNode.GetSummary(),

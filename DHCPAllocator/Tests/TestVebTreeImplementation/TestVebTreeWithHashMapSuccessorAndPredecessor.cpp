@@ -3,7 +3,7 @@
 //
 
 #include <gtest/gtest.h>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VebTreeWithHashMap/VEBTreeWithHashMap.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMap/VEBTreeWithHashMap.h>
 
 
 constexpr veb_hm_t  universe = 16;

@@ -9,10 +9,10 @@
 #include <memory>
 #include <cmath>
 #include <vector>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeNodeKeyType.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeNodeKeyType.h>
 
 using veb_key_t = uint32_t;
-using veb_value_t = uint32_t;
+
 
 template <typename ValueType>
 class VEBTreeNode {
@@ -33,8 +33,8 @@ public:
    explicit VEBTreeNode(veb_key_t universe);
    void SetMinKey(veb_key_t min);
    void SetMaxKey(veb_key_t max);
-   void SetMinValue(veb_value_t value);
-   void SetMaxValue(veb_value_t value);
+   void SetMinValue(ValueType value);
+   void SetMaxValue(ValueType value);
    void UnSetMin();
    void UnSetMax();
    void UnSet();
@@ -44,8 +44,7 @@ public:
    const ValueType & GetMinValue();
    const ValueType & GetMaxValue();
    [[nodiscard]] veb_key_t GetUniverseSize() const;
-   [[nodiscard]] veb_key_t GetClusterCount() const;
-   VEBTreeNode<ValueType>& GetCluster(veb_key_t clusterIndex);
+    VEBTreeNode<ValueType>& GetCluster(veb_key_t clusterIndex);
    VEBTreeNode<ValueType>& GetSummary();
 
 };

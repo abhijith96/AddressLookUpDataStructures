@@ -1,4 +1,3 @@
-add_subdirectory(VEBTree)
-add_subdirectory(VebTreeWithHashMap)
+add_subdirectory(VEBTreeImplementations)
 add_library(DSModelVebTreeImpl DSModelVebTreeImpl.cpp)
 target_link_libraries(DSModelVebTreeImpl VEB)

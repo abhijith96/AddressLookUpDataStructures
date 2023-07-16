@@ -3,6 +3,7 @@
 //
 
 #include "VEBTreeMap.h"
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
 
 template <typename ValueType>
 VEBTreeMap<ValueType>::VEBTreeMap(veb_key_t universe): root_node_(std::make_unique<VEBTreeNode<ValueType>>(universe)) {
@@ -44,18 +45,33 @@ std::pair<bool, ValueType> VEBTreeMap<ValueType>::FindKey(veb_key_t key) {
 
 template <typename ValueType>
 veb_key_t VEBTreeMap<ValueType>::High(veb_key_t key, veb_key_t universe_size){
-    return key/ static_cast<veb_key_t>( std::sqrt(universe_size));
+    auto [high, low] = VEBTreeUtils::SplitIntoHighAndLow(key, universe_size);
+    return high;
+//    return key/ static_cast<veb_key_t>( std::sqrt(universe_size));
 }
 
 template <typename ValueType>
 veb_key_t VEBTreeMap<ValueType>::Low(veb_key_t key, veb_key_t universe_size) {
-    return key %  static_cast<veb_key_t>(std::sqrt(universe_size));
+    auto [high, low] = VEBTreeUtils::SplitIntoHighAndLow(key, universe_size);
+    return low;
+    //return key %  static_cast<veb_key_t>(std::sqrt(universe_size));
 }
 
 template <typename ValueType>
 veb_key_t VEBTreeMap<ValueType>::Index(veb_key_t high, veb_key_t low, veb_key_t universe_size) const {
-    veb_key_t sub_universe_size = static_cast<veb_key_t>( std::sqrt(universe_size));
-    return high* sub_universe_size + low;
+    veb_key_t itemsCount = GetItemsCount(universe_size);
+    return high* itemsCount + low;
+}
+
+template <typename ValueType>
+veb_key_t VEBTreeMap<ValueType>::GetClusterCount(veb_key_t universe) const{
+    auto [clusterCount, itemsCount] = VEBTreeUtils::SplitIntoSquareOfPowersOfTwo(universe);
+    return clusterCount;
+}
+template <typename ValueType>
+veb_key_t VEBTreeMap<ValueType>::GetItemsCount(veb_key_t universe) const{
+    auto [clusterCount, itemsCount] = VEBTreeUtils::SplitIntoSquareOfPowersOfTwo(universe);
+    return itemsCount;
 }
 
 template <typename ValueType>
@@ -84,7 +100,7 @@ void VEBTreeMap<ValueType>::InsertHelper(VEBTreeNode<ValueType>& currentNode, ve
     }
     if(key < currentNode.GetMinKey()){
         veb_key_t  temp_key = currentNode.GetMinKey();
-        veb_value_t temp_value = currentNode.GetMinValue();
+        ValueType temp_value = currentNode.GetMinValue();
         currentNode.SetMinKey(key);
         currentNode.SetMinValue(value);
         key = temp_key;
@@ -92,7 +108,7 @@ void VEBTreeMap<ValueType>::InsertHelper(VEBTreeNode<ValueType>& currentNode, ve
     }
     else if(key > currentNode.GetMaxKey()){
         veb_key_t  temp_key = currentNode.GetMaxKey();
-        veb_key_t temp_value = currentNode.GetMaxValue();
+        ValueType temp_value = currentNode.GetMaxValue();
         currentNode.SetMaxKey(key);
         currentNode.SetMaxValue(value);
         key = temp_key;
@@ -212,7 +228,7 @@ std::tuple<VEBTreeNodeKeyType, veb_key_t, ValueType> VEBTreeMap<ValueType>::Succ
     if (key < currentNode.GetMinKey()) {
         return {VEBTreeNodeKeyType::NORMAL, currentNode.GetMinKey(), currentNode.GetMinValue()};
     } else if (key > currentNode.GetMaxKey()) {
-        return {VEBTreeNodeKeyType::POSITIVE_INFINITY, veb_key_t{}, veb_value_t{}};
+        return {VEBTreeNodeKeyType::POSITIVE_INFINITY, veb_key_t{}, ValueType{}};
     }
 
 
@@ -233,7 +249,7 @@ std::tuple<VEBTreeNodeKeyType, veb_key_t, ValueType> VEBTreeMap<ValueType>::Succ
             throw std::invalid_argument("Error in successor call successor not found eventhough subcluster is set");
         }
     }
-    else if(clusterIndex >= currentNode.GetClusterCount()){
+    else if(clusterIndex >= GetClusterCount(currentNode.GetUniverseSize())){
         return {VEBTreeNodeKeyType::NORMAL, currentNode.GetMaxKey(), currentNode.GetMaxValue()};
     }
 

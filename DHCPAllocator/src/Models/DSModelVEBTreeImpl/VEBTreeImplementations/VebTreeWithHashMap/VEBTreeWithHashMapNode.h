@@ -7,7 +7,8 @@
 
 #include <unordered_map>
 #include <memory>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeNodeKeyType.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeNodeKeyType.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
 
 using veb_hm_t = uint32_t;
 
@@ -35,11 +36,8 @@ public:
    [[nodiscard]] veb_hm_t GetUniverse() const{
        return universe_;
    }
-   [[nodiscard]] veb_hm_t GetSubUniverse() const{
-       return static_cast<veb_hm_t>(std::sqrt(universe_));
-   }
 
-   [[nodiscard]] bool IsSet() const{
+    [[nodiscard]] bool IsSet() const{
        return is_set_;
    }
 
@@ -51,8 +49,8 @@ public:
        return cluster_map_.find(clusterIndex) != cluster_map_.end();
    }
 
-   void SetCluster(veb_hm_t clusterIndex){
-       cluster_map_.emplace(clusterIndex,VEBTreeWithHashMapNode<ValueType>(GetSubUniverse()));
+   void SetCluster(veb_hm_t clusterIndex, veb_hm_t itemsCount){
+       cluster_map_.emplace(clusterIndex,itemsCount);
    }
 
    void UnsetCluster(veb_hm_t clusterIndex){
@@ -74,8 +72,8 @@ public:
        return *summary_;
    }
 
-   void SetSummary(){
-       summary_ = std::move(std::make_unique<VEBTreeWithHashMapNode<ValueType>>(GetSubUniverse()));
+   void SetSummary(veb_hm_t clusterCount){
+       summary_ = std::move(std::make_unique<VEBTreeWithHashMapNode<ValueType>>(clusterCount));
    }
 
    [[nodiscard]] bool IsSummarySet() const{

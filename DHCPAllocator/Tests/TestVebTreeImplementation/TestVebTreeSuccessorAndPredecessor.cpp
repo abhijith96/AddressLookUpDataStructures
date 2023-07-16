@@ -3,9 +3,11 @@
 //
 #include <gtest/gtest.h>
 #include <map>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTree/VEBTreeMap.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTree/VEBTreeMap.h>
 
 constexpr veb_key_t universe = 16;
+
+using veb_value_t = uint32_t;
 
 
 class VEBTest : public ::testing::Test {

@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 #include <map>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VebTreeWithHashMap/VEBTreeWithHashMap.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMap/VEBTreeWithHashMap.h>
 
 constexpr veb_hm_t universe = 16;
 
@@ -392,7 +392,75 @@ TEST_F(VEBWithHashMapTest, Insert256ElementsAndDelete128EvenOnes){
     auto keys_not_deleted = GenerateSeries(1,128,2);
     auto values_not_deleted = GenerateSeries(101,128,2);
     EXPECT_TRUE(CompareElements(keys_not_deleted, values_not_deleted));
+}
 
+TEST_F(VEBWithHashMapTest, Universe32){
+    vebTreeWithHashMap_ = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(32);
+    auto keys = GenerateSeries(0,32,1);
+    auto values = GenerateSeries(100, 32, 1);
+    InsertElements(keys, values);
+    EXPECT_TRUE(CompareElements(keys, values));
+    auto keys_2 = GenerateSeries(0,16,2);
+    auto values_2 = GenerateSeries(100,16,2);
+    DeleteElements(keys_2, values_2);
+    EXPECT_TRUE(CheckElementsAreNotPresent(keys_2, values_2));
+    auto keys_not_deleted = GenerateSeries(1,16,2);
+    auto values_not_deleted = GenerateSeries(101,16,2);
+    EXPECT_TRUE(CompareElements(keys_not_deleted, values_not_deleted));
+}
+
+TEST_F(VEBWithHashMapTest, Universe32DeleteOdd){
+    vebTreeWithHashMap_ = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(32);
+    auto keys = GenerateSeries(0,32,1);
+    auto values = GenerateSeries(100, 32, 1);
+    InsertElements(keys, values);
+    EXPECT_TRUE(CompareElements(keys, values));
+    auto keys_2 = GenerateSeries(1,16,2);
+    auto values_2 = GenerateSeries(101,16,2);
+    DeleteElements(keys_2, values_2);
+    EXPECT_TRUE(CheckElementsAreNotPresent(keys_2, values_2));
+    auto keys_not_deleted = GenerateSeries(0,16,2);
+    auto values_not_deleted = GenerateSeries(100,16,2);
+    EXPECT_TRUE(CompareElements(keys_not_deleted, values_not_deleted));
+}
+
+TEST_F(VEBWithHashMapTest, Universe32DeleteOddReverse){
+    vebTreeWithHashMap_ = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(32);
+    auto keys = GenerateSeries(0,32,1);
+    auto values = GenerateSeries(100, 32, 1);
+    InsertElements(keys, values);
+    EXPECT_TRUE(CompareElements(keys, values));
+    auto keys_2 = GenerateSeries(1,16,2);
+    auto values_2 = GenerateSeries(101,16,2);
+    std::reverse(keys_2.begin(), keys_2.end());
+    std::reverse(values_2.begin(), values_2.end());
+    DeleteElements(keys_2, values_2);
+    EXPECT_TRUE(CheckElementsAreNotPresent(keys_2, values_2));
+    auto keys_not_deleted = GenerateSeries(0,16,2);
+    auto values_not_deleted = GenerateSeries(100,16,2);
+    EXPECT_TRUE(CompareElements(keys_not_deleted, values_not_deleted));
+}
+
+TEST_F(VEBWithHashMapTest, Universe128Delete){
+    vebTreeWithHashMap_ = std::make_unique<VEBTreeWithHashMap<veb_value_t>>(128);
+    auto keys = GenerateSeries(0,128,1);
+    auto values = GenerateSeries(100, 128, 1);
+    InsertElements(keys, values);
+    EXPECT_TRUE(CompareElements(keys, values));
+    auto keys_2 = GenerateSeries(0,16,1);
+    auto values_2 = GenerateSeries(100,16,1);
+    std::reverse(keys_2.begin(), keys_2.end());
+    std::reverse(values_2.begin(), values_2.end());
+    DeleteElements(keys_2, values_2);
+    EXPECT_TRUE(CheckElementsAreNotPresent(keys_2, values_2));
+
+    auto keys_3 = GenerateSeries(112,16,1);
+    auto values_3 = GenerateSeries(212,16,1);
+    DeleteElements(keys_3, values_3);
+    EXPECT_TRUE(CheckElementsAreNotPresent(keys_3, values_3));
+    auto keys_not_deleted = GenerateSeries(16,96,1);
+    auto values_not_deleted = GenerateSeries(116,96,1);
+    EXPECT_TRUE(CompareElements(keys_not_deleted, values_not_deleted));
 }
 
 int main(int argc, char **argv) {

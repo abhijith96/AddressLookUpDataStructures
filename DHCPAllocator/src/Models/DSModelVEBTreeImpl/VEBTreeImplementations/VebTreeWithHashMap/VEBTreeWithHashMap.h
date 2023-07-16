@@ -5,7 +5,7 @@
 #ifndef DHCPALLOCATOR_VEBTREEWITHHASHMAP_H
 #define DHCPALLOCATOR_VEBTREEWITHHASHMAP_H
 
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VebTreeWithHashMap/VEBTreeWithHashMapNode.h>
+#include "VEBTreeWithHashMapNode.h"
 #include <memory>
 
 template <class ValueType>
@@ -20,15 +20,20 @@ private:
 
     std::tuple<VEBTreeNodeKeyType, veb_hm_t, ValueType> GetPredecessorHelper(VEBTreeWithHashMapNode<ValueType>& currentNode, veb_hm_t key);
 
+    veb_hm_t High(veb_hm_t key, veb_hm_t universe);
+
+    veb_hm_t Low(veb_hm_t key, veb_hm_t universe);
+
+    veb_hm_t Index(veb_hm_t key, veb_hm_t lowKey, veb_hm_t universe);
+
+    veb_hm_t GetItemsCount(veb_hm_t universe);
+
+    veb_hm_t GetClusterCount(veb_hm_t universe);
 
 public:
    explicit VEBTreeWithHashMap(veb_hm_t universe);
 
-   veb_hm_t High(veb_hm_t key, veb_hm_t universe);
 
-   veb_hm_t Low(veb_hm_t key, veb_hm_t universe);
-
-    veb_hm_t Index(veb_hm_t key, veb_hm_t lowKey, veb_hm_t universe);
 
     std::tuple<bool, veb_hm_t, ValueType> FindKey(veb_hm_t key);
 
