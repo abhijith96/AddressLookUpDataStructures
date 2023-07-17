@@ -12,11 +12,13 @@ private:
     IPAddress startIp_;
     IPAddress endIp_;
 public:
-    explicit IpRange(IPAddress startIp_, IPAddress endIp_);
+    explicit IpRange(IPAddress startIp, IPAddress endIp);
 
     ip_t GetCapacity  () const;
 
     [[nodiscard]] ip_t GetStartIP() const;
+
+    ip_t GetEndIP() const;
 };
 
 

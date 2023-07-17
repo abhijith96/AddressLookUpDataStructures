@@ -16,6 +16,8 @@ private:
 public:
     explicit IPAddress(ip_t value);
 
+    IPAddress(IPAddress& other) = default;
+
     [[nodiscard]] ip_t GetValue() const;
 
 

@@ -8,7 +8,7 @@
 #include <variant>
 #include <DHCPAllocator/src/Models/DSModelmpl.h>
 #include "DHCPAllocator/src/Models/DSModelTreeImpl/DSModelTreeImpl.h"
-#include  <DHCPAllocator/src/Models/SubnetHost.h>
+#include  <DHCPAllocator/src/Models/SubnetHosts.h>
 #include  <DHCPAllocator/src/Models/Subnet.h>
 #include <memory>
 

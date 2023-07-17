@@ -7,11 +7,11 @@
 #include <stdexcept>
 
 IpRange::IpRange(IPAddress startIp, IPAddress endIp): startIp_(startIp), endIp_(endIp) {
-    if(startIp_.GetValue() > 0 && endIp_.GetValue() > 0){
+    if(startIp_.GetValue() >= 0 && endIp_.GetValue() >= 0 && endIp_.GetValue() < std::numeric_limits<ip_t>::max()){
        //pass
     }
     else{
-        //throw std::invalid_argument("Ip Ranges Not valid\n");
+        throw std::invalid_argument("Ip Ranges Not valid\n");
     }
 }
 
@@ -21,4 +21,8 @@ ip_t IpRange::GetCapacity() const{
 
 ip_t IpRange::GetStartIP() const {
     return startIp_.GetValue();
+}
+
+ip_t IpRange::GetEndIP() const{
+    return endIp_.GetValue();
 }

@@ -30,7 +30,7 @@ protected:
         for(size_t i = 0; i < keys.size(); ++i){
             veb_key_t  key = keys[i];
             veb_key_t value = values[i];
-            vebTreeMap->Insert(key, value);
+            DsImplVebTree->Insert(key, value);
             map_.insert({key, value});
         }
     }
@@ -39,7 +39,7 @@ protected:
         for(size_t i = 0; i < keys.size(); ++i){
             veb_key_t  key = keys[i];
             veb_key_t value = values[i];
-            vebTreeMap->Delete(key);
+            DsImplVebTree->Delete(key);
             map_.erase(key);
         }
     }
@@ -49,7 +49,7 @@ protected:
             veb_key_t value = values[i];
             bool status;
             veb_value_t vebValue;
-            std::tie (status, vebValue) = vebTreeMap->FindKey(key);
+            std::tie (status, vebValue) = DsImplVebTree->FindKey(key);
             auto iter = map_.find(key);
             if(iter == map_.end()){
                 return false;
@@ -68,7 +68,7 @@ protected:
             veb_key_t value = values[i];
             bool status;
             veb_value_t vebValue;
-            std::tie (status, vebValue) = vebTreeMap->FindKey(key);
+            std::tie (status, vebValue) = DsImplVebTree->FindKey(key);
             auto iter = map_.find(key);
             if(iter != map_.end() || status){
                 return false;
@@ -83,7 +83,7 @@ protected:
             VEBTreeNodeKeyType nodeKeyType;
             veb_key_t sucKey;
             veb_value_t sucValue;
-            std::tie (nodeKeyType, sucKey, sucValue) = vebTreeMap->Successor(key);
+            std::tie (nodeKeyType, sucKey, sucValue) = DsImplVebTree->Successor(key);
             EXPECT_EQ(VEBTreeNodeKeyType::NORMAL, nodeKeyType);
             EXPECT_EQ(sucKey , sucKeys[i]);
             EXPECT_EQ(sucValue, sucValues[i]);
@@ -97,7 +97,7 @@ protected:
             VEBTreeNodeKeyType nodeKeyType;
             veb_key_t predKey;
             veb_value_t predValue;
-            std::tie (nodeKeyType, predKey, predValue) = vebTreeMap->Predecessor(key);
+            std::tie (nodeKeyType, predKey, predValue) = DsImplVebTree->Predecessor(key);
             EXPECT_EQ(VEBTreeNodeKeyType::NORMAL, nodeKeyType);
             EXPECT_EQ(predKey , predKeys[i]);
             EXPECT_EQ(predValue, predValues[i]);
@@ -106,18 +106,18 @@ protected:
     }
 
     void TearDown() override {
-        vebTreeMap.reset();
+        DsImplVebTree.reset();
     }
-    std::unique_ptr<VEBTreeMap<veb_value_t>> vebTreeMap;
+    std::unique_ptr<VEBTreeMap<veb_value_t>> DsImplVebTree;
     std::map<veb_key_t , veb_value_t > map_;
 
 };
 
 TEST_F(DSModelVebTreeImplTest, SuccesorOfEmptyTree) {
 
-    vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
+    DsImplVebTree = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
 
-    auto [nodeType, sucKey, sucVal] = vebTreeMap->Successor(0);
+    auto [nodeType, sucKey, sucVal] = DsImplVebTree->Successor(0);
     EXPECT_TRUE(nodeType == VEBTreeNodeKeyType::POSITIVE_INFINITY);
 
 
@@ -125,14 +125,14 @@ TEST_F(DSModelVebTreeImplTest, SuccesorOfEmptyTree) {
 
 TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithOneVal) {
 
-    vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
+    DsImplVebTree = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
 
-    vebTreeMap->Insert(10, 1);
-    auto [nodeType, sucKey, sucVal] = vebTreeMap->Successor(11);
+    DsImplVebTree->Insert(10, 1);
+    auto [nodeType, sucKey, sucVal] = DsImplVebTree->Successor(11);
     EXPECT_TRUE(nodeType == VEBTreeNodeKeyType::POSITIVE_INFINITY);
 
     {
-        auto [nodeType_2, sucKey_2, sucVal_2] = vebTreeMap->Successor(10);
+        auto [nodeType_2, sucKey_2, sucVal_2] = DsImplVebTree->Successor(10);
         EXPECT_TRUE(nodeType_2 == VEBTreeNodeKeyType::NORMAL);
         EXPECT_EQ(sucKey_2, 10);
         EXPECT_EQ(sucVal_2, 1);
@@ -141,7 +141,7 @@ TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithOneVal) {
 
     {
 
-        auto [nodeType_3, sucKey_3, sucVal_3] = vebTreeMap->Successor(1);
+        auto [nodeType_3, sucKey_3, sucVal_3] = DsImplVebTree->Successor(1);
 
         EXPECT_TRUE(nodeType_3 == VEBTreeNodeKeyType::NORMAL);
         EXPECT_EQ(sucKey_3, 10);
@@ -154,7 +154,7 @@ TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithOneVal) {
 
 TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithEightElements) {
 
-    vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
+    DsImplVebTree = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
 
    auto keys = GenerateSeries(0,8,2);
    auto values = GenerateSeries(100,8,2);
@@ -171,7 +171,7 @@ TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithEightElements) {
 
 TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithEightElementsOdd) {
 
-    vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
+    DsImplVebTree = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
 
     auto keys = GenerateSeries(1,8,2);
     auto values = GenerateSeries(101,8,2);
@@ -187,7 +187,7 @@ TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithEightElementsOdd) {
 
 TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithFourElements) {
 
-    vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
+    DsImplVebTree = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
 
     auto keys = GenerateSeries(1,4,4);
     auto values = GenerateSeries(101,4,4);
@@ -203,7 +203,7 @@ TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithFourElements) {
 
 TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithUniverse256) {
 
-    vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(256);
+    DsImplVebTree = std::make_unique<VEBTreeMap<veb_value_t>>(256);
 
     auto keys = GenerateSeries(10,25,10);
     auto values = GenerateSeries(100,25,10);
@@ -221,9 +221,9 @@ TEST_F(DSModelVebTreeImplTest, SuccesorOfTreeWithUniverse256) {
 
 TEST_F(DSModelVebTreeImplTest, PredecessorOfEmptyTree) {
 
-    vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
+    DsImplVebTree = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
 
-    auto [nodeType, sucKey, sucVal] = vebTreeMap->Predecessor(0);
+    auto [nodeType, sucKey, sucVal] = DsImplVebTree->Predecessor(0);
     EXPECT_TRUE(nodeType == VEBTreeNodeKeyType::NEGATIVE_INFINITY);
 
 
@@ -231,14 +231,14 @@ TEST_F(DSModelVebTreeImplTest, PredecessorOfEmptyTree) {
 
 TEST_F(DSModelVebTreeImplTest, PredecessorOfTreeWithOneVal) {
 
-    vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
+    DsImplVebTree = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
 
-    vebTreeMap->Insert(10, 1);
-    auto [nodeType, sucKey, sucVal] = vebTreeMap->Predecessor(9);
+    DsImplVebTree->Insert(10, 1);
+    auto [nodeType, sucKey, sucVal] = DsImplVebTree->Predecessor(9);
     EXPECT_TRUE(nodeType == VEBTreeNodeKeyType::NEGATIVE_INFINITY);
 
     {
-        auto [nodeType_2, sucKey_2, sucVal_2] = vebTreeMap->Predecessor(11);
+        auto [nodeType_2, sucKey_2, sucVal_2] = DsImplVebTree->Predecessor(11);
         EXPECT_TRUE(nodeType_2 == VEBTreeNodeKeyType::NORMAL);
         EXPECT_EQ(sucKey_2, 10);
         EXPECT_EQ(sucVal_2, 1);
@@ -247,7 +247,7 @@ TEST_F(DSModelVebTreeImplTest, PredecessorOfTreeWithOneVal) {
 
     {
 
-        auto [nodeType_3, sucKey_3, sucVal_3] = vebTreeMap->Predecessor(10);
+        auto [nodeType_3, sucKey_3, sucVal_3] = DsImplVebTree->Predecessor(10);
 
         EXPECT_TRUE(nodeType_3 == VEBTreeNodeKeyType::NORMAL);
         EXPECT_EQ(sucKey_3, 10);
@@ -259,7 +259,7 @@ TEST_F(DSModelVebTreeImplTest, PredecessorOfTreeWithOneVal) {
 
 TEST_F(DSModelVebTreeImplTest, PredecessorOfTreeWithEightElements) {
 
-    vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
+    DsImplVebTree = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
 
     auto keys = GenerateSeries(0,8,2);
     auto values = GenerateSeries(100,8,2);
@@ -276,7 +276,7 @@ TEST_F(DSModelVebTreeImplTest, PredecessorOfTreeWithEightElements) {
 
 TEST_F(DSModelVebTreeImplTest, PredecessorOfTreeWithSixteen) {
 
-    vebTreeMap = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
+    DsImplVebTree = std::make_unique<VEBTreeMap<veb_value_t>>(universe);
 
     auto keys = GenerateSeries(0,16,1);
     auto values = GenerateSeries(100,16,1);
