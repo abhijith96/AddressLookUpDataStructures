@@ -30,7 +30,7 @@ std::pair<bool, ip_t>  DSModelVebTreeImpl::InsertSubnetHost(MacID hostMacId, ip_
 void DSModelVebTreeImpl::DeleteSubnet(ip_t start_ip) {
     if(start_ip < std::numeric_limits<ip_t>::max()){
         ip_t startIpInVEBTree = ConvertIpAddressFromIpRangeAddressSpaceToVebTreeAddressSpace(start_ip);
-        DeleteSubnet(startIpInVEBTree);
+        vebTreeMap_.Delete(startIpInVEBTree);
     }
 }
 
