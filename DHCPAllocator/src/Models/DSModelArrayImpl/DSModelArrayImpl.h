@@ -24,11 +24,11 @@
 
 class DSModelArrayImpl : public DSModelmpl {
 
-    boost::container::flat_map <ip_t , ArrayValueObject> subnet_routing_map_;
-    std::unordered_map<ip_t , Subnet> subnets_;
-    std::unordered_map<MacID , ip_t , HashMacId, EqualsMacId> subnet_mac_ip_map_;
+    boost::container::flat_map<ip_t, ArrayValueObject> subnet_routing_map_;
+    std::unordered_map<ip_t, Subnet> subnets_;
+    std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId> subnet_mac_ip_map_;
 
-    std::vector<FreeSlotObject> free_slots_list_ {FreeSlotObject(0, std::numeric_limits<int32_t>::max())};
+    std::vector<FreeSlotObject> free_slots_list_{FreeSlotObject(0, std::numeric_limits<int32_t>::max())};
 
 private:
 
@@ -52,7 +52,7 @@ public:
 
     void getFreeIPInSubnet(boost::container::flat_map<ip_t, Host> map);
 
-    std::pair<bool, ip_t>  InsertHost(Subnet &subnet, MacID host_mac_id, ip_t subnet_ip);
+    std::pair<bool, ip_t> InsertHost(Subnet &subnet, MacID host_mac_id, ip_t subnet_ip);
 
     void add_host_mac_ip_mapping(Subnet &subnet, ip_t ip, MacID id);
 
@@ -64,7 +64,8 @@ public:
 
     std::vector<FreeSlotObject> GetFreeSlotsList();
 
-};
+    void optimizeSubnetAllocationSpace();
 
+};
 
 #endif //DHCP_DSMODELARRAYIMPL_H

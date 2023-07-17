@@ -2,6 +2,8 @@
 // Created by Sreedevi R Warrier on 2023-07-16.
 //
 
+#ifndef DHCPALLOCATOR_ARRAYIMPL_TEST1_H
+#define DHCPALLOCATOR_ARRAYIMPL_TEST1_H
 
 #include <iostream>
 #include <DHCPAllocator/src/Models/DSModelSingleton.h>
@@ -142,3 +144,5 @@ int main() {
     assert(delete_host_result);
 
 }
+
+#endif

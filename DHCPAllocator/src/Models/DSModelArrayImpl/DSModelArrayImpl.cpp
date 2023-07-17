@@ -49,7 +49,7 @@ bool DSModelArrayImpl::DeleteSubnet(ip_t subnet_ip) {
     auto it = subnets_.find(subnet_ip);
     if (it != subnets_.end()) {
         // remove from hosts list in subnet object
-        Subnet subnet = it->second;
+        Subnet &subnet = it->second;
         MacID macId = subnet.GetMacId();
         subnet_mac_ip_map_.erase(macId); //remove subnet mac id to ip mapping
         subnet_routing_map_.erase(subnet_ip);
@@ -66,7 +66,7 @@ bool DSModelArrayImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
     if (it != subnets_.end()) {
 
         // remove from hosts list in subnet object
-        Subnet subnet = it->second;
+        Subnet &subnet = it->second;
         boost::container::flat_map<ip_t, Host> &hosts = subnet.GetHosts();
 
         auto host_it = hosts.find(host_ip);
@@ -102,7 +102,16 @@ std::pair<bool, ip_t> DSModelArrayImpl::GetNetWorkIP(ip_t hostIp) {
         ip_t subnet_ip = subnet_it->first;
         ArrayValueObject arrayValueObject = subnet_it->second;
 
-        if (hostIp < subnet_ip + arrayValueObject.GetCapacity() - 1 ) { //  -1 to ignore the broadcast IP
+        if (hostIp < subnet_ip + arrayValueObject.GetCapacity() ) {
+//            auto subnet_element_it = subnets_.find(subnet_ip);
+//            if (subnet_element_it != subnets_.end()) {
+//                Subnet &subnet = subnet_element_it->second;
+//                auto &hosts = subnet.GetHosts();
+//                auto host_it = hosts.find(hostIp); //check if host IP is assigned to any host
+//                if (host_it != hosts.end()) {
+//                    return { true, subnet_ip };
+//                }
+//            }
             return { true, subnet_ip };
         }
     }
@@ -133,7 +142,6 @@ std::pair<bool, ip_t> DSModelArrayImpl::GetHostIpAddress(MacID macId, ip_t subne
 }
 
 std::pair<bool, MacID> DSModelArrayImpl::GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) {
-    std::cout << "GetMacAddressOfHost - host ip: " << hostIpAddress << ", subnet ip: " << subnet_ip << std::endl;
     auto it = subnets_.find(subnet_ip);
     if (it != subnets_.end()) {
         Subnet &subnet = it->second;
@@ -190,14 +198,6 @@ void DSModelArrayImpl::UpdateFreeSlotsList(std::vector<FreeSlotObject>::iterator
     free_slots_list_.insert(insertPos, free_slot);
 }
 
-std::vector<FreeSlotObject> DSModelArrayImpl::GetFreeSlotsList() {
-    return free_slots_list_;
-}
-
-void DSModelArrayImpl::getFreeIPInSubnet(boost::container::flat_map<ip_t, Host> map) {
-
-}
-
 std::pair<bool, ip_t>  DSModelArrayImpl::InsertHost(Subnet &subnet, MacID host_mac_id, ip_t subnet_ip) {
 
     auto &hosts = subnet.GetHosts();
@@ -245,4 +245,34 @@ void DSModelArrayImpl::add_host_mac_ip_mapping(Subnet &subnet, ip_t host_ip, Mac
 
     auto &mac_ip_map = subnet.GetHostMacIpMap();
     mac_ip_map.insert({host_mac_id, host_ip});
+}
+
+void DSModelArrayImpl::optimizeSubnetAllocationSpace() {
+    //make copy of subnets (it has all the details)
+    auto subnets_copy = subnets_; //todo create deep copy
+    //clear all subnet maps
+    subnets_.clear();
+    subnet_routing_map_.clear();
+    subnet_mac_ip_map_.clear();
+    free_slots_list_.clear();
+
+    //loop through the subnets_copy and recreate the subnets without leaving any free slots in between
+    for (const auto& pair : subnets_copy) {
+        ip_t network_start_ip = pair.first;
+        Subnet subnet = pair.second;
+        MacID subnet_mac_id = subnet.GetMacId();
+        int subnet_capacity = subnet.GetCapacity();
+        auto host_mac_ip_map_copy = subnet.GetHostMacIpMap();
+
+        //create subnets with required capacity
+        auto insert_subnet_response = InsertSubnet(subnet_mac_id, subnet_capacity);
+        std::cout << "Created subnet " << insert_subnet_response.first << " " << insert_subnet_response.second << std::endl;
+        if (insert_subnet_response.first) {
+            // iterate and create the subnet hosts
+            for (const auto &host_pair: host_mac_ip_map_copy) {
+                std::cout << "Created host " << host_pair.first.GetValue() << std::endl;
+                InsertSubnetHost(host_pair.first, insert_subnet_response.second);
+            }
+        }
+    }
 }
