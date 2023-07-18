@@ -7,3 +7,6 @@ target_link_libraries(TestSubnetHosts PUBLIC Models gtest::gtest)
 
 add_executable(TestSubnetDeletionsAndReInsertions TestSubnetDeletionsAndReInsertions.cpp)
 target_link_libraries(TestSubnetDeletionsAndReInsertions PUBLIC Models gtest::gtest)
+
+add_executable(TestHashedVebTreeRouting  TestHashedVebTreeRouting.cpp)
+target_link_libraries(TestHashedVebTreeRouting  PUBLIC Models gtest::gtest)

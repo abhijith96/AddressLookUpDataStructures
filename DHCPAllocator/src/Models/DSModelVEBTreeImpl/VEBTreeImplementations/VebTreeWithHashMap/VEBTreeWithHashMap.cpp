@@ -7,17 +7,35 @@
 #include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMapFreeSlotObject.h>
 #include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeValueObject.h>
 
+#include <iostream>
 
 template <typename ValueType>
 VEBTreeWithHashMap<ValueType>::VEBTreeWithHashMap(veb_hm_t universe) :root_veb_tree_(
       std::move(std::make_unique<VEBTreeWithHashMapNode<ValueType>>(std::bit_ceil(universe)))
         ){
-    if(universe == std::numeric_limits<veb_hm_t>::max()){
-        root_veb_tree_ = std::move(std::make_unique<VEBTreeWithHashMapNode<ValueType>>(universe));
-    }
+   if(root_veb_tree_->GetUniverse() < universe) {
+       veb_hm_t actualUniverse = std::numeric_limits<veb_hm_t>::max();
+        VEBTreeWithHashMapNode<ValueType> vebTreeWithHashMapNode{actualUniverse};
+        root_veb_tree_ = std::move(std::make_unique<VEBTreeWithHashMapNode<ValueType>>(std::move(vebTreeWithHashMapNode)));
+
+   }
+
 
 }
 
+template <typename ValueType>
+VEBTreeWithHashMap<ValueType>::VEBTreeWithHashMap(VEBTreeWithHashMap && other)  noexcept = default;
+
+template <typename ValueType>
+VEBTreeWithHashMap<ValueType>& VEBTreeWithHashMap<ValueType>::operator = (VEBTreeWithHashMap&& other) noexcept{
+    if(this != &other){
+        root_veb_tree_ = std::move(other.root_veb_tree_);
+    }
+
+    std::cout<<"check moves\n";
+
+    return *this;
+}
 template <typename ValueType>
 veb_hm_t VEBTreeWithHashMap<ValueType>::High(veb_hm_t key, veb_hm_t universe) {
     auto [high, low] = VEBTreeUtils::SplitIntoHighAndLow(key, universe);

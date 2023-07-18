@@ -144,3 +144,11 @@ void DSModelHashedVebTreeImpl::UpdateFreeSlotList(ip_t newStartIp, ip_t remainin
 
     }
 }
+
+const IpRange &DSModelHashedVebTreeImpl::GetIpRange() const {
+    return ipRange_;
+}
+
+DSModelHashedVebTreeImpl::DSModelHashedVebTreeImpl(DSModelHashedVebTreeImpl &&other)  noexcept = default;
+
+DSModelHashedVebTreeImpl& DSModelHashedVebTreeImpl::operator=(DSModelHashedVebTreeImpl &&other) noexcept = default;

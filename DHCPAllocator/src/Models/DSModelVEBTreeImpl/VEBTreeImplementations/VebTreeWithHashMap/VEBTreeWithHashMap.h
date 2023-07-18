@@ -33,6 +33,10 @@ private:
 public:
    explicit VEBTreeWithHashMap(veb_hm_t universe);
 
+   VEBTreeWithHashMap(VEBTreeWithHashMap && other) noexcept;
+
+   VEBTreeWithHashMap& operator = (VEBTreeWithHashMap&& other) noexcept;
+
 
 
     std::tuple<bool, veb_hm_t, ValueType> FindKey(veb_hm_t key);

@@ -33,7 +33,11 @@ private:
 
 public:
 
+    [[nodiscard]] const IpRange& GetIpRange() const;
+
     explicit DSModelHashedVebTreeImpl(IpRange ipRange);
+    DSModelHashedVebTreeImpl& operator = (DSModelHashedVebTreeImpl&& other) noexcept ;
+    DSModelHashedVebTreeImpl(DSModelHashedVebTreeImpl&& other) noexcept;
     std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, ip_t capacity) override;
 
     std::pair<bool, ip_t> InsertSubnetHost(MacID hostMacId, ip_t subnetIp) override;

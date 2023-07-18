@@ -10,6 +10,7 @@
 #include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeNodeKeyType.h>
 #include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
 #include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VebTreeFreeSlotsObject.h>
+#include <iostream>
 
 using veb_hm_t = uint32_t;
 
@@ -17,7 +18,7 @@ using veb_hm_t = uint32_t;
 template <typename ValueType>
 class VEBTreeWithHashMapNode {
 private:
-    uint64_t universe_;
+    veb_hm_t universe_;
     bool is_set_;
     veb_hm_t min_;
     veb_hm_t max_;
@@ -32,8 +33,24 @@ private:
 public:
    explicit VEBTreeWithHashMapNode(veb_hm_t universe) :universe_(universe), is_set_(false),
    min_(), max_(){
-
    }
+   VEBTreeWithHashMapNode& operator = (VEBTreeWithHashMapNode&& other) noexcept = default;
+//   VEBTreeWithHashMapNode& operator = (VEBTreeWithHashMapNode&& other) noexcept {
+//       if(this != &other){
+//           universe_ = other.universe_;
+//           is_set_ = other.is_set_;
+//           min_ = other.min_;
+//           max_ = other.max_;
+//           min_value_ = std::move(other.min_value_);
+//           max_value_ = std::move(other.max_value_);
+//           summary_ = std::move(other.summary_);
+//           cluster_map_ = std::move(other.cluster_map_);
+//       }
+//   }
+
+   VEBTreeWithHashMapNode(VEBTreeWithHashMapNode && other) noexcept = default;
+
+
    [[nodiscard]] veb_hm_t GetUniverse() const{
        return universe_;
    }

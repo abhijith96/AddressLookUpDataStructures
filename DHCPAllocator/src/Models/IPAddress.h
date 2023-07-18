@@ -16,7 +16,15 @@ private:
 public:
     explicit IPAddress(ip_t value);
 
+    IPAddress(IPAddress&& other) =default;
+
+    IPAddress& operator= (IPAddress&& other) = default;
+
     IPAddress(IPAddress& other) = default;
+
+    IPAddress& operator = (const IPAddress& other) = default;
+
+    IPAddress(const IPAddress& other) = default;
 
     [[nodiscard]] ip_t GetValue() const;
 

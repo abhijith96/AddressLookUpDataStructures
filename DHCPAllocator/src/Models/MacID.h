@@ -17,6 +17,10 @@ class MacID {
 
 public:
 
+    MacID(){
+
+    }
+
     explicit MacID(mac_id_t value){
         value_ = value;
     }

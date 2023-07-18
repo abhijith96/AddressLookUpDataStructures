@@ -16,6 +16,9 @@ private:
 
 public:
     VebTreeWithHashMapFreeSlotObject();
+    VebTreeWithHashMapFreeSlotObject& operator = (VebTreeWithHashMapFreeSlotObject&& other) noexcept = default;
+    VebTreeWithHashMapFreeSlotObject(const VebTreeWithHashMapFreeSlotObject& other) = default;
+    VebTreeWithHashMapFreeSlotObject&operator = (const VebTreeWithHashMapFreeSlotObject& other) = default;
     explicit VebTreeWithHashMapFreeSlotObject(ip_t capacity);
     explicit VebTreeWithHashMapFreeSlotObject(ip_t capacity, ip_t startIP);
     void AddIp(ip_t startIp);

@@ -26,3 +26,11 @@ ip_t IpRange::GetStartIP() const {
 ip_t IpRange::GetEndIP() const{
     return endIp_.GetValue();
 }
+
+IpRange::IpRange(const IpRange &other) = default;
+
+IpRange &IpRange::operator=(const IpRange &other) = default;
+
+IpRange::IpRange(IpRange &&other) = default;
+
+IpRange &IpRange::operator=(IpRange &&other) noexcept =default;

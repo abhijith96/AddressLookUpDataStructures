@@ -14,6 +14,7 @@ private:
 public:
     explicit VEBTreeValueObject(ip_t capacity);
     VEBTreeValueObject();
+    VEBTreeValueObject& operator = (VEBTreeValueObject&& other) noexcept = default;
     VEBTreeValueObject(const VEBTreeValueObject& other);
     VEBTreeValueObject & operator = (const VEBTreeValueObject& other);
 

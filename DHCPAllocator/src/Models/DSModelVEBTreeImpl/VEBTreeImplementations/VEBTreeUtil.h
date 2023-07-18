@@ -34,7 +34,7 @@ namespace VEBTreeUtils {
         if (value < 2) {
             throw std::invalid_argument("Values less than 2 cannot be split");
         }
-        if (IsPowerOfTwo(value)) {
+        if (IsPowerOfTwo(value) || value == std::numeric_limits<T>::max()) {
             T two = 2;
             T one = 1;
             T bitWidth = std::bit_width(value - 1);
@@ -71,6 +71,7 @@ namespace VEBTreeUtils {
 
         T two = 2;
         T one = 1;
+
         T bitWidth = std::bit_width(universe - one);
         if (IsEven(bitWidth)) {
 

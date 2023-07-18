@@ -13,6 +13,12 @@ private:
     IPAddress endIp_;
 public:
     explicit IpRange(IPAddress startIp, IPAddress endIp);
+    IpRange(IpRange&& other);
+    IpRange & operator= (IpRange&& other) noexcept ;
+
+    IpRange (const IpRange& other);
+
+    IpRange& operator=(const IpRange& other);
 
     ip_t GetCapacity  () const;
 

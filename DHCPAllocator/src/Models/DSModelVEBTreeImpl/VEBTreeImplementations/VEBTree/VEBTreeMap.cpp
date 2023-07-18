@@ -9,6 +9,9 @@
 template <typename ValueType>
 VEBTreeMap<ValueType>::VEBTreeMap(veb_key_t universe): root_node_(std::make_unique<VEBTreeNode<ValueType>>(
         std::bit_ceil(universe))) {
+    if(root_node_->GetUniverseSize() < universe){
+        root_node_ = std::make_unique<VEBTreeNode<ValueType>>(std::numeric_limits<veb_key_t>::max());
+    }
 
 }
 
