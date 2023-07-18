@@ -21,6 +21,9 @@ public:
 
 struct CompareVebTreeFreeSlotsObject{
     bool operator()(const VebTreeFreeSlotsObject& second, const VebTreeFreeSlotsObject& first) const{
+        if(second.GetCapacity() == first.GetCapacity()){
+            return second.GetStartIP() < first.GetStartIP();
+        }
         return second.GetCapacity() < first.GetCapacity();
     }
 };

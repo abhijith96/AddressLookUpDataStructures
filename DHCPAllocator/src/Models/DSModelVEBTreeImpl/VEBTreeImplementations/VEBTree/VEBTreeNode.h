@@ -17,7 +17,7 @@ using veb_key_t = uint32_t;
 template <typename ValueType>
 class VEBTreeNode {
 private:
-    veb_key_t universe_;
+    uint64_t universe_;
     veb_key_t min_;
     veb_key_t max_;
     bool is_set_;

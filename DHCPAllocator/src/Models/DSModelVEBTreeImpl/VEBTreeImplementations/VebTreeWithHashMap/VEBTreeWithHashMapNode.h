@@ -9,6 +9,7 @@
 #include <memory>
 #include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeNodeKeyType.h>
 #include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VebTreeFreeSlotsObject.h>
 
 using veb_hm_t = uint32_t;
 
@@ -16,7 +17,7 @@ using veb_hm_t = uint32_t;
 template <typename ValueType>
 class VEBTreeWithHashMapNode {
 private:
-    veb_hm_t  universe_;
+    uint64_t universe_;
     bool is_set_;
     veb_hm_t min_;
     veb_hm_t max_;
@@ -110,9 +111,18 @@ public:
        return *min_value_;
    }
 
+    [[nodiscard]] ValueType& GetMinValue(){
+        return *min_value_;
+    }
+
    [[nodiscard]] ValueType GetMaxValue() const{
        return *max_value_;
    }
+
+
+    [[nodiscard]] ValueType& GetMaxValue(){
+        return *max_value_;
+    }
 
 };
 

@@ -5,7 +5,7 @@
 #include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelVebTreeImpl.h>
 
 DSModelVebTreeImpl::DSModelVebTreeImpl(IpRange ipRange) : ipRange_(ipRange), vebTreeMap_(ipRange_.GetCapacity()),
-freeIpStartRange_(0){
+freeIpStartRange_(ipRange.GetStartIP()){
 
 }
 
@@ -110,6 +110,7 @@ std::pair<bool, ip_t> DSModelVebTreeImpl::GetHostIpAddress(MacID macId, ip_t sub
    if(iter != subnetToHostsMap_.end()){
        return iter->second.GetHostIp(subnet_ip, macId);
    }
+   return {false, 0};
 }
 
 std::pair<bool, MacID> DSModelVebTreeImpl::GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) {
@@ -117,6 +118,7 @@ std::pair<bool, MacID> DSModelVebTreeImpl::GetMacAddressOfHost(ip_t hostIpAddres
     if(iter != subnetToHostsMap_.end()){
         return iter->second.GetHostMacId(subnet_ip, hostIpAddress);
     }
+    return {false, MacID{0}};
 }
 
 std::pair<bool, ip_t> DSModelVebTreeImpl::DeleteHostFromSubnet(MacID host_mac, ip_t subnet_ip) {

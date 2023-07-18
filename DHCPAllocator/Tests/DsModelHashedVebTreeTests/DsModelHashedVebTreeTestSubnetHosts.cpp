@@ -1,16 +1,18 @@
 //
-// Created by Abhijith  K A on 17/07/23.
+// Created by Abhijith  K A on 18/07/23.
 //
+
+
 
 #include <gtest/gtest.h>
 #include <map>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelVebTreeImpl.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelHashedVebTreeImpl.h>
 
 
-using veb_value_t = VEBTreeValueObject;
 
 
-class DSModelVebTreeImplTestSubnetHosts : public ::testing::Test {
+
+class DSModelHashedVebTreeImplTestSubnetHosts : public ::testing::Test {
 protected:
     void SetUp() override {
 
@@ -21,16 +23,16 @@ protected:
     void TearDown() override {
         hashedVebTreeMap_.reset();
     }
-    std::unique_ptr<DSModelVebTreeImpl> hashedVebTreeMap_;
+    std::unique_ptr<DSModelHashedVebTreeImpl> hashedVebTreeMap_;
 //    IpRange ipRange {IPAddress{0}, IPAddress{1023}};
 
 
 };
 
-TEST_F( DSModelVebTreeImplTestSubnetHosts, SimpleTest) {
+TEST_F( DSModelHashedVebTreeImplTestSubnetHosts, SimpleTest) {
 
     IpRange ipRange{IPAddress{0}, IPAddress{1023}};
-    hashedVebTreeMap_ = std::make_unique<DSModelVebTreeImpl>(ipRange);
+    hashedVebTreeMap_ = std::make_unique<DSModelHashedVebTreeImpl>(ipRange);
 
     auto [isInserted, networkIP] = hashedVebTreeMap_->InsertSubnet(MacID{1}, 1024);
     EXPECT_TRUE(isInserted);
@@ -91,10 +93,10 @@ TEST_F( DSModelVebTreeImplTestSubnetHosts, SimpleTest) {
 
 }
 
-TEST_F( DSModelVebTreeImplTestSubnetHosts, TestWithDeletionsAndReInsertions) {
+TEST_F( DSModelHashedVebTreeImplTestSubnetHosts, TestWithDeletionsAndReInsertions) {
 
     IpRange ipRange{IPAddress{0}, IPAddress{1023}};
-    hashedVebTreeMap_ = std::make_unique<DSModelVebTreeImpl>(ipRange);
+    hashedVebTreeMap_ = std::make_unique<DSModelHashedVebTreeImpl>(ipRange);
 
     auto [isInserted, networkIP] = hashedVebTreeMap_->InsertSubnet(MacID{1}, 1024);
     EXPECT_TRUE(isInserted);

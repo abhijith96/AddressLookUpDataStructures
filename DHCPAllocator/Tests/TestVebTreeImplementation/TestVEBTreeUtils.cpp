@@ -400,7 +400,7 @@ TEST_F(VEBUtilsTest, SimpleTest) {
 
     VEBTreeNode<uint32_t> rootNode{2};
 
-    VEBTreeWithHashMap<uint32_t> rootNodeHashed{2};
+    VEBTreeWithHashMapNode<uint32_t> rootNodeHashed{2};
     std::cout<<"size is "<<sizeof rootNode<<"\n";
 
     std::cout<<"size is hashed tree "<<sizeof rootNodeHashed<<"\n";

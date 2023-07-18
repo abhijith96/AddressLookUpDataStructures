@@ -1,2 +1,2 @@
 add_library(VEBTreeMap VEBTree/VEBTreeMap.cpp VEBTree/VEBTreeNode.cpp VEBTreeUtil.h VEBTreeValueObject.cpp)
-add_library(VEBTreeWithHashMap VebTreeWithHashMap/VEBTreeWithHashMap.cpp VebTreeWithHashMap/VEBTreeWithHashMapNode.h VEBTreeUtil.h)
+add_library(VEBTreeWithHashMap VebTreeWithHashMap/VEBTreeWithHashMap.cpp VebTreeWithHashMap/VEBTreeWithHashMapNode.h VEBTreeUtil.h VebTreeWithHashMapFreeSlotObject.cpp VEBTreeValueObject.cpp)

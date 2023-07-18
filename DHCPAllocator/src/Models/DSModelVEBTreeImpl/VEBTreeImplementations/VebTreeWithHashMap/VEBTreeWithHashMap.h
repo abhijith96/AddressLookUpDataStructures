@@ -5,7 +5,7 @@
 #ifndef DHCPALLOCATOR_VEBTREEWITHHASHMAP_H
 #define DHCPALLOCATOR_VEBTREEWITHHASHMAP_H
 
-#include "VEBTreeWithHashMapNode.h"
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMap/VEBTreeWithHashMapNode.h>
 #include <memory>
 
 template <class ValueType>
@@ -37,6 +37,9 @@ public:
 
     std::tuple<bool, veb_hm_t, ValueType> FindKey(veb_hm_t key);
 
+   std::pair<bool, std::reference_wrapper<ValueType>> GetValue(veb_hm_t key);
+
+
     void Insert(veb_hm_t key, ValueType value);
 
     void Delete(veb_hm_t key);
@@ -44,6 +47,8 @@ public:
     std::tuple<VEBTreeNodeKeyType, veb_hm_t, ValueType> Successor(veb_hm_t key);
 
     std::tuple<VEBTreeNodeKeyType, veb_hm_t , ValueType> Predecessor(veb_hm_t key);
+
+    [[nodiscard]] bool IsEmpty() const;
 };
 
 

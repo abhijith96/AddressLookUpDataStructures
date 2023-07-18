@@ -16,7 +16,7 @@ IpRange::IpRange(IPAddress startIp, IPAddress endIp): startIp_(startIp), endIp_(
 }
 
 ip_t IpRange::GetCapacity() const{
-    return endIp_.GetValue() - startIp_.GetValue();
+    return (endIp_.GetValue() + 1) - startIp_.GetValue();
 }
 
 ip_t IpRange::GetStartIP() const {

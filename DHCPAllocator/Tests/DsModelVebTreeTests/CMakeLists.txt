@@ -1,9 +1,9 @@
 add_executable(TestSubNetInsertion TestSubNetInsertion.cpp)
-target_link_libraries(TestSubNetInsertion Models gtest::gtest)
+target_link_libraries(TestSubNetInsertion PUBLIC Models gtest::gtest)
 
 
 add_executable(TestSubnetHosts TestSubnetHosts.cpp)
-target_link_libraries(TestSubnetHosts Models gtest::gtest)
+target_link_libraries(TestSubnetHosts PUBLIC Models gtest::gtest)
 
 add_executable(TestSubnetDeletionsAndReInsertions TestSubnetDeletionsAndReInsertions.cpp)
-target_link_libraries(TestSubnetDeletionsAndReInsertions Models gtest::gtest)
+target_link_libraries(TestSubnetDeletionsAndReInsertions PUBLIC Models gtest::gtest)

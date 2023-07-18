@@ -4,11 +4,17 @@
 
 #include  "VEBTreeWithHashMap.h"
 
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMapFreeSlotObject.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeValueObject.h>
+
 
 template <typename ValueType>
 VEBTreeWithHashMap<ValueType>::VEBTreeWithHashMap(veb_hm_t universe) :root_veb_tree_(
       std::move(std::make_unique<VEBTreeWithHashMapNode<ValueType>>(std::bit_ceil(universe)))
         ){
+    if(universe == std::numeric_limits<veb_hm_t>::max()){
+        root_veb_tree_ = std::move(std::make_unique<VEBTreeWithHashMapNode<ValueType>>(universe));
+    }
 
 }
 
@@ -81,6 +87,45 @@ std::tuple<bool, veb_hm_t, ValueType> VEBTreeWithHashMap<ValueType>::FindKey(veb
 }
 
 template <typename ValueType>
+std::pair<bool, std::reference_wrapper<ValueType>>   VEBTreeWithHashMap<ValueType>::GetValue(veb_hm_t key){
+    bool notFound = false;
+    if(root_veb_tree_.get()) {
+
+        VEBTreeWithHashMapNode<ValueType> *currentNode = root_veb_tree_.get();
+        while (true) {
+            if (!currentNode->IsSet()) {
+                notFound = true;
+                break;
+            }
+            if (key < currentNode->GetMinKey() || key > currentNode->GetMaxKey()) {
+               notFound = true;
+               break;
+            }
+            if (key == currentNode->GetMinKey()) {
+               return {true, {currentNode->GetMinValue()}};
+            }
+            if (key == currentNode->GetMaxKey()) {
+               return {true, {currentNode->GetMaxValue()}};
+            }
+
+            veb_hm_t clusterIndex = High(key, currentNode->GetUniverse());
+            veb_hm_t clusterKey = Low(key, currentNode->GetUniverse());
+
+            if (currentNode->IsClusterSet(clusterIndex)) {
+                currentNode = &currentNode->GetCluster(clusterIndex);
+                key = clusterKey;
+            } else {
+                notFound = true;
+                break;
+            }
+        }
+    }
+    ValueType valueType;
+    return {false, valueType};
+
+}
+
+template <typename ValueType>
 void  VEBTreeWithHashMap<ValueType>::Insert(veb_hm_t key, ValueType value){
     InsertHelper(*root_veb_tree_, key, value);
 }
@@ -97,6 +142,11 @@ std::tuple<VEBTreeNodeKeyType, veb_hm_t, ValueType> VEBTreeWithHashMap<ValueType
 template <typename ValueType>
 std::tuple<VEBTreeNodeKeyType, veb_hm_t , ValueType> VEBTreeWithHashMap<ValueType>::Predecessor(veb_hm_t key){
     return GetPredecessorHelper(*root_veb_tree_, key);
+}
+
+template <typename ValueType>
+bool  VEBTreeWithHashMap<ValueType>::IsEmpty() const{
+    return !root_veb_tree_->IsSet();
 }
 
 template <typename ValueType>
@@ -191,7 +241,7 @@ void  VEBTreeWithHashMap<ValueType>::DeleteHelper(VEBTreeWithHashMapNode<ValueTy
     else if(currentNode.GetMinKey() == key){
         veb_hm_t newMinKeyCluster = currentNode.GetSummary().GetMinKey();
         veb_hm_t newMinKeyIndex = currentNode.GetCluster(newMinKeyCluster).GetMinKey();
-        veb_hm_t newMinValue = currentNode.GetCluster(newMinKeyCluster).GetMinValue();
+        ValueType newMinValue = currentNode.GetCluster(newMinKeyCluster).GetMinValue();
         veb_hm_t  newMinKeyIndexInCurrentUniverse = Index(newMinKeyCluster, newMinKeyIndex, currentNode.GetUniverse());
         currentNode.SetMinKey(newMinKeyIndexInCurrentUniverse);
         currentNode.SetMinValue(newMinValue);
@@ -313,6 +363,8 @@ std::tuple<VEBTreeNodeKeyType, veb_hm_t, ValueType>  VEBTreeWithHashMap<ValueTyp
 
 template class VEBTreeWithHashMap<int>;
 template class VEBTreeWithHashMap<veb_hm_t>;
+template class VEBTreeWithHashMap<VEBTreeValueObject>;
+template class VEBTreeWithHashMap<VebTreeWithHashMapFreeSlotObject>;
 
 
 
