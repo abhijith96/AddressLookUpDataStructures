@@ -1,64 +1,70 @@
 //
+// Created by Abhijith  K A on 22/07/23.
+//
+//
 // Created by Abhijith  K A on 18/07/23.
 //
 
 #include <chrono>
 
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelHashedVebTreeImpl.h>
+#include <DHCPAllocator/src/Models/DSModelTreeImpl/DSModelTreeImpl.h>
 #include <DHCPAllocator/src/Models/IPAddress.h>
 #include <DHCPAllocator/src/Models/IpRange.h>
 #include <iostream>
 #include <bit>
+#include <cmath>
 
-std::unique_ptr<DSModelHashedVebTreeImpl> GetDSModelWithCapacity(uint32_t capacityLog2){
+
+const ip_t globalTotalCapacity = static_cast<ip_t>( std::pow(2,28));
+std::unique_ptr<DSModelTreeImpl> GetDSModelWithCapacity(uint32_t capacityLog2){
     const ip_t capacity = static_cast<ip_t >(std::pow(2, capacityLog2)) - 1;
     const ip_t startIp = 0;
     const ip_t endIp = startIp + capacity;
     IpRange ipRange{IPAddress{startIp}, IPAddress{endIp}};
-    DSModelHashedVebTreeImpl dsModelHashedVebTree{ipRange};
-    return std::make_unique<DSModelHashedVebTreeImpl>(std::move(dsModelHashedVebTree));
+    DSModelTreeImpl dsModelTreeImpl{};
+    return std::make_unique<DSModelTreeImpl>(std::move(dsModelTreeImpl));
 
 }
 
-void InsertSubnets(DSModelHashedVebTreeImpl& dsModelHashedVebTreeImpl, ip_t subNetCapacity){
-    ip_t totalCapacity = dsModelHashedVebTreeImpl.GetIpRange().GetCapacity();
+void InsertSubnets(DSModelTreeImpl& DSModelTreeImpl, ip_t subNetCapacity){
+    ip_t totalCapacity = globalTotalCapacity;
     for(size_t start = 0; start < totalCapacity;start += subNetCapacity){
         MacID subnetMacId{start};
         ip_t startIp;
         bool isInserted;
-      std::tie(isInserted, startIp) =  dsModelHashedVebTreeImpl.InsertSubnet(subnetMacId, subNetCapacity);
+        std::tie(isInserted, startIp) =  DSModelTreeImpl.InsertSubnet(subnetMacId, subNetCapacity);
     }
 }
 
-void InsertSubnetsAgain(DSModelHashedVebTreeImpl& dsModelHashedVebTreeImpl, ip_t subNetCapacity){
-    ip_t totalCapacity = dsModelHashedVebTreeImpl.GetIpRange().GetCapacity();
+void InsertSubnetsAgain(DSModelTreeImpl& DSModelTreeImpl, ip_t subNetCapacity){
+    ip_t totalCapacity = globalTotalCapacity;
     for(size_t start = 1; start < totalCapacity;start += subNetCapacity){
         MacID subnetMacId{start};
         ip_t startIp;
         bool isInserted;
-        std::tie(isInserted, startIp) =  dsModelHashedVebTreeImpl.InsertSubnet(subnetMacId, subNetCapacity);
+        std::tie(isInserted, startIp) =  DSModelTreeImpl.InsertSubnet(subnetMacId, subNetCapacity);
     }
 }
 
-void DeleteHalfOfSubnets(DSModelHashedVebTreeImpl& dsModelHashedVebTreeImpl, ip_t subNetCapacity){
-    ip_t totalCapacity = dsModelHashedVebTreeImpl.GetIpRange().GetCapacity();
+void DeleteHalfOfSubnets(DSModelTreeImpl& DSModelTreeImpl, ip_t subNetCapacity){
+    ip_t totalCapacity = globalTotalCapacity;
     ip_t  two = 2;
     for(size_t start = 0; start < totalCapacity;start += two * subNetCapacity){
         MacID subnetMacId{start};
         ip_t startIp;
         bool isDeleted;
-        dsModelHashedVebTreeImpl.DeleteSubnet(start);
+        DSModelTreeImpl.DeleteSubnet(start);
     }
 }
 
-ip_t QueryHostsInActiveSubNets(DSModelHashedVebTreeImpl& dsModelHashedVebTreeImpl, ip_t subNetCapacity){
-    ip_t totalCapacity = dsModelHashedVebTreeImpl.GetIpRange().GetCapacity();
+ip_t QueryHostsInActiveSubNets(DSModelTreeImpl& DSModelTreeImpl, ip_t subNetCapacity){
+    ip_t totalCapacity = globalTotalCapacity;
     ip_t  two = 2;
     ip_t networkCount = 0;
     for(size_t start = subNetCapacity; start < totalCapacity;start += two * subNetCapacity){
-       ip_t hostIp = start + 10;
-       auto [isNetworkPresent, networkIp] = dsModelHashedVebTreeImpl.GetNetWorkIP(hostIp);
-       if(isNetworkPresent) ++ networkCount;
+        ip_t hostIp = start + 10;
+        auto [isNetworkPresent, networkIp] = DSModelTreeImpl.GetNetWorkIP(hostIp);
+        if(isNetworkPresent) ++ networkCount;
     }
 
     return networkCount;
@@ -70,23 +76,18 @@ ip_t QueryHostsInActiveSubNets(DSModelHashedVebTreeImpl& dsModelHashedVebTreeImp
 
 int main(){
 
-    ip_t capacityLog2 = 28;
-    std::unique_ptr<DSModelHashedVebTreeImpl> dsModelHashedVebTreeImpl =   GetDSModelWithCapacity(capacityLog2);
-
-    auto IpRange = dsModelHashedVebTreeImpl->GetIpRange();
-
-    std::cout<<"current Total address space length : "<<IpRange.GetCapacity()<<"\n";
+    ip_t capacityLog2 = 32;
+    std::unique_ptr<DSModelTreeImpl> DSModelTreeImpl =   GetDSModelWithCapacity(capacityLog2);
 
 
-
-
+    ip_t subnetCapacity = 1000;
     // Record the start time
     auto startTime = std::chrono::high_resolution_clock::now();
 
-    ip_t subnetCapacity = 1000;
 
 
-        InsertSubnets(*dsModelHashedVebTreeImpl, subnetCapacity);
+
+    InsertSubnets(*DSModelTreeImpl, subnetCapacity);
 
 
     // Record the end time
@@ -103,15 +104,15 @@ int main(){
 
     //ip_t testHostIp = 429496000;
 
-    ip_t testHostIp = 99;
+    ip_t testHostIp = 2000000;
 
-    std::tie(isPresent, networkIp) = dsModelHashedVebTreeImpl->GetNetWorkIP(testHostIp);
+    std::tie(isPresent, networkIp) = DSModelTreeImpl->GetNetWorkIP(testHostIp);
     if(!isPresent){
         std::cout<<"Bug in benchmarking\n";
     }
+    auto averageTimePerIteration = static_cast<double>(duration);
 
-
-    std::cout << " time per insertion: " << duration << " milli seconds" << std::endl;
+    std::cout << "Average time per iteration: " << averageTimePerIteration << " milli seconds" << std::endl;
 
 
     // Record the start time
@@ -119,7 +120,7 @@ int main(){
 
 
 
-    DeleteHalfOfSubnets(*dsModelHashedVebTreeImpl, subnetCapacity);
+    DeleteHalfOfSubnets(*DSModelTreeImpl, subnetCapacity);
 
 
     // Record the end time
@@ -129,12 +130,12 @@ int main(){
     auto duration_2 = std::chrono::duration_cast<std::chrono::milliseconds>(endTime_2 - startTime_2).count();
 
 
-    std::tie(isPresent, networkIp) = dsModelHashedVebTreeImpl->GetNetWorkIP(testHostIp);
+    std::tie(isPresent, networkIp) = DSModelTreeImpl->GetNetWorkIP(testHostIp);
     if(!isPresent){
         std::cout<<"Bug in benchmarking\n";
     }
     {
-        std::tie(isPresent, networkIp) = dsModelHashedVebTreeImpl->GetNetWorkIP(10);
+        std::tie(isPresent, networkIp) = DSModelTreeImpl->GetNetWorkIP(10);
         if(isPresent){
             std::cout<<"Bug in benchmarking 2\n";
         }
@@ -149,7 +150,7 @@ int main(){
 
 
 
-    ip_t networkCount = QueryHostsInActiveSubNets(*dsModelHashedVebTreeImpl, subnetCapacity);
+    ip_t networkCount = QueryHostsInActiveSubNets(*DSModelTreeImpl, subnetCapacity);
 
 
     // Record the end time
