@@ -38,3 +38,7 @@ std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId> &Subnet::GetHostMacIpMap
     return host_mac_ip_map_;
 }
 
+std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId> Subnet::GetHostMacIpMapCopy() const {
+    return host_mac_ip_map_;
+}
+

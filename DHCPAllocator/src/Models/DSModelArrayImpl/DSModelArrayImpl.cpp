@@ -53,7 +53,7 @@ bool DSModelArrayImpl::DeleteSubnet(ip_t subnet_ip) {
         MacID macId = subnet.GetMacId();
         subnet_mac_ip_map_.erase(macId); //remove subnet mac id to ip mapping
         subnet_routing_map_.erase(subnet_ip);
-        SetFreeSlots(subnet_ip, subnet.GetCapacity());//todo insert to free slot
+        SetFreeSlots(subnet_ip, subnet.GetCapacity());
         subnets_.erase(subnet_ip);
         return true;
     } else
@@ -247,14 +247,22 @@ void DSModelArrayImpl::add_host_mac_ip_mapping(Subnet &subnet, ip_t host_ip, Mac
     mac_ip_map.insert({host_mac_id, host_ip});
 }
 
-void DSModelArrayImpl::optimizeSubnetAllocationSpace() {
+std::unordered_map<std::string, std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId>> DSModelArrayImpl::optimizeSubnetAllocationSpace() {
+
+    std::unordered_map<std::string, std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId>> new_assignments;
+
+    std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId> new_subnet_assignments;
+    std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId> new_host_assignments;
+
     //make copy of subnets (it has all the details)
-    auto subnets_copy = subnets_; //todo create deep copy
+    auto  subnets_copy = subnets_; //todo create deep copy
+
     //clear all subnet maps
     subnets_.clear();
     subnet_routing_map_.clear();
     subnet_mac_ip_map_.clear();
     free_slots_list_.clear();
+    free_slots_list_.insert(free_slots_list_.begin(), FreeSlotObject(0, std::numeric_limits<int32_t>::max()));
 
     //loop through the subnets_copy and recreate the subnets without leaving any free slots in between
     for (const auto& pair : subnets_copy) {
@@ -262,17 +270,36 @@ void DSModelArrayImpl::optimizeSubnetAllocationSpace() {
         Subnet subnet = pair.second;
         MacID subnet_mac_id = subnet.GetMacId();
         int subnet_capacity = subnet.GetCapacity();
+
+        std::cout << "Creating subnet with MAC ID - " << subnet_mac_id.GetValue() << " old network ip - " << network_start_ip << " capacity - " << subnet_capacity << std::endl;
+
         auto host_mac_ip_map_copy = subnet.GetHostMacIpMap();
 
         //create subnets with required capacity
         auto insert_subnet_response = InsertSubnet(subnet_mac_id, subnet_capacity);
-        std::cout << "Created subnet " << insert_subnet_response.first << " " << insert_subnet_response.second << std::endl;
         if (insert_subnet_response.first) {
+            ip_t new_subnet_ip = insert_subnet_response.second;
+            std::cout << "Created subnet with MAC ID - " << subnet_mac_id.GetValue() << " new IP - " << new_subnet_ip << std::endl;
+
+            new_subnet_assignments.insert({subnet_mac_id, new_subnet_ip}); //insert the newly assigned IP to the map
+
             // iterate and create the subnet hosts
             for (const auto &host_pair: host_mac_ip_map_copy) {
-                std::cout << "Created host " << host_pair.first.GetValue() << std::endl;
-                InsertSubnetHost(host_pair.first, insert_subnet_response.second);
+                MacID host_mac_id = host_pair.first;
+                std::cout << "Creating host " << host_mac_id.GetValue() << " in subnet - "<< new_subnet_ip << std::endl;
+                auto insert_subnet_host_response = InsertSubnetHost(host_mac_id, new_subnet_ip);
+
+                if (insert_subnet_host_response.first) {
+                    ip_t new_host_ip = insert_subnet_host_response.second;
+                    std::cout << "Created host with MAC ID - " << host_mac_id.GetValue() << " in subnet - " << new_subnet_ip << " new IP - " << new_host_ip << std::endl;
+
+                    new_host_assignments.insert({host_mac_id, new_host_ip}); //insert the newly assigned IP to the map
+
+                }
             }
         }
     }
+    new_assignments.insert({"subnets", new_subnet_assignments});
+    new_assignments.insert({"hosts", new_host_assignments});
+    return new_assignments;
 }

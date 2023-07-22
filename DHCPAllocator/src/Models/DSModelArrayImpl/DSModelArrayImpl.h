@@ -64,7 +64,8 @@ public:
 
     std::vector<FreeSlotObject> GetFreeSlotsList();
 
-    void optimizeSubnetAllocationSpace();
+    std::unordered_map<std::string, std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId>>
+    optimizeSubnetAllocationSpace();
 
 };
 

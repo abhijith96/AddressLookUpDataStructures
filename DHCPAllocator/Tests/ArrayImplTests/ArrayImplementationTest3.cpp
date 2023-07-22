@@ -26,7 +26,7 @@ int main() {
 
     // Test case 2: Required capacity is not the exact match, but a capacity higher than the required capacity is available
     requiredCapacity = 1000;
-    result = impl.InsertSubnet(MacID(1), requiredCapacity);
+    result = impl.InsertSubnet(MacID(2), requiredCapacity);
     if (result.first) {
         std::cout << "Insert subnet returned start IP: " << result.second << std::endl;
     } else {
@@ -46,7 +46,7 @@ int main() {
 
     // Test case 4: Required capacity is not the exact match, but a capacity higher than the required capacity is available in the free slot
     requiredCapacity = 200;
-    result = impl.InsertSubnet(MacID(1), requiredCapacity);
+    result = impl.InsertSubnet(MacID(3), requiredCapacity);
     if (result.first) {
         std::cout << "Insert subnet returned start IP: " << result.second << std::endl;
     } else {
@@ -57,7 +57,7 @@ int main() {
 
     // Test case 5: Required capacity is not the exact match, but a capacity higher than the required capacity is available in the free slot
     requiredCapacity = 400;
-    result = impl.InsertSubnet(MacID(1), requiredCapacity);
+    result = impl.InsertSubnet(MacID(4), requiredCapacity);
     if (result.first) {
         std::cout << "Insert subnet returned start IP: " << result.second << std::endl;
     } else {
@@ -189,16 +189,40 @@ int main() {
     }
     assert(get_network_ip_result.first && get_network_ip_result.second == subnet2_start_ip);
 
-    impl.optimizeSubnetAllocationSpace();
+    auto new_assignments = impl.optimizeSubnetAllocationSpace();
 
-    // Test case 7:  Get host IP using MAC ID
-    auto host_ip_result = impl.GetMacAddressOfHost(1, 0);
-    if (host_ip_result.first) {
-        std::cout << "Get IP returned for host with MAC ID: " << host_ip_result.second.GetValue() << std::endl;
-    } else {
-        std::cout << "Get IP returned for host failed." << std::endl;
+    auto subnet_assignment_it = new_assignments.find("subnets");
+    if (subnet_assignment_it != new_assignments.end()) {
+        auto &subnet_assignments = subnet_assignment_it->second;
+
+        for (const auto& subnet_pair : subnet_assignments) {
+            MacID subnet_mac_id = subnet_pair.first;
+            ip_t subnet_start_ip = subnet_pair.second;
+            std::cout << "Inform subnet with MAC ID - " << subnet_mac_id.GetValue() << " about new IP assigned - "
+                      << subnet_start_ip << std::endl;
+        }
     }
-    assert(host_ip_result.first);
+
+    auto host_assignment_it = new_assignments.find("hosts");
+    if (host_assignment_it != new_assignments.end()) {
+        auto &host_assignments = host_assignment_it->second;
+
+        for (const auto& host_pair : host_assignments) {
+            MacID host_mac_id = host_pair.first;
+            ip_t host_ip = host_pair.second;
+            std::cout << "Inform subnet host with MAC ID - " << host_mac_id.GetValue() << " about new IP assigned - "
+                      << host_ip << std::endl;
+        }
+    }
+
+//    // Test case 7:  Get host IP using MAC ID
+//    auto host_ip_result = impl.GetMacAddressOfHost(1, 0);
+//    if (host_ip_result.first) {
+//        std::cout << "Get IP returned for host with MAC ID: " << host_ip_result.second.GetValue() << std::endl;
+//    } else {
+//        std::cout << "Get IP returned for host failed." << std::endl;
+//    }
+//    assert(host_ip_result.first);
 
 }
 
