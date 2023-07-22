@@ -30,6 +30,16 @@ void InsertSubnets(DSModelHashedVebTreeImpl& dsModelHashedVebTreeImpl, ip_t subN
     }
 }
 
+void InsertSubnetsAgain(DSModelHashedVebTreeImpl& dsModelHashedVebTreeImpl, ip_t subNetCapacity){
+    ip_t totalCapacity = dsModelHashedVebTreeImpl.GetIpRange().GetCapacity();
+    for(size_t start = 1; start < totalCapacity;start += subNetCapacity){
+        MacID subnetMacId{start};
+        ip_t startIp;
+        bool isInserted;
+        std::tie(isInserted, startIp) =  dsModelHashedVebTreeImpl.InsertSubnet(subnetMacId, subNetCapacity);
+    }
+}
+
 void DeleteHalfOfSubnets(DSModelHashedVebTreeImpl& dsModelHashedVebTreeImpl, ip_t subNetCapacity){
     ip_t totalCapacity = dsModelHashedVebTreeImpl.GetIpRange().GetCapacity();
     ip_t  two = 2;
@@ -73,7 +83,7 @@ int main(){
     // Record the start time
     auto startTime = std::chrono::high_resolution_clock::now();
 
-    ip_t subnetCapacity = 1000;
+    ip_t subnetCapacity = 100;
 
 
         InsertSubnets(*dsModelHashedVebTreeImpl, subnetCapacity);
@@ -91,7 +101,9 @@ int main(){
     ip_t networkIp ;
     bool isPresent;
 
-    ip_t testHostIp = 429496000;
+    //ip_t testHostIp = 429496000;
+
+    ip_t testHostIp = 99;
 
     std::tie(isPresent, networkIp) = dsModelHashedVebTreeImpl->GetNetWorkIP(testHostIp);
     if(!isPresent){
