@@ -5,7 +5,6 @@
 #ifndef DHCPALLOCATOR_MACID_H
 #define DHCPALLOCATOR_MACID_H
 #include <cstdint>
-#include <ctype.h>
 #include <functional>
 
 
