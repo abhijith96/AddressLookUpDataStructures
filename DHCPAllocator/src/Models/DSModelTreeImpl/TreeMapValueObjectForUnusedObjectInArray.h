@@ -11,12 +11,12 @@
 class TreeMapValueObjectForUnusedObjectInArray {
 private:
     ip_t start_ip_;
-    int capacity_;
+    ip_t capacity_;
 
 public:
-    TreeMapValueObjectForUnusedObjectInArray(ip_t start_ip, int capacity);
+    TreeMapValueObjectForUnusedObjectInArray(ip_t start_ip, ip_t capacity);
     [[nodiscard]] ip_t GetStartIP() const;
-    [[nodiscard]] int GetCapacity() const;
+    [[nodiscard]] ip_t GetCapacity() const;
 
 };
 

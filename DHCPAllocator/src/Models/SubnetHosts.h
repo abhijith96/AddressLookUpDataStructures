@@ -25,7 +25,7 @@ public:
     std::pair<bool, ip_t> GetHostIp(ip_t subnetIp, MacID hostMacId);
     std::pair<bool, MacID> GetHostMacId(ip_t subnetIp, ip_t hostIp);
 
-    ip_t GetCapacity() const;
+    [[nodiscard]] ip_t GetCapacity() const;
 
 };
 

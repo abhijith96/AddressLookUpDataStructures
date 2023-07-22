@@ -5,27 +5,28 @@
 #ifndef DHCPALLOCATOR_DSMODELSINGLETON_H
 #define DHCPALLOCATOR_DSMODELSINGLETON_H
 
-#include <DHCPAllocator/src/Models/DSModel.h>
+#include <DHCPAllocator/src/Models/DSModelmpl.h>
 #include <string>
 #include <memory>
 #include <utility>
-#include "DSModel.h"
+#include <DHCPAllocator/src/Models/DSModelType.h>
 
 class DSModelSingleton {
 
 private:
    static DSModelSingleton* dsModelSingleton_;
-   std::unique_ptr<DSModel> dsModel_;
+   DSModelmpl* dsModel_;
+   DSModelType dsModelType_;
 
- explicit  DSModelSingleton(std::string dsModelType);
+ explicit  DSModelSingleton(DSModelType dsModelType);
 
-
+ ~DSModelSingleton();
 
 public:
 
-   static DSModelSingleton& GetSingletonInstance(std::string modelType);
+   static DSModelSingleton& GetSingletonInstance(DSModelType modelType);
 
-  DSModel& GetDSModel();
+  DSModelmpl & GetDSModel();
 
 };
 

@@ -11,11 +11,11 @@
 
 class TreeMapValueObject {
 private:
-    int capacity_;
+    ip_t capacity_;
     MacID macId_;
 public:
-    TreeMapValueObject(int capacity, MacID macId);
-    [[nodiscard]] int GetCapacity() const;
+    TreeMapValueObject(ip_t capacity, MacID macId);
+    [[nodiscard]] ip_t GetCapacity() const;
     [[nodiscard]] MacID GetMacAddress() const;
 
 };

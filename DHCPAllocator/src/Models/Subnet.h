@@ -18,7 +18,7 @@ class Subnet {
 
 private:
     MacID mac_id_;
-    int capacity_;
+    ip_t capacity_;
     ip_t last_assigned_host_ip_;
     std::vector<ip_t> unused_host_ips_;
     boost::container::flat_map<ip_t, Host> hosts_;
@@ -29,7 +29,7 @@ public:
 
     [[nodiscard]] MacID GetMacId() const;
 
-    [[nodiscard]] int GetCapacity() const;
+    [[nodiscard]] ip_t GetCapacity() const;
 
     [[nodiscard]] ip_t GetLastAssignedHostIp() const;
 

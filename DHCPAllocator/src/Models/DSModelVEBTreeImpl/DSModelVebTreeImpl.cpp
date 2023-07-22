@@ -53,7 +53,7 @@ std::pair<bool, ip_t>  DSModelVebTreeImpl::InsertSubnetHost(MacID hostMacId, ip_
     }
 }
 
-void DSModelVebTreeImpl::DeleteSubnet(ip_t start_ip) {
+bool DSModelVebTreeImpl::DeleteSubnet(ip_t start_ip) {
     if(start_ip < std::numeric_limits<ip_t>::max()){
         ip_t startIpInVEBTree = ConvertIpAddressFromIpRangeAddressSpaceToVebTreeAddressSpace(start_ip);
         vebTreeMap_.Delete(startIpInVEBTree);
@@ -64,7 +64,9 @@ void DSModelVebTreeImpl::DeleteSubnet(ip_t start_ip) {
             subnetToHostsMap_.erase(iter);
             freeSubNetSlots_.emplace(VebTreeFreeSlotsObject{start_ip, capacity});
         }
+        return true;
     }
+    return false;
 }
 
 
@@ -101,8 +103,8 @@ ip_t DSModelVebTreeImpl::ConvertIpAddressFromVebTreeToIpRangeAddressSpace(ip_t i
     return ipInVebTree + ipRange_.GetStartIP();
 }
 
-void DSModelVebTreeImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
-
+bool DSModelVebTreeImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
+    return false;
 }
 
 std::pair<bool, ip_t> DSModelVebTreeImpl::GetHostIpAddress(MacID macId, ip_t subnet_ip) {

@@ -5,7 +5,7 @@
 #include "DSModelArrayImpl.h"
 #include <iostream>
 
-std::pair<bool, ip_t> DSModelArrayImpl::InsertSubnet(MacID sub_net_mac_id, int capacity) {
+std::pair<bool, ip_t> DSModelArrayImpl::InsertSubnet(MacID sub_net_mac_id, ip_t capacity) {
     if(capacity < 3) { //todo check if the check has to be <2 or <3
         // every subnet requires 2 reserved IPs for subnet IP and broadcast IP
         return {false, 0};
@@ -158,7 +158,7 @@ std::pair<bool, MacID> DSModelArrayImpl::GetMacAddressOfHost(ip_t hostIpAddress,
     }
 }
 
-std::optional<std::vector<FreeSlotObject>::iterator> DSModelArrayImpl::GetBestFitIp(int requiredCapacity) {
+std::optional<std::vector<FreeSlotObject>::iterator> DSModelArrayImpl::GetBestFitIp(ip_t requiredCapacity) {
 
     auto compare = [](const FreeSlotObject& arrayItem, const FreeSlotObject& requiredItem) {
         return arrayItem.GetCapacity() < requiredItem.GetCapacity();
@@ -175,7 +175,7 @@ std::optional<std::vector<FreeSlotObject>::iterator> DSModelArrayImpl::GetBestFi
 
 }
 
-void DSModelArrayImpl::UpdateFreeSlotsList(std::vector<FreeSlotObject>::iterator iter, int requiredCapacity) {
+void DSModelArrayImpl::UpdateFreeSlotsList(std::vector<FreeSlotObject>::iterator iter, ip_t requiredCapacity) {
     if (iter->GetCapacity() == requiredCapacity) {
         free_slots_list_.erase(iter);
     } else {
@@ -186,7 +186,7 @@ void DSModelArrayImpl::UpdateFreeSlotsList(std::vector<FreeSlotObject>::iterator
     }
 }
 
-[[maybe_unused]] void DSModelArrayImpl::SetFreeSlots(ip_t startIp, int freeCapacity) {
+[[maybe_unused]] void DSModelArrayImpl::SetFreeSlots(ip_t startIp, ip_t freeCapacity) {
     FreeSlotObject free_slot = FreeSlotObject(startIp, freeCapacity);
 
     auto compare = [] (const FreeSlotObject& arrayItem, const FreeSlotObject requiredItem){

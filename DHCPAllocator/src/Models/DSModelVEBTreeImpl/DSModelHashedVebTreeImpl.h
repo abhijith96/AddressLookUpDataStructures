@@ -42,9 +42,11 @@ public:
 
     std::pair<bool, ip_t> InsertSubnetHost(MacID hostMacId, ip_t subnetIp) override;
 
-    void DeleteSubnet(ip_t start_ip) override;
+    bool DeleteSubnet(ip_t start_ip) override;
 
-    void DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) override;
+
+    bool DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) override;
+
 
     std::pair<bool, ip_t> DeleteHostFromSubnet(MacID host_mac, ip_t subnet_ip);
 

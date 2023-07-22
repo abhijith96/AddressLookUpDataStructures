@@ -20,11 +20,11 @@ public:
 
     IpRange& operator=(const IpRange& other);
 
-    ip_t GetCapacity  () const;
+    [[nodiscard]] ip_t GetCapacity  () const;
 
     [[nodiscard]] ip_t GetStartIP() const;
 
-    ip_t GetEndIP() const;
+    [[nodiscard]] ip_t GetEndIP() const;
 };
 
 

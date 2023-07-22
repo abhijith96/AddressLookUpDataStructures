@@ -8,11 +8,11 @@ ip_t TreeMapValueObjectForUnusedObjectInArray::GetStartIP() const {
     return start_ip_;
 }
 
-TreeMapValueObjectForUnusedObjectInArray::TreeMapValueObjectForUnusedObjectInArray(ip_t start_ip, int capacity):start_ip_(start_ip),
-capacity_(capacity){
+TreeMapValueObjectForUnusedObjectInArray::TreeMapValueObjectForUnusedObjectInArray(ip_t start_ip, ip_t capacity): start_ip_(start_ip),
+                                                                                                                  capacity_(capacity){
 
 }
 
-int TreeMapValueObjectForUnusedObjectInArray::GetCapacity() const {
+ip_t TreeMapValueObjectForUnusedObjectInArray::GetCapacity() const {
     return capacity_;
 }

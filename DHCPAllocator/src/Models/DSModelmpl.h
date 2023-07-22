@@ -18,7 +18,12 @@ public:
   * Pure virtual function hence zero
   * @param subnet
   * returns starting ip address of subnet inserted
+  *
   */
+
+    DSModelmpl(){
+
+    }
    virtual std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, ip_t capacity) = 0;
 
 
