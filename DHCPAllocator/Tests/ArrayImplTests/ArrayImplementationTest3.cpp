@@ -191,27 +191,18 @@ int main() {
 
     auto new_assignments = impl.optimizeSubnetAllocationSpace();
 
-    auto subnet_assignment_it = new_assignments.find("subnets");
-    if (subnet_assignment_it != new_assignments.end()) {
-        auto &subnet_assignments = subnet_assignment_it->second;
+    for (const auto& subnet_pair : new_assignments) {
+        MacID subnet_mac_id = subnet_pair.first;
+        auto subnet = subnet_pair.second;
+        ip_t subnet_start_ip = subnet.first;
+        std::cout << "Inform subnet with MAC ID - " << subnet_mac_id.GetValue() << " about new IP assigned - "
+                  << subnet_start_ip << std::endl;
 
-        for (const auto& subnet_pair : subnet_assignments) {
-            MacID subnet_mac_id = subnet_pair.first;
-            ip_t subnet_start_ip = subnet_pair.second;
-            std::cout << "Inform subnet with MAC ID - " << subnet_mac_id.GetValue() << " about new IP assigned - "
-                      << subnet_start_ip << std::endl;
-        }
-    }
-
-    auto host_assignment_it = new_assignments.find("hosts");
-    if (host_assignment_it != new_assignments.end()) {
-        auto &host_assignments = host_assignment_it->second;
-
-        for (const auto& host_pair : host_assignments) {
-            MacID host_mac_id = host_pair.first;
-            ip_t host_ip = host_pair.second;
-            std::cout << "Inform subnet host with MAC ID - " << host_mac_id.GetValue() << " about new IP assigned - "
-                      << host_ip << std::endl;
+        for (const auto &host: subnet.second) {
+            MacID host_macId = host.first;
+            ip_t host_ip = host.second;
+            std::cout << "Inform host with MAC ID - " << host_macId.GetValue() << "in subnet - " << subnet_start_ip
+                      << " about new IP assigned - " << host_ip << std::endl;
         }
     }
 
