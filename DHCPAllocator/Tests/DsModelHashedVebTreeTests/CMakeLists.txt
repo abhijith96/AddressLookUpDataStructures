@@ -1,0 +1,9 @@
+add_executable(DsModelHashedVebTreeTestSubnetInsert DsModelHashedVebTreeTestSubnetInsert.cpp)
+target_link_libraries(DsModelHashedVebTreeTestSubnetInsert Models gtest::gtest)
+
+
+add_executable(DsModelHashedVebTreeTestSubnetHosts DsModelHashedVebTreeTestSubnetHosts.cpp)
+target_link_libraries(DsModelHashedVebTreeTestSubnetHosts Models gtest::gtest)
+
+add_executable(DsModelHashedVebTreeTestSubnetReInsertions DSModelHashedVebTreeTestReinsertions.cpp)
+target_link_libraries(DsModelHashedVebTreeTestSubnetReInsertions Models gtest::gtest)

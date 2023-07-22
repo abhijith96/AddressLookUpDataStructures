@@ -14,7 +14,7 @@ MacID Subnet::GetMacId() const {
     return mac_id_;
 }
 
-int Subnet::GetCapacity() const {
+ip_t Subnet::GetCapacity() const {
     return capacity_;
 }
 

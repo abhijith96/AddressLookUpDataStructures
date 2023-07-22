@@ -2,15 +2,15 @@
 // Created by Abhijith  K A on 11/07/23.
 //
 
-#include "TreeMapValueObject.h"
+#include <DHCPAllocator/src/Models/DSModelTreeImpl/TreeMapValueObject.h>
 
 
-TreeMapValueObject::TreeMapValueObject(int capacity, MacID macId): capacity_(capacity),
-                                                                   macId_(macId){
+TreeMapValueObject::TreeMapValueObject(ip_t capacity, MacID macId): capacity_(capacity),
+                                                                    macId_(macId){
 
 }
 
-int TreeMapValueObject::GetCapacity() const {
+ip_t TreeMapValueObject::GetCapacity() const {
     return capacity_;
 }
 

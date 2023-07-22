@@ -6,7 +6,7 @@
 #define DHCPALLOCATOR_DSMODELMPL_H
 
 #include <DHCPAllocator/src/Models/Subnet.h>
-#include <DHCPAllocator/src/Models/SubnetHost.h>
+#include <DHCPAllocator/src/Models/SubnetHosts.h>
 #include <DHCPAllocator/src/Models/IPAddress.h>
 #include <DHCPAllocator/src/Models/MacID.h>
 #include <utility>
@@ -18,8 +18,13 @@ public:
   * Pure virtual function hence zero
   * @param subnet
   * returns starting ip address of subnet inserted
+  *
   */
-   virtual std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, int capacity) = 0;
+
+    DSModelmpl(){
+
+    }
+   virtual std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, ip_t capacity) = 0;
 
 
    /**

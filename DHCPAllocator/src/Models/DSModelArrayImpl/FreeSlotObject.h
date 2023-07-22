@@ -13,7 +13,7 @@ private:
     int capacity_;
 
 public:
-    FreeSlotObject(ip_t start_ip, int capacity);
+    FreeSlotObject(ip_t start_ip, ip_t capacity);
     [[nodiscard]] ip_t GetStartIP() const;
     [[nodiscard]] int GetCapacity() const;
 

@@ -5,11 +5,13 @@
 #include <iostream>
 #include <DHCPAllocator/src/Models/DSModelSingleton.h>
 #include <vector>
+#include <DHCPAllocator/src/Models/DSModelmpl.h>
+
 
 int main(){
-    std::string impl_type = "tree";
-    DSModelSingleton &dsModelSingleton = DSModelSingleton::GetSingletonInstance(impl_type);
-    DSModel& dsModel = dsModelSingleton.GetDSModel();
+    DSModelType dsModelType = DSModelType::TREE;
+    DSModelSingleton &dsModelSingleton = DSModelSingleton::GetSingletonInstance(dsModelType);
+    DSModelmpl& dsModel = dsModelSingleton.GetDSModel();
 
     std::cout << "Test cases for InsertSubnet" << std::endl;
     std::cout << "==================================================================\n" << std::endl;

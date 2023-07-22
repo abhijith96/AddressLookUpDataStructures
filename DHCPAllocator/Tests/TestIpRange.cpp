@@ -8,6 +8,7 @@
 #include <DHCPAllocator/src/Models/MacID.h>
 #include <boost/container/flat_map.hpp>
 #include <DHCPAllocator/src/Models/Subnet.h>
+#include <DHCPAllocator/src/Models/DSModelmpl.h>
 
 void TestIPRangeFunc(){
 
@@ -22,10 +23,9 @@ void TestIPRangeFunc(){
 }
 
 int main(){
-    std::string impl_type = "tree";
+    DSModelType impl_type = DSModelType::TREE;
     DSModelSingleton &dsModelSingleton = DSModelSingleton::GetSingletonInstance(impl_type);
-    DSModel& dsModel = dsModelSingleton.GetDSModel();
-    dsModel.GetIpAddress(MacID{10});
+    DSModelmpl& dsModel = dsModelSingleton.GetDSModel();
 
     TestIPRangeFunc();
 

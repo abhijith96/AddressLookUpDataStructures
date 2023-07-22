@@ -5,11 +5,11 @@
 #ifndef DHCPALLOCATOR_DSMODELTREEIMPL_H
 #define DHCPALLOCATOR_DSMODELTREEIMPL_H
 
-#include "DHCPAllocator/src/Models/Subnet.h"
-#include "DHCPAllocator/src/Models/SubnetHost.h"
-#include "DHCPAllocator/src/Models/DSModelmpl.h"
-#include "DHCPAllocator/src/Models/MacID.h"
-#include "DHCPAllocator/src/Models/IPAddress.h"
+#include <DHCPAllocator/src/Models/Subnet.h>
+#include <DHCPAllocator/src/Models/SubnetHosts.h>
+#include <DHCPAllocator/src/Models/DSModelmpl.h>
+#include <DHCPAllocator/src/Models/MacID.h>
+#include <DHCPAllocator/src/Models/IPAddress.h>
 
 #include <DHCPAllocator/src/Models/DSModelTreeImpl/TreeMapValueObject.h>
 #include <DHCPAllocator/src/Models/DSModelTreeImpl/TreeMapValueObjectForUnusedObjectInArray.h>
@@ -36,7 +36,7 @@ public:
     * @param subnet
     * returns starting ip address of subnet inserted
     */
-    std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, int capacity) override;
+    std::pair<bool, ip_t> InsertSubnet(MacID subNetMacId, ip_t capacity) override;
 
 
     /**
@@ -98,11 +98,11 @@ public:
 
     static void add_host_mac_ip_mapping(Subnet subnet, ip_t ip, MacID id);
 
-    std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator> GetBestFitIp(int requiredCapacity);
+    std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator> GetBestFitIp(ip_t requiredCapacity);
 
-    void UpdateFreeSlotsList(std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator iter, int requiredCapacity);
+    void UpdateFreeSlotsList(std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator iter, ip_t requiredCapacity);
 
-    [[maybe_unused]] void SetFreeSlots(ip_t startIp, int freeCapacity);
+    [[maybe_unused]] void SetFreeSlots(ip_t startIp, ip_t freeCapacity);
 
     std::vector<TreeMapValueObjectForUnusedObjectInArray> GetFreeSlotsList();
 

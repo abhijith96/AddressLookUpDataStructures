@@ -4,7 +4,7 @@
 
 #include "FreeSlotObject.h"
 
-FreeSlotObject::FreeSlotObject(ip_t start_ip, int capacity) : start_ip_(start_ip), capacity_(capacity) {
+FreeSlotObject::FreeSlotObject(ip_t start_ip, ip_t capacity) : start_ip_(start_ip), capacity_(capacity) {
 
 }
 
