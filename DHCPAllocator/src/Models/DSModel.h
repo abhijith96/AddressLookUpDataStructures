@@ -57,7 +57,7 @@ public:
 
 
 
-   void DeleteSubnet(ip_t start_ip){
+   bool DeleteSubnet(ip_t start_ip){
         dsModelmpl_->DeleteSubnet(start_ip);
     }
 
