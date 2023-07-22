@@ -22,10 +22,7 @@
 
 
 class DSModelTreeImpl : public DSModelmpl {
-//std::map<ip_t,TreeMapValueObject> treemap_;
-//std::vector<TreeMapValueObjectForUnusedObjectInArray> free_slots_list_;
-
-    boost::container::flat_map <ip_t , TreeMapValueObject> subnet_routing_map_;
+    std::map <ip_t , TreeMapValueObject> subnet_routing_tree_;
     std::unordered_map<ip_t , Subnet> subnets_;
     std::unordered_map<MacID , ip_t , HashMacId, EqualsMacId> subnet_mac_ip_map_;
 
@@ -62,7 +59,7 @@ public:
      * @param start_ip
      */
 
-     void DeleteSubnet(ip_t start_ip) override;
+    bool DeleteSubnet(ip_t start_ip) override;
 
 
     /**
@@ -70,7 +67,7 @@ public:
      * @param host_ip
      */
 
-    void DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) override;
+    bool DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) override;
 
     /**
      * For Router to find network ip of a host
@@ -108,6 +105,8 @@ public:
     [[maybe_unused]] void SetFreeSlots(ip_t startIp, int freeCapacity);
 
     std::vector<TreeMapValueObjectForUnusedObjectInArray> GetFreeSlotsList();
+
+    void print_subnet_routing_tree_();
 };
 
 

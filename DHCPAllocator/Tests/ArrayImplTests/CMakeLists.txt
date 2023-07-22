@@ -1,0 +1,12 @@
+add_executable(ArrayImplTest1 ArrayImplementationTest1.cpp)
+target_link_libraries(ArrayImplTest1 PUBLIC Models)
+
+
+add_executable(ArrayImplTest2 ArrayImplementationTest2.cpp)
+target_link_libraries(ArrayImplTest2 PUBLIC Models)
+
+add_executable(ArrayImplTest3 ArrayImplementationTest3.cpp)
+target_link_libraries(ArrayImplTest3 PUBLIC Models)
+
+add_executable(BenchmarkingTest BenchmarkingTest.cpp)
+target_link_libraries(BenchmarkingTest PUBLIC Models)

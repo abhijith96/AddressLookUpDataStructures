@@ -22,6 +22,10 @@ ip_t Subnet::GetLastAssignedHostIp() const {
     return last_assigned_host_ip_;
 }
 
+void Subnet::SetLastAssignedHostIp(ip_t last_assigned_host_ip) {
+    last_assigned_host_ip_ = last_assigned_host_ip;
+}
+
 std::vector<ip_t> & Subnet::GetUnusedHostIps()  {
     return unused_host_ips_;
 }
@@ -31,6 +35,10 @@ boost::container::flat_map<ip_t , Host> & Subnet::GetHosts() {
 }
 
 std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId> &Subnet::GetHostMacIpMap() {
+    return host_mac_ip_map_;
+}
+
+std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId> Subnet::GetHostMacIpMapCopy() const {
     return host_mac_ip_map_;
 }
 
