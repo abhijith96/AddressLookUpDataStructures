@@ -271,7 +271,7 @@ std::unordered_map<std::string, std::unordered_map<MacID, ip_t, HashMacId, Equal
         MacID subnet_mac_id = subnet.GetMacId();
         int subnet_capacity = subnet.GetCapacity();
 
-        std::cout << "Creating subnet with MAC ID - " << subnet_mac_id.GetValue() << " old network ip - " << network_start_ip << " capacity - " << subnet_capacity << std::endl;
+//        std::cout << "Creating subnet with MAC ID - " << subnet_mac_id.GetValue() << " old network ip - " << network_start_ip << " capacity - " << subnet_capacity << std::endl;
 
         auto host_mac_ip_map_copy = subnet.GetHostMacIpMap();
 
@@ -279,19 +279,19 @@ std::unordered_map<std::string, std::unordered_map<MacID, ip_t, HashMacId, Equal
         auto insert_subnet_response = InsertSubnet(subnet_mac_id, subnet_capacity);
         if (insert_subnet_response.first) {
             ip_t new_subnet_ip = insert_subnet_response.second;
-            std::cout << "Created subnet with MAC ID - " << subnet_mac_id.GetValue() << " new IP - " << new_subnet_ip << std::endl;
+//            std::cout << "Created subnet with MAC ID - " << subnet_mac_id.GetValue() << " new IP - " << new_subnet_ip << std::endl;
 
             new_subnet_assignments.insert({subnet_mac_id, new_subnet_ip}); //insert the newly assigned IP to the map
 
             // iterate and create the subnet hosts
             for (const auto &host_pair: host_mac_ip_map_copy) {
                 MacID host_mac_id = host_pair.first;
-                std::cout << "Creating host " << host_mac_id.GetValue() << " in subnet - "<< new_subnet_ip << std::endl;
+//                std::cout << "Creating host " << host_mac_id.GetValue() << " in subnet - "<< new_subnet_ip << std::endl;
                 auto insert_subnet_host_response = InsertSubnetHost(host_mac_id, new_subnet_ip);
 
                 if (insert_subnet_host_response.first) {
                     ip_t new_host_ip = insert_subnet_host_response.second;
-                    std::cout << "Created host with MAC ID - " << host_mac_id.GetValue() << " in subnet - " << new_subnet_ip << " new IP - " << new_host_ip << std::endl;
+//                    std::cout << "Created host with MAC ID - " << host_mac_id.GetValue() << " in subnet - " << new_subnet_ip << " new IP - " << new_host_ip << std::endl;
 
                     new_host_assignments.insert({host_mac_id, new_host_ip}); //insert the newly assigned IP to the map
 
