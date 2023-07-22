@@ -6,27 +6,372 @@
 #include <iostream>
 #include <DHCPAllocator/src/HTTPServer/HttpServer.h>
 
+#include <boost/property_tree/json_parser.hpp>
+#include <DHCPAllocator/src/Models/DSModelArrayImpl/DSModelArrayImpl.h>
+#include <DHCPAllocator/src/Models/IPAddress.h>
+#include <boost/json.hpp>
+
+
+DSModelArrayImpl dsModelArrayImpl;
+
+std::string getIPAddressString(ip_t ip) {
+    std::string ipString;
+    for (int i = 3; i >= 0; --i) {
+        int octet = (ip >> (i * 8)) & 0xFF;
+        ipString += std::to_string(octet);
+        if (i > 0) {
+            ipString += ".";
+        }
+    }
+    return ipString;
+}
+
+boost::property_tree::ptree requestSubnet(boost::property_tree::ptree pt) {
+    boost::property_tree::ptree response;
+
+    auto network_identifier_optional = pt.get_optional<std::int64_t>("network_identifier");
+    auto capacity_optional = pt.get_optional<ip_t>("capacity");
+
+    if(network_identifier_optional.has_value() && capacity_optional.has_value()) {
+        int64_t network_identifier = network_identifier_optional.get();
+        ip_t capacity = capacity_optional.get();
+
+        std::cout << "network_identifier: " << network_identifier << std::endl;
+        std::cout << "capacity: " << capacity << std::endl;
+
+        MacID macId = MacID(network_identifier);
+        std::pair<bool, ip_t> insert_subnet_response = dsModelArrayImpl.InsertSubnet(macId, capacity);
+
+        if (insert_subnet_response.first) {
+            ip_t start_ip = insert_subnet_response.second;
+            response.add("status", true);
+            response.add("start_ip", getIPAddressString(start_ip));
+        } else {
+            response.add("status", false);
+            response.add("reason", "Error in assigning subnet");
+        }
+    } else {
+        response.add("status", false);
+        response.add("reason", "Error in given input");
+    }
+    return response;
+}
+
+boost::property_tree::ptree requestSubnetHost(boost::property_tree::ptree pt) {
+    boost::property_tree::ptree response;
+
+    auto mac_id_optional = pt.get_optional<std::int64_t>("mac_id");
+    auto subnet_ip_optional = pt.get_optional<ip_t>("subnet_ip");
+
+    if(mac_id_optional.has_value() && subnet_ip_optional.has_value()) {
+        int64_t mac_id = mac_id_optional.get();
+        ip_t subnet_ip = subnet_ip_optional.get();
+
+        std::cout << "mac_id: " << mac_id << std::endl;
+        std::cout << "subnet_ip: " << subnet_ip << std::endl;
+
+        MacID macId = MacID(mac_id);
+        std::pair<bool, ip_t> insert_host_response = dsModelArrayImpl.InsertSubnetHost(macId, subnet_ip);
+
+        if (insert_host_response.first) {
+            ip_t host_ip = insert_host_response.second;
+            response.add("status", true);
+            response.add("start_ip", getIPAddressString(host_ip));
+        } else {
+            response.add("status", false);
+            response.add("reason", "Error in assigning host IP");
+        }
+    } else {
+        response.add("status", false);
+        response.add("reason", "Error in given input");
+    }
+    return response;
+}
+
+boost::property_tree::ptree deleteSubnet(boost::property_tree::ptree pt) {
+    boost::property_tree::ptree response;
+
+    auto subnet_ip_optional = pt.get_optional<ip_t>("subnet_ip");
+
+    if (subnet_ip_optional.has_value()) {
+
+        ip_t subnet_ip = subnet_ip_optional.get();
+        std::cout << "subnet_ip: " << subnet_ip << std::endl;
+
+        bool delete_host_response = dsModelArrayImpl.DeleteSubnet(subnet_ip);
+
+        if (delete_host_response) {
+            response.add("status", true);
+        } else {
+            response.add("status", false);
+            response.add("reason", "Error in deleting the subnet");
+        }
+    } else {
+        response.add("status", false);
+        response.add("reason", "Error in given input");
+    }
+    return response;
+}
+
+boost::property_tree::ptree deleteSubnetHost(boost::property_tree::ptree pt) {
+    boost::property_tree::ptree response;
+
+    auto host_ip_optional = pt.get_optional<ip_t>("host_ip");
+//    auto host_mac_id_optional = pt.get_optional<int64_t>("host_mac_id");
+    auto subnet_ip_optional = pt.get_optional<ip_t>("subnet_ip");
+
+    if(host_ip_optional.has_value() && subnet_ip_optional.has_value()){ // && host_mac_id_optional.has_value()) {
+        ip_t host_ip = host_ip_optional.get();
+        ip_t subnet_ip = subnet_ip_optional.get();
+//        int64_t host_mac_id = host_mac_id_optional.get();
+
+        std::cout << "host_ip: " << host_ip << std::endl;
+//        std::cout << "host_mac_id: " << host_mac_id << std::endl;
+        std::cout << "subnet_ip: " << subnet_ip << std::endl;
+
+        bool delete_host_response = dsModelArrayImpl.DeleteHostFromSubnet(host_ip, subnet_ip);
+
+        if (delete_host_response) {
+            response.add("status", true);
+        } else {
+            response.add("status", false);
+            response.add("reason", "Error in deleting the host IP");
+        }
+    } else {
+        response.add("status", false);
+        response.add("reason", "Error in given input");
+    }
+    return response;
+}
+
+boost::property_tree::ptree getNetworkIP(boost::property_tree::ptree pt) {
+    boost::property_tree::ptree response;
+
+    auto host_ip_optional = pt.get_optional<ip_t>("host_ip");
+
+    if (host_ip_optional.has_value()) {
+
+        ip_t host_ip = host_ip_optional.get();
+        std::cout << "host_ip: " << host_ip << std::endl;
+
+        auto get_network_ip_response = dsModelArrayImpl.GetNetWorkIP(host_ip);
+
+        if (get_network_ip_response.first) {
+            response.add("status", true);
+            response.add("network_ip", get_network_ip_response.second);
+        } else {
+            response.add("status", false);
+            response.add("reason", "Error in getting network address");
+        }
+    } else {
+        response.add("status", false);
+        response.add("reason", "Error in given input");
+    }
+    return response;
+}
+
+boost::property_tree::ptree getHostIpAddress(boost::property_tree::ptree pt) {
+    boost::property_tree::ptree response;
+
+    auto host_mac_id_optional = pt.get_optional<int64_t>("host_mac_id");
+    auto subnet_ip_optional = pt.get_optional<ip_t>("subnet_ip");
+
+    if (host_mac_id_optional.has_value() && subnet_ip_optional.has_value()) {
+
+        ip_t subnet_ip = subnet_ip_optional.get();
+        int64_t host_mac_id = host_mac_id_optional.get();
+
+        std::cout << "host_mac_id: " << host_mac_id << std::endl;
+        std::cout << "subnet_ip: " << subnet_ip << std::endl;
+
+
+        auto get_host_ip_response = dsModelArrayImpl.GetHostIpAddress(MacID(host_mac_id), subnet_ip);
+
+        if (get_host_ip_response.first) {
+            response.add("status", true);
+            response.add("host_ip", get_host_ip_response.second);
+        } else {
+            response.add("status", false);
+            response.add("reason", "Error in getting host IP address");
+        }
+    } else {
+        response.add("status", false);
+        response.add("reason", "Error in given input");
+    }
+    return response;
+}
+
+boost::property_tree::ptree getMacAddressOfHost(boost::property_tree::ptree pt) {
+    boost::property_tree::ptree response;
+
+    auto host_ip_optional = pt.get_optional<ip_t>("host_ip");
+    auto subnet_ip_optional = pt.get_optional<ip_t>("subnet_ip");
+
+    if (host_ip_optional.has_value() && subnet_ip_optional.has_value()) {
+
+        ip_t subnet_ip = subnet_ip_optional.get();
+        ip_t host_ip = host_ip_optional.get();
+
+        std::cout << "host_ip: " << host_ip << std::endl;
+        std::cout << "subnet_ip: " << subnet_ip << std::endl;
+
+        auto get_host_mac_response = dsModelArrayImpl.GetMacAddressOfHost(host_ip, subnet_ip);
+
+        if (get_host_mac_response.first) {
+            response.add("status", true);
+            response.add("mac_id", get_host_mac_response.second.GetValue());
+        } else {
+            response.add("status", false);
+            response.add("reason", "Error in getting host mac address");
+        }
+    } else {
+        response.add("status", false);
+        response.add("reason", "Error in given input");
+    }
+    return response;
+}
+
+boost::property_tree::ptree optimizeSubnetAllocationSpace(){
+    boost::property_tree::ptree subnets;
+
+    auto new_assignments = dsModelArrayImpl.optimizeSubnetAllocationSpace();
+
+    for (const auto& subnet_pair : new_assignments) {
+        MacID subnet_mac_id = subnet_pair.first;
+        auto subnet = subnet_pair.second;
+        ip_t subnet_start_ip = subnet.first;
+
+        subnets.add("network_identifier", subnet_mac_id.GetValue());
+        subnets.add("new_subnet_ip", subnet_start_ip);
+
+        boost::property_tree::ptree hosts;
+        for (const auto &host: subnet.second) {
+            MacID host_mac_id = host.first;
+            ip_t host_ip = host.second;
+            hosts.add("host_mac_id", host_mac_id.GetValue());
+            hosts.add("new_host_ip", host_ip);
+        }
+        subnets.add_child("hosts", hosts);
+    }
+    return subnets;
+}
 
 std::string HttpServer::generateResponse(const http::request<http::string_body>& request) {
     std::string response;
 
-    if (request.method() == http::verb::get) {
-        if (request.target() == "/") {
-            response = "HTTP/1.1 200 OK\r\n"
-                       "Content-Type: text/html\r\n"
-                       "\r\n"
-                       "<html><body><h1>Welcome to the DHCP server </h1></body></html>";
+    if (request.method() == http::verb::post) {
+
+        if (request.target() == "/requestSubnet") {
+            // Extract input parameters from the request body
+            std::string requestBody = request.body();
+            std::stringstream requestBodyStream;
+            requestBodyStream << requestBody;
+            boost::property_tree::ptree pt;
+            boost::property_tree::read_json(requestBodyStream, pt);
+
+            auto request_subnet_response = requestSubnet(pt);
+
+            // Convert output to string
+            std::stringstream out_stream;
+            boost::property_tree::write_json(out_stream, request_subnet_response);
+            response = out_stream.str();
+        } else if (request.target() == "/requestSubnetHost") {
+            // Extract input parameters from the request body
+            std::string requestBody = request.body();
+            std::stringstream requestBodyStream;
+            requestBodyStream << requestBody;
+            boost::property_tree::ptree pt;
+            boost::property_tree::read_json(requestBodyStream, pt);
+
+            auto request_subnet_host_response = requestSubnetHost(pt);
+
+            // Convert output to string
+            std::stringstream out_stream;
+            boost::property_tree::write_json(out_stream, request_subnet_host_response);
+            response = out_stream.str();
+        } else if (request.target() == "/deleteSubnet") {
+            // Extract input parameters from the request body
+            std::string requestBody = request.body();
+            std::stringstream requestBodyStream;
+            requestBodyStream << requestBody;
+            boost::property_tree::ptree pt;
+            boost::property_tree::read_json(requestBodyStream, pt);
+
+            auto delete_host_response = deleteSubnet(pt);
+
+            // Convert output to string
+            std::stringstream out_stream;
+            boost::property_tree::write_json(out_stream, delete_host_response);
+            response = out_stream.str();
+        } else if (request.target() == "/deleteSubnetHost") {
+            // Extract input parameters from the request body
+            std::string requestBody = request.body();
+            std::stringstream requestBodyStream;
+            requestBodyStream << requestBody;
+            boost::property_tree::ptree pt;
+            boost::property_tree::read_json(requestBodyStream, pt);
+
+            auto delete_host_response = deleteSubnetHost(pt);
+
+            // Convert output to string
+            std::stringstream out_stream;
+            boost::property_tree::write_json(out_stream, delete_host_response);
+            response = out_stream.str();
+        } else if (request.target() == "/getNetworkIP") {
+            // Extract input parameters from the request body
+            std::string requestBody = request.body();
+            std::stringstream requestBodyStream;
+            requestBodyStream << requestBody;
+            boost::property_tree::ptree pt;
+            boost::property_tree::read_json(requestBodyStream, pt);
+
+            auto get_network_ip_response = getNetworkIP(pt);
+
+            // Convert output to string
+            std::stringstream out_stream;
+            boost::property_tree::write_json(out_stream, get_network_ip_response);
+            response = out_stream.str();
+        } else if (request.target() == "/getHostIpAddress") {
+            // Extract input parameters from the request body
+            std::string requestBody = request.body();
+            std::stringstream requestBodyStream;
+            requestBodyStream << requestBody;
+            boost::property_tree::ptree pt;
+            boost::property_tree::read_json(requestBodyStream, pt);
+
+            auto get_host_ip_response = getHostIpAddress(pt);
+
+            // Convert output to string
+            std::stringstream out_stream;
+            boost::property_tree::write_json(out_stream, get_host_ip_response);
+            response = out_stream.str();
+        } else if (request.target() == "/getMacAddressOfHost") {
+            // Extract input parameters from the request body
+            std::string requestBody = request.body();
+            std::stringstream requestBodyStream;
+            requestBodyStream << requestBody;
+            boost::property_tree::ptree pt;
+            boost::property_tree::read_json(requestBodyStream, pt);
+
+            auto get_mac_addrress_response = getMacAddressOfHost(pt);
+
+            // Convert output to string
+            std::stringstream out_stream;
+            boost::property_tree::write_json(out_stream, get_mac_addrress_response);
+            response = out_stream.str();
+        } else if (request.target() == "/optimizeSubnetAllocationSpace") {
+
+            auto optimize_free_slot_reponse = optimizeSubnetAllocationSpace();
+
+            // Convert output to string
+            std::stringstream out_stream;
+            boost::property_tree::write_json(out_stream, optimize_free_slot_reponse);
+            response = out_stream.str();
         } else {
-            response = "HTTP/1.1 404 Not Found\r\n"
-                       "Content-Type: text/plain\r\n"
-                       "\r\n"
-                       "404 Not Found";
+            response = "404 Not Found";
         }
     } else {
-        response = "HTTP/1.1 400 Bad Request\r\n"
-                   "Content-Type: text/plain\r\n"
-                   "\r\n"
-                   "400 Bad Request";
+        response = "400 Bad Request";
     }
 
     return response;
@@ -72,7 +417,5 @@ int main(){
     }
 
     return 0;
-
-
 
 }

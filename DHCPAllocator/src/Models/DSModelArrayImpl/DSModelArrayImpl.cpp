@@ -247,12 +247,9 @@ void DSModelArrayImpl::add_host_mac_ip_mapping(Subnet &subnet, ip_t host_ip, Mac
     mac_ip_map.insert({host_mac_id, host_ip});
 }
 
-std::unordered_map<std::string, std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId>> DSModelArrayImpl::optimizeSubnetAllocationSpace() {
+std::unordered_map<MacID, std::pair<ip_t, std::unordered_map<MacID,ip_t,HashMacId, EqualsMacId>>, HashMacId, EqualsMacId> DSModelArrayImpl::optimizeSubnetAllocationSpace() {
 
-    std::unordered_map<std::string, std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId>> new_assignments;
-
-    std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId> new_subnet_assignments;
-    std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId> new_host_assignments;
+    std::unordered_map<MacID, std::pair<ip_t, std::unordered_map<MacID,ip_t,HashMacId, EqualsMacId>>, HashMacId, EqualsMacId> new_assignments;
 
     //make copy of subnets (it has all the details)
     auto  subnets_copy = subnets_;
@@ -281,10 +278,11 @@ std::unordered_map<std::string, std::unordered_map<MacID, ip_t, HashMacId, Equal
             ip_t new_subnet_ip = insert_subnet_response.second;
 //            std::cout << "Created subnet with MAC ID - " << subnet_mac_id.GetValue() << " new IP - " << new_subnet_ip << std::endl;
 
-            new_subnet_assignments.insert({subnet_mac_id, new_subnet_ip}); //insert the newly assigned IP to the map
+            std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId> new_host_assignments;
 
             // iterate and create the subnet hosts
             for (const auto &host_pair: host_mac_ip_map_copy) {
+
                 MacID host_mac_id = host_pair.first;
 //                std::cout << "Creating host " << host_mac_id.GetValue() << " in subnet - "<< new_subnet_ip << std::endl;
                 auto insert_subnet_host_response = InsertSubnetHost(host_mac_id, new_subnet_ip);
@@ -296,10 +294,9 @@ std::unordered_map<std::string, std::unordered_map<MacID, ip_t, HashMacId, Equal
                     new_host_assignments.insert({host_mac_id, new_host_ip}); //insert the newly assigned IP to the map
 
                 }
+                new_assignments.insert({subnet_mac_id, {new_subnet_ip, new_host_assignments}}); //insert the newly assigned IP to the map
             }
         }
     }
-    new_assignments.insert({"subnets", new_subnet_assignments});
-    new_assignments.insert({"hosts", new_host_assignments});
     return new_assignments;
 }
