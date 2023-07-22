@@ -255,7 +255,7 @@ std::unordered_map<std::string, std::unordered_map<MacID, ip_t, HashMacId, Equal
     std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId> new_host_assignments;
 
     //make copy of subnets (it has all the details)
-    auto  subnets_copy = subnets_; //todo create deep copy
+    auto  subnets_copy = subnets_;
 
     //clear all subnet maps
     subnets_.clear();
