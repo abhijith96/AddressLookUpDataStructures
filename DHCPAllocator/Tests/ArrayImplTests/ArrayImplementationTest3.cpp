@@ -14,6 +14,9 @@
 int main() {
     DSModelArrayImpl impl;
 
+
+    std::cout << "\n--------------------------Testing subnet insertion and deletion to create free slot -----------------------------" << std::endl;
+
     // Test case 1: Required capacity is not the exact match, but a capacity higher than the required capacity is available
     int requiredCapacity = 1000;
     auto result = impl.InsertSubnet(MacID(1), requiredCapacity);
@@ -38,9 +41,9 @@ int main() {
     ip_t start_ip = 0;
     bool result3 = impl.DeleteSubnet(start_ip);
     if (result3) {
-        std::cout << "Delete subnet succeeded" << std::endl;
+        std::cout << "Delete subnet succeeded for subnet with start IP " << start_ip << std::endl;
     } else {
-        std::cout << "Delete subnet failed." << std::endl;
+        std::cout << "Delete subnet failed for subnet with start IP " << start_ip << std::endl;
     }
     assert(result3);
 
@@ -97,32 +100,36 @@ int main() {
     //save the host id to test the upcoming cases
     ip_t subnet_1_host_2_ip = result.second;
 
+    std::cout << "\n--------------------------Testing host routing -----------------------------" << std::endl;
+
+
     //Test IP routing
     auto get_network_ip_result = impl.GetNetWorkIP(subnet_1_host_1_ip);
     if (get_network_ip_result.first) {
-        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << std::endl;
+        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << " for host ip " << subnet_1_host_1_ip << std::endl;
     } else {
-        std::cout << "GetNetWorkIP failed." << std::endl;
+        std::cout << "GetNetWorkIP returned false for IP " << subnet_1_host_1_ip << " not assigned to any subnet." << std::endl;
     }
     assert(get_network_ip_result.first && get_network_ip_result.second == subnet1_start_ip);
 
     //Test IP routing
 
     // Testing IP routing with IP within range unassigned to any subnets
-    get_network_ip_result = impl.GetNetWorkIP(800);
+    ip_t host_ip_test_1 = 800;
+    get_network_ip_result = impl.GetNetWorkIP(host_ip_test_1);
     if (get_network_ip_result.first) {
-        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << std::endl;
+        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << " for host ip " << host_ip_test_1 << std::endl;
     } else {
-        std::cout << "GetNetWorkIP returned false for IP not assigned to any subnet." << std::endl;
+        std::cout << "GetNetWorkIP returned false for IP " << host_ip_test_1 << " not assigned to any subnet." << std::endl;
     }
     assert(!get_network_ip_result.first);
 
     // Testing IP routing with IP = network IP
     get_network_ip_result = impl.GetNetWorkIP(subnet1_start_ip);
     if (get_network_ip_result.first) {
-        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << std::endl;
+        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << " for host ip " << subnet1_start_ip << std::endl;
     } else {
-        std::cout << "GetNetWorkIP failed." << std::endl;
+        std::cout << "GetNetWorkIP returned false for IP " << subnet1_start_ip << " not assigned to any subnet." << std::endl;
     }
     assert(get_network_ip_result.first && get_network_ip_result.second == subnet1_start_ip);
 
@@ -130,17 +137,17 @@ int main() {
     ip_t broadcast_ip = subnet1_start_ip + 200 - 1; // 200 = capacity
     get_network_ip_result = impl.GetNetWorkIP(broadcast_ip);
     if (get_network_ip_result.first) {
-        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << std::endl;
+        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << " for host ip " << broadcast_ip << std::endl;
     } else {
-        std::cout << "GetNetWorkIP failed." << std::endl;
+        std::cout << "GetNetWorkIP returned false for IP " << broadcast_ip << " not assigned to any subnet." << std::endl;
     }
     assert(get_network_ip_result.first && get_network_ip_result.second == subnet1_start_ip);
 
     get_network_ip_result = impl.GetNetWorkIP(subnet_1_host_2_ip);
     if (get_network_ip_result.first) {
-        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << std::endl;
+        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << " for host ip " << subnet_1_host_2_ip << std::endl;
     } else {
-        std::cout << "GetNetWorkIP failed." << std::endl;
+        std::cout << "GetNetWorkIP returned false for IP " << subnet_1_host_2_ip << " not assigned to any subnet." << std::endl;
     }
     assert(get_network_ip_result.first && get_network_ip_result.second == subnet1_start_ip);
 
@@ -174,44 +181,38 @@ int main() {
     //Test IP routing
     get_network_ip_result = impl.GetNetWorkIP(subnet_2_host_1_ip);
     if (get_network_ip_result.first) {
-        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << std::endl;
+        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << " for host ip " << subnet_2_host_1_ip << std::endl;
     } else {
-        std::cout << "GetNetWorkIP failed." << std::endl;
+        std::cout << "GetNetWorkIP returned false for IP " << subnet_2_host_1_ip << " not assigned to any subnet." << std::endl;
     }
     assert(get_network_ip_result.first && get_network_ip_result.second == subnet2_start_ip);
 
     //Test IP routing
     get_network_ip_result = impl.GetNetWorkIP(subnet_2_host_2_ip);
     if (get_network_ip_result.first) {
-        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << std::endl;
+        std::cout << "GetNetWorkIP returned network IP: " << get_network_ip_result.second << " for host ip " << subnet_2_host_2_ip << std::endl;
     } else {
-        std::cout << "GetNetWorkIP failed." << std::endl;
+        std::cout << "GetNetWorkIP returned false for IP " << subnet_2_host_2_ip << " not assigned to any subnet." << std::endl;
     }
     assert(get_network_ip_result.first && get_network_ip_result.second == subnet2_start_ip);
 
+
+    std::cout << "\n--------------------------Testing optimize free slot logic-----------------------------" << std::endl;
+
     auto new_assignments = impl.optimizeSubnetAllocationSpace();
 
-    auto subnet_assignment_it = new_assignments.find("subnets");
-    if (subnet_assignment_it != new_assignments.end()) {
-        auto &subnet_assignments = subnet_assignment_it->second;
+    for (const auto& subnet_pair : new_assignments) {
+        MacID subnet_mac_id = subnet_pair.first;
+        auto subnet = subnet_pair.second;
+        ip_t subnet_start_ip = subnet.first;
+        std::cout << "Inform subnet with MAC ID - " << subnet_mac_id.GetValue() << " about new IP assigned - "
+                  << subnet_start_ip << std::endl;
 
-        for (const auto& subnet_pair : subnet_assignments) {
-            MacID subnet_mac_id = subnet_pair.first;
-            ip_t subnet_start_ip = subnet_pair.second;
-            std::cout << "Inform subnet with MAC ID - " << subnet_mac_id.GetValue() << " about new IP assigned - "
-                      << subnet_start_ip << std::endl;
-        }
-    }
-
-    auto host_assignment_it = new_assignments.find("hosts");
-    if (host_assignment_it != new_assignments.end()) {
-        auto &host_assignments = host_assignment_it->second;
-
-        for (const auto& host_pair : host_assignments) {
-            MacID host_mac_id = host_pair.first;
-            ip_t host_ip = host_pair.second;
-            std::cout << "Inform subnet host with MAC ID - " << host_mac_id.GetValue() << " about new IP assigned - "
-                      << host_ip << std::endl;
+        for (const auto &host: subnet.second) {
+            MacID host_macId = host.first;
+            ip_t host_ip = host.second;
+            std::cout << "Inform host with MAC ID - " << host_macId.GetValue() << " in subnet - " << subnet_start_ip
+                      << " about new IP assigned - " << host_ip << std::endl;
         }
     }
 
@@ -223,6 +224,44 @@ int main() {
 //        std::cout << "Get IP returned for host failed." << std::endl;
 //    }
 //    assert(host_ip_result.first);
+
+
+    std::cout << "\n--------------------------Testing renew host logic-----------------------------" << std::endl;
+
+    ip_t renew_host_ip = 1001;
+    ip_t renew_host_subnet_ip = 1000;
+    auto renew_host_response = impl.RequestHostRenewal(renew_host_ip, renew_host_subnet_ip);
+    if (renew_host_response) {
+        std::cout << "Successfully renewed host with host IP " << renew_host_ip << " in subnet: " << renew_host_subnet_ip << std::endl;
+    } else {
+        std::cout << "Renewing host failed for host IP " << renew_host_ip << " in subnet: " << renew_host_subnet_ip << std::endl;
+    }
+    assert(renew_host_response);
+
+    bool delete_non_renewed_host_response = impl.DeleteNonRenewedHosts();
+    if (delete_non_renewed_host_response) {
+        std::cout << "Deleted non-renewed hosts " << std::endl;
+    }
+
+    //Test deletion of non-renewed hosts logic
+    auto get_mac_response = impl.GetMacAddressOfHost(renew_host_ip, renew_host_subnet_ip);
+    if (get_mac_response.first) {
+        std::cout << "get_mac_response returned MAC ID: " << get_mac_response.second.GetValue() << " for host ip " << renew_host_ip << std::endl;
+    } else {
+        std::cout << "get_mac_response returned false for host IP: " << renew_host_ip << std::endl;
+    }
+    assert(get_mac_response.first); //should be true for non-deleted / renewed hosts
+
+    ip_t deleted_host_ip = 1002;
+    ip_t network_ip_of_deleted_host = 1000;
+    get_mac_response = impl.GetMacAddressOfHost(deleted_host_ip, network_ip_of_deleted_host);
+    if (get_mac_response.first) {
+        std::cout << "get_mac_response returned MAC ID: " << get_mac_response.second.GetValue() << " for host ip " << deleted_host_ip << std::endl;
+    } else {
+        std::cout << "get_mac_response returned false for host IP: " << deleted_host_ip << std::endl;
+    }
+    assert(!get_mac_response.first); //should now be deleted after deletion of non-renewed hosts
+
 
 }
 

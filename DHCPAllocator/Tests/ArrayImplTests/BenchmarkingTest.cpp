@@ -142,12 +142,7 @@ int main(){
 
 
     auto new_assignments = dsModelArrayImpl.optimizeSubnetAllocationSpace();
-
-    auto subnet_assignment_it = new_assignments.find("subnets");
-    if (subnet_assignment_it != new_assignments.end()) {
-        auto &subnet_assignments = subnet_assignment_it->second;
-        std::cout << "size of subnets after optimizing " << subnet_assignments.size() << std::endl;
-    }
+    std::cout << "size of subnets after optimizing " << new_assignments.size() << std::endl;
     // Record the end time
     auto endTime_4 = std::chrono::high_resolution_clock::now();
     // Calculate the elapsed time per iteration

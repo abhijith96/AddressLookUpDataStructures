@@ -16,7 +16,7 @@ std::pair<bool, ip_t> DSModelTreeImpl::InsertSubnet(MacID sub_net_mac_id, ip_t c
     // Find the required slot in the free slots list
     std::optional<std::vector<TreeMapValueObjectForUnusedObjectInArray>::iterator> requiredSlotItr = GetBestFitIp(capacity);
 
-    print_subnet_routing_tree_();
+//    print_subnet_routing_tree_();
     if (requiredSlotItr.has_value()) {
         ip_t start_ip = (*requiredSlotItr)->GetStartIP();
         UpdateFreeSlotsList(*requiredSlotItr, capacity);
@@ -62,9 +62,11 @@ bool DSModelTreeImpl::DeleteSubnet(ip_t subnet_ip) {
         subnet_mac_ip_map_.erase(macId); // Remove subnet MAC ID to IP mapping
         subnet_routing_tree_.erase(subnet_ip);
         SetFreeSlots(subnet_ip, subnet.GetCapacity());
+        return true;
     }
     subnets_.erase(subnet_ip);
-    print_subnet_routing_tree_();
+    return false;
+//    print_subnet_routing_tree_();
 }
 
 /**
@@ -84,7 +86,9 @@ bool DSModelTreeImpl::DeleteHostFromSubnet(ip_t host_ip, ip_t subnet_ip) {
         // Add removed host IP to unused host IP list
         std::vector<ip_t> &unused_host_ips = subnet.GetUnusedHostIps();
         unused_host_ips.push_back(host_ip);
+        return true;
     }
+    return false;
 }
 
 /**

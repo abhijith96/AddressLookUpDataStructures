@@ -50,6 +50,10 @@ public:
 
     std::pair<bool, MacID> GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) override;
 
+    bool RequestHostRenewal(ip_t hostIpAddress, ip_t subnet_ip) ;
+
+    bool DeleteNonRenewedHosts();
+
     void getFreeIPInSubnet(boost::container::flat_map<ip_t, Host> map);
 
     std::pair<bool, ip_t> InsertHost(Subnet &subnet, MacID host_mac_id, ip_t subnet_ip);
@@ -64,8 +68,7 @@ public:
 
     std::vector<FreeSlotObject> GetFreeSlotsList();
 
-    std::unordered_map<std::string, std::unordered_map<MacID, ip_t, HashMacId, EqualsMacId>>
-    optimizeSubnetAllocationSpace();
+    std::unordered_map<MacID, std::pair<ip_t, std::unordered_map<MacID,ip_t,HashMacId, EqualsMacId>>, HashMacId, EqualsMacId> optimizeSubnetAllocationSpace();
 
 };
 

@@ -70,7 +70,7 @@ ip_t QueryHostsInActiveSubNets(DSModelHashedVebTreeImpl& dsModelHashedVebTreeImp
 
 int main(){
 
-    ip_t capacityLog2 = 32;
+    ip_t capacityLog2 = 28;
     std::unique_ptr<DSModelHashedVebTreeImpl> dsModelHashedVebTreeImpl =   GetDSModelWithCapacity(capacityLog2);
 
     auto IpRange = dsModelHashedVebTreeImpl->GetIpRange();
@@ -78,7 +78,7 @@ int main(){
     std::cout<<"current Total address space length : "<<IpRange.GetCapacity()<<"\n";
 
 
-    const int numIterations = 3;
+
 
     // Record the start time
     auto startTime = std::chrono::high_resolution_clock::now();
