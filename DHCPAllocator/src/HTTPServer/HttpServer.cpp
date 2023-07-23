@@ -14,6 +14,28 @@
 
 DSModelArrayImpl dsModelArrayImpl;
 
+ip_t getIPAddressNumber(const std::string& ipString) {
+    std::vector<unsigned int> octets;
+    std::istringstream ss(ipString);
+    std::string octetString;
+
+    while (std::getline(ss, octetString, '.')) {
+        unsigned int octet = std::stoi(octetString);
+        if (octet > 255) {
+            throw std::invalid_argument("Invalid IP address: " + ipString);
+        }
+        octets.push_back(octet);
+    }
+
+    if (octets.size() != 4) {
+        throw std::invalid_argument("Invalid IP address: " + ipString);
+    }
+
+    ip_t ipAddress = (octets[0] << 24) | (octets[1] << 16) | (octets[2] << 8) | octets[3];
+    return ipAddress;
+}
+
+
 std::string getIPAddressString(ip_t ip) {
     std::string ipString;
     for (int i = 3; i >= 0; --i) {
@@ -61,11 +83,11 @@ boost::property_tree::ptree requestSubnetHost(boost::property_tree::ptree pt) {
     boost::property_tree::ptree response;
 
     auto mac_id_optional = pt.get_optional<std::int64_t>("mac_id");
-    auto subnet_ip_optional = pt.get_optional<ip_t>("subnet_ip");
+    auto subnet_ip_optional = pt.get_optional<std::string>("subnet_ip");
 
     if(mac_id_optional.has_value() && subnet_ip_optional.has_value()) {
         int64_t mac_id = mac_id_optional.get();
-        ip_t subnet_ip = subnet_ip_optional.get();
+        ip_t subnet_ip = getIPAddressNumber(subnet_ip_optional.get());
 
         std::cout << "mac_id: " << mac_id << std::endl;
         std::cout << "subnet_ip: " << subnet_ip << std::endl;
@@ -76,7 +98,7 @@ boost::property_tree::ptree requestSubnetHost(boost::property_tree::ptree pt) {
         if (insert_host_response.first) {
             ip_t host_ip = insert_host_response.second;
             response.add("status", true);
-            response.add("start_ip", getIPAddressString(host_ip));
+            response.add("host_ip", getIPAddressString(host_ip));
         } else {
             response.add("status", false);
             response.add("reason", "Error in assigning host IP");
@@ -91,11 +113,11 @@ boost::property_tree::ptree requestSubnetHost(boost::property_tree::ptree pt) {
 boost::property_tree::ptree deleteSubnet(boost::property_tree::ptree pt) {
     boost::property_tree::ptree response;
 
-    auto subnet_ip_optional = pt.get_optional<ip_t>("subnet_ip");
+    auto subnet_ip_optional = pt.get_optional<std::string>("subnet_ip");
 
     if (subnet_ip_optional.has_value()) {
 
-        ip_t subnet_ip = subnet_ip_optional.get();
+        ip_t subnet_ip = getIPAddressNumber(subnet_ip_optional.get());
         std::cout << "subnet_ip: " << subnet_ip << std::endl;
 
         bool delete_host_response = dsModelArrayImpl.DeleteSubnet(subnet_ip);
@@ -116,13 +138,13 @@ boost::property_tree::ptree deleteSubnet(boost::property_tree::ptree pt) {
 boost::property_tree::ptree deleteSubnetHost(boost::property_tree::ptree pt) {
     boost::property_tree::ptree response;
 
-    auto host_ip_optional = pt.get_optional<ip_t>("host_ip");
+    auto host_ip_optional = pt.get_optional<std::string>("host_ip");
 //    auto host_mac_id_optional = pt.get_optional<int64_t>("host_mac_id");
-    auto subnet_ip_optional = pt.get_optional<ip_t>("subnet_ip");
+    auto subnet_ip_optional = pt.get_optional<std::string>("subnet_ip");
 
     if(host_ip_optional.has_value() && subnet_ip_optional.has_value()){ // && host_mac_id_optional.has_value()) {
-        ip_t host_ip = host_ip_optional.get();
-        ip_t subnet_ip = subnet_ip_optional.get();
+        ip_t host_ip = getIPAddressNumber(host_ip_optional.get());
+        ip_t subnet_ip = getIPAddressNumber(subnet_ip_optional.get());
 //        int64_t host_mac_id = host_mac_id_optional.get();
 
         std::cout << "host_ip: " << host_ip << std::endl;
@@ -147,18 +169,18 @@ boost::property_tree::ptree deleteSubnetHost(boost::property_tree::ptree pt) {
 boost::property_tree::ptree getNetworkIP(boost::property_tree::ptree pt) {
     boost::property_tree::ptree response;
 
-    auto host_ip_optional = pt.get_optional<ip_t>("host_ip");
+    auto host_ip_optional = pt.get_optional<std::string>("host_ip");
 
     if (host_ip_optional.has_value()) {
 
-        ip_t host_ip = host_ip_optional.get();
+        ip_t host_ip = getIPAddressNumber(host_ip_optional.get());
         std::cout << "host_ip: " << host_ip << std::endl;
 
         auto get_network_ip_response = dsModelArrayImpl.GetNetWorkIP(host_ip);
 
         if (get_network_ip_response.first) {
             response.add("status", true);
-            response.add("network_ip", get_network_ip_response.second);
+            response.add("network_ip", getIPAddressString(get_network_ip_response.second));
         } else {
             response.add("status", false);
             response.add("reason", "Error in getting network address");
@@ -174,11 +196,11 @@ boost::property_tree::ptree getHostIpAddress(boost::property_tree::ptree pt) {
     boost::property_tree::ptree response;
 
     auto host_mac_id_optional = pt.get_optional<int64_t>("host_mac_id");
-    auto subnet_ip_optional = pt.get_optional<ip_t>("subnet_ip");
+    auto subnet_ip_optional = pt.get_optional<std::string>("subnet_ip");
 
     if (host_mac_id_optional.has_value() && subnet_ip_optional.has_value()) {
 
-        ip_t subnet_ip = subnet_ip_optional.get();
+        ip_t subnet_ip = getIPAddressNumber(subnet_ip_optional.get());
         int64_t host_mac_id = host_mac_id_optional.get();
 
         std::cout << "host_mac_id: " << host_mac_id << std::endl;
@@ -189,7 +211,7 @@ boost::property_tree::ptree getHostIpAddress(boost::property_tree::ptree pt) {
 
         if (get_host_ip_response.first) {
             response.add("status", true);
-            response.add("host_ip", get_host_ip_response.second);
+            response.add("host_ip", getIPAddressString(get_host_ip_response.second));
         } else {
             response.add("status", false);
             response.add("reason", "Error in getting host IP address");
@@ -204,13 +226,13 @@ boost::property_tree::ptree getHostIpAddress(boost::property_tree::ptree pt) {
 boost::property_tree::ptree getMacAddressOfHost(boost::property_tree::ptree pt) {
     boost::property_tree::ptree response;
 
-    auto host_ip_optional = pt.get_optional<ip_t>("host_ip");
-    auto subnet_ip_optional = pt.get_optional<ip_t>("subnet_ip");
+    auto host_ip_optional = pt.get_optional<std::string>("host_ip");
+    auto subnet_ip_optional = pt.get_optional<std::string>("subnet_ip");
 
     if (host_ip_optional.has_value() && subnet_ip_optional.has_value()) {
 
-        ip_t subnet_ip = subnet_ip_optional.get();
-        ip_t host_ip = host_ip_optional.get();
+        ip_t subnet_ip = getIPAddressNumber(subnet_ip_optional.get());
+        ip_t host_ip = getIPAddressNumber(host_ip_optional.get());
 
         std::cout << "host_ip: " << host_ip << std::endl;
         std::cout << "subnet_ip: " << subnet_ip << std::endl;
@@ -242,14 +264,14 @@ boost::property_tree::ptree optimizeSubnetAllocationSpace(){
         ip_t subnet_start_ip = subnet.first;
 
         subnets.add("network_identifier", subnet_mac_id.GetValue());
-        subnets.add("new_subnet_ip", subnet_start_ip);
+        subnets.add("new_subnet_ip", getIPAddressString(subnet_start_ip));
 
         boost::property_tree::ptree hosts;
         for (const auto &host: subnet.second) {
             MacID host_mac_id = host.first;
             ip_t host_ip = host.second;
             hosts.add("host_mac_id", host_mac_id.GetValue());
-            hosts.add("new_host_ip", host_ip);
+            hosts.add("new_host_ip", getIPAddressString(host_ip));
         }
         subnets.add_child("hosts", hosts);
     }
@@ -377,8 +399,28 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
     return response;
 }
 
-int main(){
+int main(int argc, char* argv[]){
 
+    if (argc > 1) {
+        std::string implementation = argv[1];
+
+        if (implementation == "array") {
+            std::cout << "Using array implementation" << std::endl;
+        } else if (implementation == "bst") {
+            std::cout << "Using Binary search tree implementation" << std::endl;
+        } else if (implementation == "veb") {
+            std::cout << "Using Van Emde Boas Tree implementation" << std::endl;
+        } else if (implementation == "map") {
+            std::cout << "Using Van Emde Boas Tree with Hash Map implementation" << std::endl;
+        } else {
+            std::cout << "Please enter valid argument to start with." << std::endl;
+            exit(0);
+        }
+
+    } else {
+        std::cout << "Please enter valid argument to start with." << std::endl;
+        exit(0);
+    }
 
     net::io_context ioContext;
 
