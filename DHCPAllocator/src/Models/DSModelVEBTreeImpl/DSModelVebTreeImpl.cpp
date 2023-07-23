@@ -140,3 +140,7 @@ std::pair<bool, boost::container::flat_set<VebTreeFreeSlotsObject>::iterator>   
     }
     return  {true, iter};
 }
+
+const IpRange &DSModelVebTreeImpl::GetIpRange() const {
+    return ipRange_;
+}

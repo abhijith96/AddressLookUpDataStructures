@@ -44,6 +44,8 @@ public:
 
     std::pair<bool, ip_t> GetNetWorkIP(ip_t hostIp) override;
 
+    const IpRange& GetIpRange() const;
+
 
     ~DSModelVebTreeImpl();
 
