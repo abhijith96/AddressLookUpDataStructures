@@ -158,6 +158,25 @@ std::pair<bool, MacID> DSModelArrayImpl::GetMacAddressOfHost(ip_t hostIpAddress,
     }
 }
 
+bool DSModelArrayImpl::RenewalRequest(ip_t hostIpAddress, ip_t subnet_ip) {
+    auto it = subnets_.find(subnet_ip);
+    if (it != subnets_.end()) {
+        Subnet &subnet = it->second;
+        boost::container::flat_map<ip_t, Host> &hosts = subnet.GetHosts();
+        auto host_it = hosts.find(hostIpAddress);
+        if (host_it != hosts.end()) {
+            Host &host = host_it->second;
+            host.setRenewalFlag(true);
+            std::cout << "Renewed host - " << host_it->first << std::endl;
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 std::optional<std::vector<FreeSlotObject>::iterator> DSModelArrayImpl::GetBestFitIp(ip_t requiredCapacity) {
 
     auto compare = [](const FreeSlotObject& arrayItem, const FreeSlotObject& requiredItem) {
@@ -294,9 +313,31 @@ std::unordered_map<MacID, std::pair<ip_t, std::unordered_map<MacID,ip_t,HashMacI
                     new_host_assignments.insert({host_mac_id, new_host_ip}); //insert the newly assigned IP to the map
 
                 }
-                new_assignments.insert({subnet_mac_id, {new_subnet_ip, new_host_assignments}}); //insert the newly assigned IP to the map
             }
+            new_assignments.insert({subnet_mac_id, {new_subnet_ip, new_host_assignments}}); //insert the newly assigned IP to the map
         }
     }
     return new_assignments;
+}
+
+bool DSModelArrayImpl::DeleteNonRenewedHosts() {
+    //loop through the subnets to get all hosts
+    for (auto& pair : subnets_) {
+        ip_t subnet_ip = pair.first;
+        Subnet subnet = pair.second;
+        auto &hosts = subnet.GetHosts();
+
+        // iterate and delete the subnet hosts that has renewal flag set to false (not renewed in past 24 hours)
+        for (const auto &host_map: hosts) {
+            Host host = host_map.second;
+            if (host.GetRenewalFlag()) {
+                host.setRenewalFlag(false); // if renewed, set it to false so that host gets deleted in the next cycle (24 hours) if not renewed
+            } else {
+                ip_t host_ip = host_map.first;
+                std::cout << "Deleting host with host ip - " << host_map.first << std::endl;
+                DeleteHostFromSubnet(host_ip, subnet_ip);
+            }
+        }
+    }
+    return true;
 }

@@ -50,6 +50,10 @@ public:
 
     std::pair<bool, MacID> GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) override;
 
+    bool RenewalRequest(ip_t hostIpAddress, ip_t subnet_ip) ;
+
+    bool DeleteNonRenewedHosts();
+
     void getFreeIPInSubnet(boost::container::flat_map<ip_t, Host> map);
 
     std::pair<bool, ip_t> InsertHost(Subnet &subnet, MacID host_mac_id, ip_t subnet_ip);

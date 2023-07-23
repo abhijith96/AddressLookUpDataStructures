@@ -16,6 +16,11 @@
     return renewal_flag_;
 }
 
+void Host::setRenewalFlag(bool renewalFlag) {
+    renewal_flag_ = renewalFlag;
+}
+
+
 Host::Host(ip_t hostIP, MacID macID, bool renew) : host_ip_(hostIP), host_mac_id_(macID), renewal_flag_(renew) {
 
 }

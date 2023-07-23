@@ -23,6 +23,8 @@ public:
     [[nodiscard]] MacID GetMacID() const;
     [[nodiscard]] bool GetRenewalFlag() const;
 
+    void setRenewalFlag(bool renewalFlag);
+
 
 };
 
