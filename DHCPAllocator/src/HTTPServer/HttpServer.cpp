@@ -8,12 +8,15 @@
 
 #include <boost/property_tree/json_parser.hpp>
 #include <DHCPAllocator/src/Models/DSModelArrayImpl/DSModelArrayImpl.h>
+#include <DHCPAllocator/src/Models/DSModelTreeImpl/DSModelTreeImpl.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelVebTreeImpl.h>
+#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelHashedVebTreeImpl.h>
 #include <DHCPAllocator/src/Models/IPAddress.h>
+#include <DHCPAllocator/src/Models/DSModelSingleton.h>
 #include <boost/json.hpp>
 
 
-DSModelArrayImpl dsModelArrayImpl;
-
+DSModelType globalDSModelType;
 ip_t getIPAddressNumber(const std::string& ipString) {
     std::vector<unsigned int> octets;
     std::istringstream ss(ipString);
@@ -48,7 +51,7 @@ std::string getIPAddressString(ip_t ip) {
     return ipString;
 }
 
-boost::property_tree::ptree requestSubnet(boost::property_tree::ptree pt) {
+boost::property_tree::ptree requestSubnet(boost::property_tree::ptree pt, DSModelmpl& dsModelImpl) {
     boost::property_tree::ptree response;
 
     auto network_identifier_optional = pt.get_optional<std::int64_t>("network_identifier");
@@ -62,7 +65,7 @@ boost::property_tree::ptree requestSubnet(boost::property_tree::ptree pt) {
         std::cout << "capacity: " << capacity << std::endl;
 
         MacID macId = MacID(network_identifier);
-        std::pair<bool, ip_t> insert_subnet_response = dsModelArrayImpl.InsertSubnet(macId, capacity);
+        std::pair<bool, ip_t> insert_subnet_response = dsModelImpl.InsertSubnet(macId, capacity);
 
         if (insert_subnet_response.first) {
             ip_t start_ip = insert_subnet_response.second;
@@ -79,7 +82,7 @@ boost::property_tree::ptree requestSubnet(boost::property_tree::ptree pt) {
     return response;
 }
 
-boost::property_tree::ptree requestSubnetHost(boost::property_tree::ptree pt) {
+boost::property_tree::ptree requestSubnetHost(boost::property_tree::ptree pt, DSModelmpl& dsModelImpl) {
     boost::property_tree::ptree response;
 
     auto mac_id_optional = pt.get_optional<std::int64_t>("mac_id");
@@ -93,7 +96,7 @@ boost::property_tree::ptree requestSubnetHost(boost::property_tree::ptree pt) {
         std::cout << "subnet_ip: " << subnet_ip << std::endl;
 
         MacID macId = MacID(mac_id);
-        std::pair<bool, ip_t> insert_host_response = dsModelArrayImpl.InsertSubnetHost(macId, subnet_ip);
+        std::pair<bool, ip_t> insert_host_response = dsModelImpl.InsertSubnetHost(macId, subnet_ip);
 
         if (insert_host_response.first) {
             ip_t host_ip = insert_host_response.second;
@@ -110,7 +113,7 @@ boost::property_tree::ptree requestSubnetHost(boost::property_tree::ptree pt) {
     return response;
 }
 
-boost::property_tree::ptree deleteSubnet(boost::property_tree::ptree pt) {
+boost::property_tree::ptree deleteSubnet(boost::property_tree::ptree pt, DSModelmpl& dsModelImpl) {
     boost::property_tree::ptree response;
 
     auto subnet_ip_optional = pt.get_optional<std::string>("subnet_ip");
@@ -120,7 +123,7 @@ boost::property_tree::ptree deleteSubnet(boost::property_tree::ptree pt) {
         ip_t subnet_ip = getIPAddressNumber(subnet_ip_optional.get());
         std::cout << "subnet_ip: " << subnet_ip << std::endl;
 
-        bool delete_host_response = dsModelArrayImpl.DeleteSubnet(subnet_ip);
+        bool delete_host_response = dsModelImpl.DeleteSubnet(subnet_ip);
 
         if (delete_host_response) {
             response.add("status", true);
@@ -135,7 +138,7 @@ boost::property_tree::ptree deleteSubnet(boost::property_tree::ptree pt) {
     return response;
 }
 
-boost::property_tree::ptree deleteSubnetHost(boost::property_tree::ptree pt) {
+boost::property_tree::ptree deleteSubnetHost(boost::property_tree::ptree pt, DSModelmpl& dsModelImpl) {
     boost::property_tree::ptree response;
 
     auto host_ip_optional = pt.get_optional<std::string>("host_ip");
@@ -151,7 +154,7 @@ boost::property_tree::ptree deleteSubnetHost(boost::property_tree::ptree pt) {
 //        std::cout << "host_mac_id: " << host_mac_id << std::endl;
         std::cout << "subnet_ip: " << subnet_ip << std::endl;
 
-        bool delete_host_response = dsModelArrayImpl.DeleteHostFromSubnet(host_ip, subnet_ip);
+        bool delete_host_response = dsModelImpl.DeleteHostFromSubnet(host_ip, subnet_ip);
 
         if (delete_host_response) {
             response.add("status", true);
@@ -166,7 +169,7 @@ boost::property_tree::ptree deleteSubnetHost(boost::property_tree::ptree pt) {
     return response;
 }
 
-boost::property_tree::ptree getNetworkIP(boost::property_tree::ptree pt) {
+boost::property_tree::ptree getNetworkIP(boost::property_tree::ptree pt, DSModelmpl& dsModelImpl) {
     boost::property_tree::ptree response;
 
     auto host_ip_optional = pt.get_optional<std::string>("host_ip");
@@ -176,7 +179,7 @@ boost::property_tree::ptree getNetworkIP(boost::property_tree::ptree pt) {
         ip_t host_ip = getIPAddressNumber(host_ip_optional.get());
         std::cout << "host_ip: " << host_ip << std::endl;
 
-        auto get_network_ip_response = dsModelArrayImpl.GetNetWorkIP(host_ip);
+        auto get_network_ip_response = dsModelImpl.GetNetWorkIP(host_ip);
 
         if (get_network_ip_response.first) {
             response.add("status", true);
@@ -192,7 +195,7 @@ boost::property_tree::ptree getNetworkIP(boost::property_tree::ptree pt) {
     return response;
 }
 
-boost::property_tree::ptree getHostIpAddress(boost::property_tree::ptree pt) {
+boost::property_tree::ptree getHostIpAddress(boost::property_tree::ptree pt, DSModelmpl& dsModelImpl) {
     boost::property_tree::ptree response;
 
     auto host_mac_id_optional = pt.get_optional<int64_t>("host_mac_id");
@@ -207,7 +210,7 @@ boost::property_tree::ptree getHostIpAddress(boost::property_tree::ptree pt) {
         std::cout << "subnet_ip: " << subnet_ip << std::endl;
 
 
-        auto get_host_ip_response = dsModelArrayImpl.GetHostIpAddress(MacID(host_mac_id), subnet_ip);
+        auto get_host_ip_response = dsModelImpl.GetHostIpAddress(MacID(host_mac_id), subnet_ip);
 
         if (get_host_ip_response.first) {
             response.add("status", true);
@@ -223,7 +226,7 @@ boost::property_tree::ptree getHostIpAddress(boost::property_tree::ptree pt) {
     return response;
 }
 
-boost::property_tree::ptree getMacAddressOfHost(boost::property_tree::ptree pt) {
+boost::property_tree::ptree getMacAddressOfHost(boost::property_tree::ptree pt, DSModelmpl& dsModelImpl) {
     boost::property_tree::ptree response;
 
     auto host_ip_optional = pt.get_optional<std::string>("host_ip");
@@ -237,7 +240,7 @@ boost::property_tree::ptree getMacAddressOfHost(boost::property_tree::ptree pt) 
         std::cout << "host_ip: " << host_ip << std::endl;
         std::cout << "subnet_ip: " << subnet_ip << std::endl;
 
-        auto get_host_mac_response = dsModelArrayImpl.GetMacAddressOfHost(host_ip, subnet_ip);
+        auto get_host_mac_response = dsModelImpl.GetMacAddressOfHost(host_ip, subnet_ip);
 
         if (get_host_mac_response.first) {
             response.add("status", true);
@@ -253,32 +256,36 @@ boost::property_tree::ptree getMacAddressOfHost(boost::property_tree::ptree pt) 
     return response;
 }
 
-boost::property_tree::ptree optimizeSubnetAllocationSpace(){
+boost::property_tree::ptree optimizeSubnetAllocationSpace(DSModelmpl& dsModelImpl){
     boost::property_tree::ptree subnets;
 
-    auto new_assignments = dsModelArrayImpl.optimizeSubnetAllocationSpace();
+    if(globalDSModelType == DSModelType::ARRAY) {
+        DSModelArrayImpl & dsModelArrayImpl =  dynamic_cast<DSModelArrayImpl&>(dsModelImpl);
+        auto new_assignments = dsModelArrayImpl.optimizeSubnetAllocationSpace();
 
-    for (const auto& subnet_pair : new_assignments) {
-        MacID subnet_mac_id = subnet_pair.first;
-        auto subnet = subnet_pair.second;
-        ip_t subnet_start_ip = subnet.first;
 
-        subnets.add("network_identifier", subnet_mac_id.GetValue());
-        subnets.add("new_subnet_ip", getIPAddressString(subnet_start_ip));
+        for (const auto &subnet_pair: new_assignments) {
+            MacID subnet_mac_id = subnet_pair.first;
+            auto subnet = subnet_pair.second;
+            ip_t subnet_start_ip = subnet.first;
 
-        boost::property_tree::ptree hosts;
-        for (const auto &host: subnet.second) {
-            MacID host_mac_id = host.first;
-            ip_t host_ip = host.second;
-            hosts.add("host_mac_id", host_mac_id.GetValue());
-            hosts.add("new_host_ip", getIPAddressString(host_ip));
+            subnets.add("network_identifier", subnet_mac_id.GetValue());
+            subnets.add("new_subnet_ip", getIPAddressString(subnet_start_ip));
+
+            boost::property_tree::ptree hosts;
+            for (const auto &host: subnet.second) {
+                MacID host_mac_id = host.first;
+                ip_t host_ip = host.second;
+                hosts.add("host_mac_id", host_mac_id.GetValue());
+                hosts.add("new_host_ip", getIPAddressString(host_ip));
+            }
+            subnets.add_child("hosts", hosts);
         }
-        subnets.add_child("hosts", hosts);
     }
     return subnets;
 }
 
-std::string HttpServer::generateResponse(const http::request<http::string_body>& request) {
+std::string HttpServer::generateResponse(const http::request<http::string_body>& request, DSModelmpl& sModelImpl) {
     std::string response;
 
     if (request.method() == http::verb::post) {
@@ -291,7 +298,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto request_subnet_response = requestSubnet(pt);
+            auto request_subnet_response = requestSubnet(pt, sModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -305,7 +312,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto request_subnet_host_response = requestSubnetHost(pt);
+            auto request_subnet_host_response = requestSubnetHost(pt, sModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -319,7 +326,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto delete_host_response = deleteSubnet(pt);
+            auto delete_host_response = deleteSubnet(pt, sModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -333,7 +340,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto delete_host_response = deleteSubnetHost(pt);
+            auto delete_host_response = deleteSubnetHost(pt, sModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -347,7 +354,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto get_network_ip_response = getNetworkIP(pt);
+            auto get_network_ip_response = getNetworkIP(pt, sModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -361,7 +368,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto get_host_ip_response = getHostIpAddress(pt);
+            auto get_host_ip_response = getHostIpAddress(pt, sModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -375,7 +382,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto get_mac_addrress_response = getMacAddressOfHost(pt);
+            auto get_mac_addrress_response = getMacAddressOfHost(pt, sModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -383,7 +390,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             response = out_stream.str();
         } else if (request.target() == "/optimizeSubnetAllocationSpace") {
 
-            auto optimize_free_slot_reponse = optimizeSubnetAllocationSpace();
+            auto optimize_free_slot_reponse = optimizeSubnetAllocationSpace(sModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -401,16 +408,24 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
 
 int main(int argc, char* argv[]){
 
+
+    DSModelType dsModelType;
+
     if (argc > 1) {
         std::string implementation = argv[1];
+       
 
         if (implementation == "array") {
+            dsModelType = DSModelType::ARRAY;
             std::cout << "Using array implementation" << std::endl;
         } else if (implementation == "bst") {
+            dsModelType = DSModelType::TREE;
             std::cout << "Using Binary search tree implementation" << std::endl;
         } else if (implementation == "veb") {
+            dsModelType = DSModelType::VEB_TREE;
             std::cout << "Using Van Emde Boas Tree implementation" << std::endl;
         } else if (implementation == "map") {
+            dsModelType = DSModelType::HASHED_VEB_TREE;
             std::cout << "Using Van Emde Boas Tree with Hash Map implementation" << std::endl;
         } else {
             std::cout << "Please enter valid argument to start with." << std::endl;
@@ -421,6 +436,10 @@ int main(int argc, char* argv[]){
         std::cout << "Please enter valid argument to start with." << std::endl;
         exit(0);
     }
+    
+    DSModelSingleton& dsModelSingleton = DSModelSingleton::GetSingletonInstance(dsModelType);
+    globalDSModelType = dsModelType;
+    DSModelmpl& dsModelImpl = dsModelSingleton.GetDSModel();
 
     net::io_context ioContext;
 
@@ -441,7 +460,7 @@ int main(int argc, char* argv[]){
         HttpServer httpServer;
 
         // process and generate response
-        std::string response =  httpServer.generateResponse(request);
+        std::string response =  httpServer.generateResponse(request, dsModelImpl);
 
         // sending response
         http::response<http::string_body> httpResponse{http::status::ok, request.version()};

@@ -48,3 +48,7 @@ DSModelSingleton::DSModelSingleton(DSModelType dsModelType) {
 DSModelSingleton::~DSModelSingleton() {
     delete dsModel_;
 }
+
+DSModelType DSModelSingleton::GetDSModelType() {
+    return dsModelType_;
+}
