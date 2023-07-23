@@ -285,7 +285,60 @@ boost::property_tree::ptree optimizeSubnetAllocationSpace(DSModelmpl& dsModelImp
     return subnets;
 }
 
-std::string HttpServer::generateResponse(const http::request<http::string_body>& request, DSModelmpl& sModelImpl) {
+boost::property_tree::ptree renewHost(boost::property_tree::ptree pt, DSModelmpl& dsModelImpl) {
+    boost::property_tree::ptree response;
+
+    if(globalDSModelType == DSModelType::ARRAY) {
+
+        DSModelArrayImpl &dsModelArrayImpl = dynamic_cast<DSModelArrayImpl &>(dsModelImpl);
+        auto new_assignments = dsModelArrayImpl.optimizeSubnetAllocationSpace();
+
+        auto host_ip_optional = pt.get_optional<std::string>("host_ip");
+        auto subnet_ip_optional = pt.get_optional<std::string>("subnet_ip");
+
+        if (host_ip_optional.has_value() && subnet_ip_optional.has_value()) {
+
+            ip_t subnet_ip = getIPAddressNumber(subnet_ip_optional.get());
+            ip_t host_ip = getIPAddressNumber(host_ip_optional.get());
+
+            std::cout << "host_ip: " << host_ip << std::endl;
+            std::cout << "subnet_ip: " << subnet_ip << std::endl;
+
+            auto host_renewal_request = dsModelArrayImpl.RequestHostRenewal(host_ip, subnet_ip);
+
+            if (host_renewal_request) {
+                response.add("status", true);
+            } else {
+                response.add("status", false);
+                response.add("reason", "Error in renewing host");
+            }
+        } else {
+            response.add("status", false);
+            response.add("reason", "Error in given input");
+        }
+    }
+    return response;
+}
+
+boost::property_tree::ptree deleteNonRenewedHosts(DSModelmpl& dsModelImpl){
+    boost::property_tree::ptree response;
+
+    if(globalDSModelType == DSModelType::ARRAY) {
+        DSModelArrayImpl & dsModelArrayImpl =  dynamic_cast<DSModelArrayImpl&>(dsModelImpl);
+        auto delete_non_renewed_host_response = dsModelArrayImpl.DeleteNonRenewedHosts();
+
+        if (delete_non_renewed_host_response) {
+            response.add("status", true);
+        } else {
+            response.add("status", false);
+            response.add("reason", "Error in deleting non-renewed host");
+        }
+
+    }
+    return response;
+}
+
+std::string HttpServer::generateResponse(const http::request<http::string_body>& request, DSModelmpl& dsModelImpl) {
     std::string response;
 
     if (request.method() == http::verb::post) {
@@ -298,7 +351,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto request_subnet_response = requestSubnet(pt, sModelImpl);
+            auto request_subnet_response = requestSubnet(pt, dsModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -312,7 +365,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto request_subnet_host_response = requestSubnetHost(pt, sModelImpl);
+            auto request_subnet_host_response = requestSubnetHost(pt, dsModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -326,7 +379,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto delete_host_response = deleteSubnet(pt, sModelImpl);
+            auto delete_host_response = deleteSubnet(pt, dsModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -340,7 +393,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto delete_host_response = deleteSubnetHost(pt, sModelImpl);
+            auto delete_host_response = deleteSubnetHost(pt, dsModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -354,7 +407,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto get_network_ip_response = getNetworkIP(pt, sModelImpl);
+            auto get_network_ip_response = getNetworkIP(pt, dsModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -368,7 +421,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto get_host_ip_response = getHostIpAddress(pt, sModelImpl);
+            auto get_host_ip_response = getHostIpAddress(pt, dsModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -382,7 +435,7 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             boost::property_tree::ptree pt;
             boost::property_tree::read_json(requestBodyStream, pt);
 
-            auto get_mac_addrress_response = getMacAddressOfHost(pt, sModelImpl);
+            auto get_mac_addrress_response = getMacAddressOfHost(pt, dsModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;
@@ -390,7 +443,21 @@ std::string HttpServer::generateResponse(const http::request<http::string_body>&
             response = out_stream.str();
         } else if (request.target() == "/optimizeSubnetAllocationSpace") {
 
-            auto optimize_free_slot_reponse = optimizeSubnetAllocationSpace(sModelImpl);
+            auto optimize_free_slot_reponse = optimizeSubnetAllocationSpace(dsModelImpl);
+
+            // Convert output to string
+            std::stringstream out_stream;
+            boost::property_tree::write_json(out_stream, optimize_free_slot_reponse);
+            response = out_stream.str();
+        }  else if (request.target() == "/renewHost") {
+            // Extract input parameters from the request body
+            std::string requestBody = request.body();
+            std::stringstream requestBodyStream;
+            requestBodyStream << requestBody;
+            boost::property_tree::ptree pt;
+            boost::property_tree::read_json(requestBodyStream, pt);
+
+            auto optimize_free_slot_reponse = renewHost(pt, dsModelImpl);
 
             // Convert output to string
             std::stringstream out_stream;

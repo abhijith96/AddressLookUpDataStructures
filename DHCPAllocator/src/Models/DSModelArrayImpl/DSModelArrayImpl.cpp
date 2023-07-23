@@ -158,7 +158,7 @@ std::pair<bool, MacID> DSModelArrayImpl::GetMacAddressOfHost(ip_t hostIpAddress,
     }
 }
 
-bool DSModelArrayImpl::RenewalRequest(ip_t hostIpAddress, ip_t subnet_ip) {
+bool DSModelArrayImpl::RequestHostRenewal(ip_t hostIpAddress, ip_t subnet_ip) {
     auto it = subnets_.find(subnet_ip);
     if (it != subnets_.end()) {
         Subnet &subnet = it->second;

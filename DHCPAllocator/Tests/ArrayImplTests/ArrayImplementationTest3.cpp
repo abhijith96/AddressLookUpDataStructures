@@ -230,7 +230,7 @@ int main() {
 
     ip_t renew_host_ip = 1001;
     ip_t renew_host_subnet_ip = 1000;
-    auto renew_host_response = impl.RenewalRequest(renew_host_ip, renew_host_subnet_ip);
+    auto renew_host_response = impl.RequestHostRenewal(renew_host_ip, renew_host_subnet_ip);
     if (renew_host_response) {
         std::cout << "Successfully renewed host with host IP " << renew_host_ip << " in subnet: " << renew_host_subnet_ip << std::endl;
     } else {

@@ -50,7 +50,7 @@ public:
 
     std::pair<bool, MacID> GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) override;
 
-    bool RenewalRequest(ip_t hostIpAddress, ip_t subnet_ip) ;
+    bool RequestHostRenewal(ip_t hostIpAddress, ip_t subnet_ip) ;
 
     bool DeleteNonRenewedHosts();
 
