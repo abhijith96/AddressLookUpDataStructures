@@ -82,6 +82,8 @@ public:
 
    virtual std::pair<bool, MacID> GetMacAddressOfHost(ip_t hostIpAddress, ip_t subnet_ip) = 0;
 
+
+
    virtual ~DSModelmpl()  {}
 
 };

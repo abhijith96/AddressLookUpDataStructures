@@ -28,6 +28,8 @@ public:
 
   DSModelmpl & GetDSModel();
 
+  DSModelType GetDSModelType();
+
 };
 
 

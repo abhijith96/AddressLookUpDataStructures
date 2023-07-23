@@ -19,12 +19,12 @@ namespace net = boost::asio;    // from <boost/asio.hpp>
 
 const int PORT = 8080;
 
-
+class DSModelmpl;
 class HttpServer {
 
 public:
 
-    std::string generateResponse(const http::request<http::string_body>& request);
+    std::string generateResponse(const http::request<http::string_body>& request, DSModelmpl& dsModelmpl);
 };
 
 
