@@ -1,0 +1,6 @@
+add_subdirectory(VEBTreeImplementations)
+add_library(DSModelVebTreeImpl DSModelVebTreeImpl.cpp VEBTreeImplementations/VEBTreeValueObject.cpp VebTreeFreeSlotsObject.cpp)
+target_link_libraries(DSModelVebTreeImpl VEBTreeMap boost::boost)
+
+add_library(DSModelHashedVebTreeImpl DSModelHashedVebTreeImpl.cpp VEBTreeImplementations/VEBTreeValueObject.cpp VebTreeFreeSlotsObject.cpp VEBTreeImplementations/VebTreeWithHashMapFreeSlotObject.cpp)
+target_link_libraries(DSModelHashedVebTreeImpl PUBLIC VEBTreeWithHashMap boost::boost)

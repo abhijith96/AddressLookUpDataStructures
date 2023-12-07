@@ -1,0 +1,9 @@
+add_executable(BenchMarkHashedVebTree BenchMarkHashedVebTree.cpp)
+target_link_libraries(BenchMarkHashedVebTree Models)
+
+add_executable(BenchMarkVebTree BenchMarkVebTree.cpp)
+target_link_libraries(BenchMarkVebTree Models)
+
+add_executable(BenchMarkTreeImpl BenchMarkTreeImpl.cpp)
+target_link_libraries(BenchMarkTreeImpl Models)
+

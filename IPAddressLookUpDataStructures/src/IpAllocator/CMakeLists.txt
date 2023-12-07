@@ -1,0 +1,2 @@
+add_library(IpAllocator IpAllocator.cpp)
+target_link_libraries(IpAllocator PUBLIC Models)

@@ -1,5 +1,0 @@
-add_subdirectory(IpAllocator)
-add_subdirectory(IpRouting)
-add_subdirectory(Models)
-add_executable(Main main.cpp)
-target_link_libraries(Main PUBLIC Boost::json gtest::gtest)
