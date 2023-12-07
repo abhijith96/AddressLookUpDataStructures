@@ -34,7 +34,8 @@ void InsertSubnets(DSModelVebTreeImpl& dsModelVebTreeImpl, ip_t subNetCapacity){
 
 void InsertSubnetsAgain(DSModelVebTreeImpl& DSModelVebTreeImpl, ip_t subNetCapacity){
     ip_t totalCapacity = DSModelVebTreeImpl.GetIpRange().GetCapacity();
-    for(size_t start = 0; start < totalCapacity;start += subNetCapacity){
+    ip_t  two = 2;
+    for(size_t start = 0; start < totalCapacity;start +=  two * subNetCapacity){
         MacID subnetMacId{start};
         ip_t startIp;
         bool isInserted;
@@ -72,7 +73,7 @@ ip_t QueryHostsInActiveSubNets(DSModelVebTreeImpl& DSModelVebTreeImpl, ip_t subN
 
 int main(){
 
-    ip_t capacityLog2 = 26;
+    ip_t capacityLog2 = 28;
     auto startTimeCreation = std::chrono::high_resolution_clock::now();
 
     std::unique_ptr<DSModelVebTreeImpl> DSModelVebTreeImpl =   GetDSModelWithCapacity(capacityLog2);

@@ -38,7 +38,8 @@ void InsertSubnets(DSModelTreeImpl& DSModelTreeImpl, ip_t subNetCapacity){
 
 void InsertSubnetsAgain(DSModelTreeImpl& DSModelTreeImpl, ip_t subNetCapacity){
     ip_t totalCapacity = globalTotalCapacity;
-    for(size_t start = 1; start < totalCapacity;start += subNetCapacity){
+    ip_t two = 2;
+    for(size_t start = 0; start < totalCapacity;start += two * subNetCapacity){
         MacID subnetMacId{start};
         ip_t startIp;
         bool isInserted;
@@ -74,9 +75,11 @@ ip_t QueryHostsInActiveSubNets(DSModelTreeImpl& DSModelTreeImpl, ip_t subNetCapa
 
 
 
+
+
 int main(){
 
-    ip_t capacityLog2 = 32;
+    ip_t capacityLog2 = 28;
     std::unique_ptr<DSModelTreeImpl> DSModelTreeImpl =   GetDSModelWithCapacity(capacityLog2);
 
 
@@ -108,11 +111,11 @@ int main(){
 
     std::tie(isPresent, networkIp) = DSModelTreeImpl->GetNetWorkIP(testHostIp);
     if(!isPresent){
-        std::cout<<"Bug in benchmarking\n";
+        std::cout<<"Bug in benchmarking insert\n";
     }
-    auto averageTimePerIteration = static_cast<double>(duration);
+    auto averageTimePerIteration = duration;
 
-    std::cout << "Average time per iteration: " << averageTimePerIteration << " milli seconds" << std::endl;
+    std::cout << "Inseriotn time: " << averageTimePerIteration << " milli seconds" << std::endl;
 
 
     // Record the start time
@@ -132,7 +135,7 @@ int main(){
 
     std::tie(isPresent, networkIp) = DSModelTreeImpl->GetNetWorkIP(testHostIp);
     if(!isPresent){
-        std::cout<<"Bug in benchmarking\n";
+        std::cout<<"Bug in benchmarking delete\n";
     }
     {
         std::tie(isPresent, networkIp) = DSModelTreeImpl->GetNetWorkIP(10);
@@ -164,6 +167,27 @@ int main(){
     std::cout<<"total networks count: "<<networkCount<<"\n";
 
     std::cout << "Time for Querying hosts " << averageTimePerIteration_3 << " milli seconds" << std::endl;
+
+
+    auto startTime_4 = std::chrono::high_resolution_clock::now();
+
+
+
+     InsertSubnetsAgain(*DSModelTreeImpl, subnetCapacity);
+
+
+    // Record the end time
+    auto endTime_4 = std::chrono::high_resolution_clock::now();
+
+    // Calculate the elapsed time per iteration
+    auto duration_4 = std::chrono::duration_cast<std::chrono::milliseconds>(endTime_4 - startTime_4).count();
+
+    double averageTimePerIteration_4 = static_cast<double>(duration_4);
+
+
+
+    std::cout << "Time for Inserting the second time " << averageTimePerIteration_4 << " milli seconds" << std::endl;
+
 
 
     return 0;

@@ -1,3 +1,5 @@
+
+
 //
 // Created by Sreedevi R Warrier on 2023-07-16.
 //
@@ -47,6 +49,17 @@ ip_t QueryHostsInActiveSubNets(DSModelArrayImpl& dsModelArrayImpl, ip_t subNetCa
     return networkCount;
 }
 
+void InsertSubnetsAgain(DSModelArrayImpl& DSModelTreeImpl, ip_t subNetCapacity){
+    ip_t  two = 2;
+    ip_t totalCapacity = total_capacity;
+    for(size_t start = 0; start < totalCapacity;start += two *subNetCapacity){
+        MacID subnetMacId{start};
+        ip_t startIp;
+        bool isInserted;
+        std::tie(isInserted, startIp) =  DSModelTreeImpl.InsertSubnet(subnetMacId, subNetCapacity);
+    }
+}
+
 
 int main(){
 
@@ -83,7 +96,7 @@ int main(){
     }
     double averageTimePerIteration = static_cast<double>(duration);
 
-    std::cout << "Average time per iteration: " << averageTimePerIteration << " milli seconds" << std::endl;
+    std::cout << "Time for first Insertion " << averageTimePerIteration << " milli seconds" << std::endl;
 
 
     // Record the start time
@@ -140,9 +153,8 @@ int main(){
     // Record the start time
     auto startTime_4 = std::chrono::high_resolution_clock::now();
 
+    InsertSubnetsAgain(dsModelArrayImpl, subnetCapacity);
 
-    auto new_assignments = dsModelArrayImpl.optimizeSubnetAllocationSpace();
-    std::cout << "size of subnets after optimizing " << new_assignments.size() << std::endl;
     // Record the end time
     auto endTime_4 = std::chrono::high_resolution_clock::now();
     // Calculate the elapsed time per iteration
@@ -150,19 +162,19 @@ int main(){
 
     double averageTimePerIteration_4 = static_cast<double>(duration_4);
 
-    std::cout << "Time for optimizing subnets free slots " << averageTimePerIteration_4 << " milli seconds" << std::endl;
+    std::cout << "Time for Inserting Again " << averageTimePerIteration_4 << " milli seconds" << std::endl;
 
 
 
 
-    // Test case 1: Required capacity is not the exact match, but a capacity higher than the required capacity is available
-    int requiredCapacity = 10000;
-    auto result = dsModelArrayImpl.InsertSubnet(MacID(134218 * 3 + 1), requiredCapacity);
-    if (result.first) {
-        std::cout << "Insert subnet returned start IP: " << result.second << std::endl;
-    } else {
-        std::cout << "Insert subnet failed." << std::endl;
-    }
+//    // Test case 1: Required capacity is not the exact match, but a capacity higher than the required capacity is available
+//    int requiredCapacity = 10000;
+//    auto result = dsModelArrayImpl.InsertSubnet(MacID(134218 * 3 + 1), requiredCapacity);
+//    if (result.first) {
+//        std::cout << "Insert subnet returned start IP: " << result.second << std::endl;
+//    } else {
+//        std::cout << "Insert subnet failed." << std::endl;
+//    }
 
     return 0;
 

@@ -122,8 +122,11 @@ boost::property_tree::ptree deleteSubnet(boost::property_tree::ptree pt, DSModel
 
         ip_t subnet_ip = getIPAddressNumber(subnet_ip_optional.get());
         std::cout << "subnet_ip: " << subnet_ip << std::endl;
+        bool delete_host_response;
 
-        bool delete_host_response = dsModelImpl.DeleteSubnet(subnet_ip);
+
+
+        delete_host_response = dsModelImpl.DeleteSubnet(subnet_ip);
 
         if (delete_host_response) {
             response.add("status", true);
@@ -142,19 +145,34 @@ boost::property_tree::ptree deleteSubnetHost(boost::property_tree::ptree pt, DSM
     boost::property_tree::ptree response;
 
     auto host_ip_optional = pt.get_optional<std::string>("host_ip");
-//    auto host_mac_id_optional = pt.get_optional<int64_t>("host_mac_id");
+    auto host_mac_id_optional = pt.get_optional<int64_t>("host_mac_id");
     auto subnet_ip_optional = pt.get_optional<std::string>("subnet_ip");
 
     if(host_ip_optional.has_value() && subnet_ip_optional.has_value()){ // && host_mac_id_optional.has_value()) {
         ip_t host_ip = getIPAddressNumber(host_ip_optional.get());
         ip_t subnet_ip = getIPAddressNumber(subnet_ip_optional.get());
-//        int64_t host_mac_id = host_mac_id_optional.get();
+           int64_t host_mac_id = host_mac_id_optional.get();
 
         std::cout << "host_ip: " << host_ip << std::endl;
-//        std::cout << "host_mac_id: " << host_mac_id << std::endl;
+        std::cout << "host_mac_id: " << host_mac_id << std::endl;
         std::cout << "subnet_ip: " << subnet_ip << std::endl;
 
-        bool delete_host_response = dsModelImpl.DeleteHostFromSubnet(host_ip, subnet_ip);
+        bool delete_host_response;
+
+        if(globalDSModelType == DSModelType::VEB_TREE){
+
+          delete_host_response =   dynamic_cast<DSModelHashedVebTreeImpl&>(dsModelImpl).DeleteHostFromSubnet(host_mac_id, subnet_ip);
+
+        }
+        else if(globalDSModelType == DSModelType::HASHED_VEB_TREE){
+            delete_host_response =   dynamic_cast<DSModelVebTreeImpl&>(dsModelImpl).DeleteHostFromSubnet(host_mac_id, subnet_ip);
+        }
+
+        else {
+
+            delete_host_response = dsModelImpl.DeleteHostFromSubnet(host_ip, subnet_ip);
+
+        }
 
         if (delete_host_response) {
             response.add("status", true);

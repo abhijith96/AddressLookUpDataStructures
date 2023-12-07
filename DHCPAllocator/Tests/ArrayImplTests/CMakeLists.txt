@@ -10,3 +10,6 @@ target_link_libraries(ArrayImplTest3 PUBLIC Models)
 
 add_executable(BenchmarkingTestArray BenchmarkingTest.cpp)
 target_link_libraries(BenchmarkingTestArray PUBLIC Models)
+
+add_executable(BenchmarkingTestArrayWithoutRearranging BenchmarkingTestWithoutOptimization.cpp)
+target_link_libraries(BenchmarkingTestArrayWithoutRearranging PUBLIC Models)

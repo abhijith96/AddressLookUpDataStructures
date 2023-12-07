@@ -32,11 +32,11 @@ DSModelSingleton::DSModelSingleton(DSModelType dsModelType) {
     else if(dsModelType == DSModelType::ARRAY)
         dsModel_ = new DSModelArrayImpl();
     else if(dsModelType == DSModelType::VEB_TREE){
-        IpRange ipRange{IPAddress{0}, IPAddress{static_cast<ip_t >(std::pow(2,28)) -1}};
+        IpRange ipRange{IPAddress{1}, IPAddress{static_cast<ip_t >(std::pow(2,28)) -1}};
         dsModel_ = new DSModelVebTreeImpl(ipRange);
     }
     else if(dsModelType_ == DSModelType::HASHED_VEB_TREE){
-        IpRange ipRange{IPAddress{0}, IPAddress{static_cast<ip_t >(std::pow(2,28)) -1}};
+        IpRange ipRange{IPAddress{1}, IPAddress{static_cast<ip_t >(std::pow(2,28)) -1}};
         dsModel_ = new DSModelHashedVebTreeImpl(ipRange);
     }
     else{

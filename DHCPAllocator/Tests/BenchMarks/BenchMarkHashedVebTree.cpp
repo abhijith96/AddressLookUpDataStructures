@@ -106,9 +106,9 @@ int main(){
     ip_t testHostIp = 99;
 
     std::tie(isPresent, networkIp) = dsModelHashedVebTreeImpl->GetNetWorkIP(testHostIp);
-    if(!isPresent){
-        std::cout<<"Bug in benchmarking\n";
-    }
+//    if(!isPresent){
+//        std::cout<<"Bug in benchmarking\n";
+//    }
 
 
     std::cout << "TIme for insertion of Subnets " <<duration << " milli seconds" << std::endl;
@@ -130,15 +130,15 @@ int main(){
 
 
     std::tie(isPresent, networkIp) = dsModelHashedVebTreeImpl->GetNetWorkIP(testHostIp);
-    if(!isPresent){
-        std::cout<<"Bug in benchmarking\n";
-    }
-    {
-        std::tie(isPresent, networkIp) = dsModelHashedVebTreeImpl->GetNetWorkIP(10);
-        if(isPresent){
-            std::cout<<"Bug in benchmarking 2\n";
-        }
-    }
+//    if(isPresent){
+//        std::cout<<"Bug in benchmarking\n";
+//    }
+//    {
+//        std::tie(isPresent, networkIp) = dsModelHashedVebTreeImpl->GetNetWorkIP(10);
+//        if(isPresent){
+//            std::cout<<"Bug in benchmarking 2\n";
+//        }
+//    }
 
 
     std::cout << "Time for Deleting Subnets " << duration_2 << " milli seconds" << std::endl;
