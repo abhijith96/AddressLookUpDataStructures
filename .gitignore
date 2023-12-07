@@ -3,3 +3,5 @@ cmake-build-release
 cmake-build-debug
 .ninja_deps
 .nina_log
+/IPAddressLookUpDataStructures/cmake-build-release/
+/IPAddressLookUpDataStructures/cmake-build-debug/
