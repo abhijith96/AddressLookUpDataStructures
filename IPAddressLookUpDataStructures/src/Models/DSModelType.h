@@ -6,7 +6,7 @@
 #define DHCPALLOCATOR_DSMODELTYPE_H
 
 
-enum DSModelType {
+enum class DSModelType {
     TREE,
     ARRAY,
     HASHED_VEB_TREE,

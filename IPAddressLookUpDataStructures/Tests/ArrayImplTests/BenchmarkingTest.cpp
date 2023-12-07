@@ -5,10 +5,10 @@
 #define DHCPALLOCATOR_ARRAYIMPL_BENCHMARKING_TEST1_H
 
 #include <chrono>
-#include <DHCPAllocator/src/Models/IPAddress.h>
+#include <IPAddressLookUpDataStructures/src/Models/IPAddress.h>
 #include <iostream>
-#include <DHCPAllocator/src/Models/MacID.h>
-#include <DHCPAllocator/src/Models/DSModelArrayImpl/DSModelArrayImpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/MacID.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelArrayImpl/DSModelArrayImpl.h>
 
 
 int capacityLog2 = 28;

@@ -5,7 +5,7 @@
 #ifndef DHCPALLOCATOR_FREESLOTOBJECT_H
 #define DHCPALLOCATOR_FREESLOTOBJECT_H
 
-#include <DHCPAllocator/src/Models/IPAddress.h>
+#include <IPAddressLookUpDataStructures/src/Models/IPAddress.h>
 
 class FreeSlotObject {
 private:

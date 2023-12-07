@@ -5,7 +5,7 @@
 #ifndef DHCPALLOCATOR_VEBTREEWITHHASHMAP_H
 #define DHCPALLOCATOR_VEBTREEWITHHASHMAP_H
 
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMap/VEBTreeWithHashMapNode.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMap/VEBTreeWithHashMapNode.h>
 #include <memory>
 
 template <class ValueType>

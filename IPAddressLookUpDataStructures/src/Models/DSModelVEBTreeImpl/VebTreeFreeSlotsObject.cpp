@@ -2,7 +2,7 @@
 // Created by Abhijith  K A on 17/07/23.
 //
 
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VebTreeFreeSlotsObject.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VebTreeFreeSlotsObject.h>
 
 
 VebTreeFreeSlotsObject::VebTreeFreeSlotsObject(ip_t startIp, ip_t capacity) :startIp_(startIp), capacity_(capacity) {

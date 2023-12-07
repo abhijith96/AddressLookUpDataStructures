@@ -2,7 +2,7 @@
 // Created by Abhijith  K A on 13/07/23.
 //
 
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelVebTreeImpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/DSModelVebTreeImpl.h>
 
 DSModelVebTreeImpl::DSModelVebTreeImpl(IpRange ipRange) : ipRange_(ipRange), vebTreeMap_(ipRange_.GetCapacity()),
 freeIpStartRange_(ipRange.GetStartIP()){

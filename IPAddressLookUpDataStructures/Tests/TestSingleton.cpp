@@ -3,9 +3,9 @@
 //
 
 #include <gtest/gtest.h>
-#include <DHCPAllocator/src/Models/DSModelSingleton.h>
-#include <DHCPAllocator/src/Models/IPAddress.h>
-#include <DHCPAllocator/src/Models/DSModelArrayImpl/DSModelArrayImpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelSingleton.h>
+#include <IPAddressLookUpDataStructures/src/Models/IPAddress.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelArrayImpl/DSModelArrayImpl.h>
 
 
 class DSModelTestSingletonTest : public ::testing::Test {

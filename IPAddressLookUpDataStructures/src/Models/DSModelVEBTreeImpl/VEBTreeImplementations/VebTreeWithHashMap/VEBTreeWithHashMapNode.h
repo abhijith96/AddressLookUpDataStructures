@@ -7,9 +7,9 @@
 
 #include <unordered_map>
 #include <memory>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeNodeKeyType.h>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VebTreeFreeSlotsObject.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeNodeKeyType.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VebTreeFreeSlotsObject.h>
 #include <iostream>
 
 using veb_hm_t = uint32_t;

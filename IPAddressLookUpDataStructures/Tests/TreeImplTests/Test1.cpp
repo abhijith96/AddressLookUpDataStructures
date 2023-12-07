@@ -4,8 +4,8 @@
 
 
 #include <iostream>
-#include <DHCPAllocator/src/Models/DSModelSingleton.h>
-#include <DHCPAllocator/src/Models/DSModelTreeImpl/DSModelTreeImpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelSingleton.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelTreeImpl/DSModelTreeImpl.h>
 #include <vector>
 #include <cassert>
 

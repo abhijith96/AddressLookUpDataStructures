@@ -6,7 +6,7 @@
 #define DHCPALLOCATOR_VEBTREEVALUEOBJECT_H
 
 #include "VEBTreeValueObject.h"
-#include "DHCPAllocator/src/Models/IPAddress.h"
+#include "IPAddressLookUpDataStructures/src/Models/IPAddress.h"
 
 class VEBTreeValueObject {
 private:

@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 #include <map>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelHashedVebTreeImpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/DSModelHashedVebTreeImpl.h>
 #include <cmath>
 #include <vector>
 

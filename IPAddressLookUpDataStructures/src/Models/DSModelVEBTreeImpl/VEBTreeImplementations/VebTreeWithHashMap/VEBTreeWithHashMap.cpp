@@ -4,8 +4,8 @@
 
 #include  "VEBTreeWithHashMap.h"
 
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMapFreeSlotObject.h>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeValueObject.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMapFreeSlotObject.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeValueObject.h>
 
 #include <iostream>
 

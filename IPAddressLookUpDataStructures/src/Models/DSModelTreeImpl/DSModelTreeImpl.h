@@ -5,14 +5,14 @@
 #ifndef DHCPALLOCATOR_DSMODELTREEIMPL_H
 #define DHCPALLOCATOR_DSMODELTREEIMPL_H
 
-#include <DHCPAllocator/src/Models/Subnet.h>
-#include <DHCPAllocator/src/Models/SubnetHosts.h>
-#include <DHCPAllocator/src/Models/DSModelmpl.h>
-#include <DHCPAllocator/src/Models/MacID.h>
-#include <DHCPAllocator/src/Models/IPAddress.h>
+#include <IPAddressLookUpDataStructures/src/Models/Subnet.h>
+#include <IPAddressLookUpDataStructures/src/Models/SubnetHosts.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelmpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/MacID.h>
+#include <IPAddressLookUpDataStructures/src/Models/IPAddress.h>
 
-#include <DHCPAllocator/src/Models/DSModelTreeImpl/TreeMapValueObject.h>
-#include <DHCPAllocator/src/Models/DSModelTreeImpl/TreeMapValueObjectForUnusedObjectInArray.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelTreeImpl/TreeMapValueObject.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelTreeImpl/TreeMapValueObjectForUnusedObjectInArray.h>
 
 #include <boost/container/flat_map.hpp>
 

@@ -5,8 +5,8 @@
 #ifndef DHCPALLOCATOR_ARRAYVALUEOBJECT_H
 #define DHCPALLOCATOR_ARRAYVALUEOBJECT_H
 
-#include <DHCPAllocator/src/Models/MacID.h>
-#include <DHCPAllocator/src/Models/IPAddress.h>
+#include <IPAddressLookUpDataStructures/src/Models/MacID.h>
+#include <IPAddressLookUpDataStructures/src/Models/IPAddress.h>
 
 class ArrayValueObject {
 

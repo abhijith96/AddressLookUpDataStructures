@@ -3,10 +3,10 @@
 //
 
 #include <gtest/gtest.h>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTree/VEBTreeNode.h>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMap/VEBTreeWithHashMap.h>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMap/VEBTreeWithHashMapNode.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTree/VEBTreeNode.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMap/VEBTreeWithHashMap.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMap/VEBTreeWithHashMapNode.h>
 
 class VEBUtilsTest : public ::testing::Test {
 protected:

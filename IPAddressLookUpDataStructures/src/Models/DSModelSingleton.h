@@ -5,11 +5,11 @@
 #ifndef DHCPALLOCATOR_DSMODELSINGLETON_H
 #define DHCPALLOCATOR_DSMODELSINGLETON_H
 
-#include <DHCPAllocator/src/Models/DSModelmpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelmpl.h>
 #include <string>
 #include <memory>
 #include <utility>
-#include <DHCPAllocator/src/Models/DSModelType.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelType.h>
 
 class DSModelSingleton {
 

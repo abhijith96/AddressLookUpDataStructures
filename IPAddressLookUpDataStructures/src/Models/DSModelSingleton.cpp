@@ -2,13 +2,13 @@
 // Created by Abhijith  K A on 11/07/23.
 //
 
-#include <DHCPAllocator/src/Models/DSModelSingleton.h>
-#include <DHCPAllocator/src/Models/DSModelTreeImpl/DSModelTreeImpl.h>
-#include <DHCPAllocator/src/Models/DSModelArrayImpl/DSModelArrayImpl.h>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelHashedVebTreeImpl.h>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelVebTreeImpl.h>
-#include <DHCPAllocator/src/Models/IPAddress.h>
-#include <DHCPAllocator/src/Models/IpRange.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelSingleton.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelTreeImpl/DSModelTreeImpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelArrayImpl/DSModelArrayImpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/DSModelHashedVebTreeImpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/DSModelVebTreeImpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/IPAddress.h>
+#include <IPAddressLookUpDataStructures/src/Models/IpRange.h>
 #include <stdexcept>
 
 

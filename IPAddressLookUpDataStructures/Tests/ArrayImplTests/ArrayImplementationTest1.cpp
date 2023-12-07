@@ -6,9 +6,9 @@
 #define DHCPALLOCATOR_ARRAYIMPL_TEST1_H
 
 #include <iostream>
-#include <DHCPAllocator/src/Models/DSModelSingleton.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelSingleton.h>
 #include <cassert>
-#include <DHCPAllocator/src/Models/DSModelArrayImpl/DSModelArrayImpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelArrayImpl/DSModelArrayImpl.h>
 
 int main() {
     DSModelArrayImpl impl;

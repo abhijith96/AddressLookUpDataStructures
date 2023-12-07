@@ -5,8 +5,8 @@
 #ifndef DHCPALLOCATOR_HOST_H
 #define DHCPALLOCATOR_HOST_H
 
-#include <DHCPAllocator/src/Models/IPAddress.h>
-#include <DHCPAllocator/src/Models/MacID.h>
+#include <IPAddressLookUpDataStructures/src/Models/IPAddress.h>
+#include <IPAddressLookUpDataStructures/src/Models/MacID.h>
 
 
 class Host {

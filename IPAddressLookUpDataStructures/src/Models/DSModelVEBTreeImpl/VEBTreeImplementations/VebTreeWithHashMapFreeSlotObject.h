@@ -5,7 +5,7 @@
 #ifndef DHCPALLOCATOR_VEBTREEWITHHASHMAPFREESLOTOBJECT_H
 #define DHCPALLOCATOR_VEBTREEWITHHASHMAPFREESLOTOBJECT_H
 
-#include <DHCPAllocator/src/Models/IPAddress.h>
+#include <IPAddressLookUpDataStructures/src/Models/IPAddress.h>
 #include <vector>
 
 

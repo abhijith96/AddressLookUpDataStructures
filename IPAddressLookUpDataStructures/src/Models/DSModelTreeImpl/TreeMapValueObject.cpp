@@ -2,7 +2,7 @@
 // Created by Abhijith  K A on 11/07/23.
 //
 
-#include <DHCPAllocator/src/Models/DSModelTreeImpl/TreeMapValueObject.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelTreeImpl/TreeMapValueObject.h>
 
 
 TreeMapValueObject::TreeMapValueObject(ip_t capacity, MacID macId): capacity_(capacity),

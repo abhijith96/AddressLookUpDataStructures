@@ -5,12 +5,12 @@
 #ifndef DHCPALLOCATOR_DSMODELHASHEDVEBTREEIMPL_H
 #define DHCPALLOCATOR_DSMODELHASHEDVEBTREEIMPL_H
 
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMap/VEBTreeWithHashMap.h>
-#include <DHCPAllocator/src/Models/DSModelmpl.h>
-#include <DHCPAllocator/src/Models/SubnetHosts.h>
-#include <DHCPAllocator/src/Models/IpRange.h>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeValueObject.h>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMapFreeSlotObject.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMap/VEBTreeWithHashMap.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelmpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/SubnetHosts.h>
+#include <IPAddressLookUpDataStructures/src/Models/IpRange.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeValueObject.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VebTreeWithHashMapFreeSlotObject.h>
 #include <unordered_map>
 
 

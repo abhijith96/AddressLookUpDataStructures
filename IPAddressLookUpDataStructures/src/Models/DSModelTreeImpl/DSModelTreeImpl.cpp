@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include <DHCPAllocator/src/Models/DSModelTreeImpl/DSModelTreeImpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelTreeImpl/DSModelTreeImpl.h>
 
 /**
  * Inserts a subnet into the tree.

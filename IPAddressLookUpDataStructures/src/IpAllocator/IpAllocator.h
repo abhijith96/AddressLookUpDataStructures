@@ -5,10 +5,10 @@
 #ifndef DHCPALLOCATOR_IPALLOCATOR_H
 #define DHCPALLOCATOR_IPALLOCATOR_H
 
-#include <DHCPAllocator/src/Models/Subnet.h>
-#include <DHCPAllocator/src/Models/SubnetHosts.h>
-#include <DHCPAllocator/src/Models/MacID.h>
-#include <DHCPAllocator/src/Models/IPAddress.h>
+#include <IPAddressLookUpDataStructures/src/Models/Subnet.h>
+#include <IPAddressLookUpDataStructures/src/Models/SubnetHosts.h>
+#include <IPAddressLookUpDataStructures/src/Models/MacID.h>
+#include <IPAddressLookUpDataStructures/src/Models/IPAddress.h>
 
 
 

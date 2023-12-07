@@ -6,7 +6,7 @@
 #define DHCPALLOCATOR_TREEMAPVALUEOBJECTFORUNUSEDOBJECTINARRAY_H
 
 
-#include <DHCPAllocator/src/Models/IPAddress.h>
+#include <IPAddressLookUpDataStructures/src/Models/IPAddress.h>
 
 class TreeMapValueObjectForUnusedObjectInArray {
 private:

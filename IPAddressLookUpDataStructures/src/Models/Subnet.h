@@ -5,9 +5,9 @@
 #ifndef DHCPALLOCATOR_SUBNET_H
 #define DHCPALLOCATOR_SUBNET_H
 
-#include <DHCPAllocator/src/Models/IPAddress.h>
-#include <DHCPAllocator/src/Models/MacID.h>
-#include <DHCPAllocator/src/Models/Host.h>
+#include <IPAddressLookUpDataStructures/src/Models/IPAddress.h>
+#include <IPAddressLookUpDataStructures/src/Models/MacID.h>
+#include <IPAddressLookUpDataStructures/src/Models/Host.h>
 
 
 #include <vector>

@@ -9,7 +9,7 @@
 #include <memory>
 #include <cmath>
 #include <vector>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeNodeKeyType.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeNodeKeyType.h>
 
 using veb_key_t = uint32_t;
 

@@ -2,7 +2,7 @@
 // Created by Abhijith  K A on 11/07/23.
 //
 
-#include <DHCPAllocator/src/Models/SubnetHosts.h>
+#include <IPAddressLookUpDataStructures/src/Models/SubnetHosts.h>
 
 SubnetHosts::SubnetHosts(ip_t subnetIp, ip_t capacity) : nextFreeIpAvailable_(subnetIp + 1), capacity_(capacity) {
 

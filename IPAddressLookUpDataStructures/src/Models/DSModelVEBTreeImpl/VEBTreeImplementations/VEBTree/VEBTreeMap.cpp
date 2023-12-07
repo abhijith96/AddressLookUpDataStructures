@@ -3,8 +3,8 @@
 //
 
 #include "VEBTreeMap.h"
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
-#include "DHCPAllocator/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeValueObject.h"
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeUtil.h>
+#include "IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/VEBTreeValueObject.h"
 
 template <typename ValueType>
 VEBTreeMap<ValueType>::VEBTreeMap(veb_key_t universe): root_node_(std::make_unique<VEBTreeNode<ValueType>>(

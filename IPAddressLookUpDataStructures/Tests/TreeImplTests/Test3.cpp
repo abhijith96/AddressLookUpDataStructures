@@ -3,9 +3,9 @@
 //
 
 #include <iostream>
-#include <DHCPAllocator/src/Models/DSModelSingleton.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelSingleton.h>
 #include <vector>
-#include <DHCPAllocator/src/Models/DSModelmpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelmpl.h>
 
 
 int main(){

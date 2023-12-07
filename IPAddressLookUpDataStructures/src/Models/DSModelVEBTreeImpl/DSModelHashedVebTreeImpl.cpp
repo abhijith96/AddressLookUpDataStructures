@@ -2,7 +2,7 @@
 // Created by Abhijith  K A on 17/07/23.
 //
 
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelHashedVebTreeImpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/DSModelHashedVebTreeImpl.h>
 
 ip_t DSModelHashedVebTreeImpl::ConvertIpAddressFromIpRangeAddressSpaceToVebTreeAddressSpace(ip_t ipInIpRange) {
     return ipInIpRange - ipRange_.GetStartIP();

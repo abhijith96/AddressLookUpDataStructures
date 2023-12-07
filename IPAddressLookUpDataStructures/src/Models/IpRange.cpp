@@ -2,7 +2,7 @@
 // Created by Abhijith  K A on 16/07/23.
 //
 
-#include <DHCPAllocator/src/Models/IpRange.h>
+#include <IPAddressLookUpDataStructures/src/Models/IpRange.h>
 #include <limits>
 #include <stdexcept>
 

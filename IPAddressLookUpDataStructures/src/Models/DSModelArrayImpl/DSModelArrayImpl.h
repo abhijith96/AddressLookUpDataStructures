@@ -6,14 +6,14 @@
 #define DHCP_DSMODELARRAYIMPL_H
 
 
-#include <DHCPAllocator/src/Models/SubnetHosts.h>
-#include <DHCPAllocator/src/Models/DSModelmpl.h>
-#include <DHCPAllocator/src/Models/MacID.h>
-#include <DHCPAllocator/src/Models/IPAddress.h>
-#include <DHCPAllocator/src/Models/Subnet.h>
+#include <IPAddressLookUpDataStructures/src/Models/SubnetHosts.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelmpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/MacID.h>
+#include <IPAddressLookUpDataStructures/src/Models/IPAddress.h>
+#include <IPAddressLookUpDataStructures/src/Models/Subnet.h>
 
-#include <DHCPAllocator/src/Models/DSModelArrayImpl/ArrayValueObject.h>
-#include <DHCPAllocator/src/Models/DSModelArrayImpl/FreeSlotObject.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelArrayImpl/ArrayValueObject.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelArrayImpl/FreeSlotObject.h>
 
 #include <boost/container/flat_map.hpp>
 

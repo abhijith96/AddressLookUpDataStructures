@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 #include <map>
-#include <DHCPAllocator/src/Models/DSModelVEBTreeImpl/DSModelVebTreeImpl.h>
+#include <IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl/DSModelVebTreeImpl.h>
 
 
 using veb_value_t = VEBTreeValueObject;

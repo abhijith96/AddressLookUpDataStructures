@@ -5,7 +5,7 @@
 #ifndef DHCPALLOCATOR_IPRANGE_H
 #define DHCPALLOCATOR_IPRANGE_H
 
-#include <DHCPAllocator/src/Models/IPAddress.h>
+#include <IPAddressLookUpDataStructures/src/Models/IPAddress.h>
 
 class IpRange {
 private:
