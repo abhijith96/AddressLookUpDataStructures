@@ -1,4 +1,4 @@
-# Install script for directory: /Users/abhijithka/Documents/CSCISpecialTopicAdvancedNetworkConcepts/csci5901researchprojectdevbranch/IPAddressLookUpDataStructures/src/IpRouting
+# Install script for directory: /Users/abhijithka/Documents/CPP_Projects/IPAddressLookUpDataStructures/IPAddressLookUpDataStructures/src/IpRouting
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

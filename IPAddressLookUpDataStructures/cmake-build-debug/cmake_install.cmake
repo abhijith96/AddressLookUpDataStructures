@@ -1,4 +1,4 @@
-# Install script for directory: /Users/abhijithka/Documents/CSCISpecialTopicAdvancedNetworkConcepts/csci5901researchprojectdevbranch/IPAddressLookUpDataStructures
+# Install script for directory: /Users/abhijithka/Documents/CPP_Projects/IPAddressLookUpDataStructures/IPAddressLookUpDataStructures
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,12 +39,12 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/abhijithka/Documents/CSCISpecialTopicAdvancedNetworkConcepts/csci5901researchprojectdevbranch/IPAddressLookUpDataStructures/cmake-build-debug/src/cmake_install.cmake")
+  include("/Users/abhijithka/Documents/CPP_Projects/IPAddressLookUpDataStructures/IPAddressLookUpDataStructures/cmake-build-debug/src/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/abhijithka/Documents/CSCISpecialTopicAdvancedNetworkConcepts/csci5901researchprojectdevbranch/IPAddressLookUpDataStructures/cmake-build-debug/Tests/cmake_install.cmake")
+  include("/Users/abhijithka/Documents/CPP_Projects/IPAddressLookUpDataStructures/IPAddressLookUpDataStructures/cmake-build-debug/Tests/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -55,5 +55,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/abhijithka/Documents/CSCISpecialTopicAdvancedNetworkConcepts/csci5901researchprojectdevbranch/IPAddressLookUpDataStructures/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/abhijithka/Documents/CPP_Projects/IPAddressLookUpDataStructures/IPAddressLookUpDataStructures/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -1,4 +1,4 @@
-# Install script for directory: /Users/abhijithka/Documents/CSCISpecialTopicAdvancedNetworkConcepts/csci5901researchprojectdevbranch/IPAddressLookUpDataStructures/src/Models/DSModelTreeImpl
+# Install script for directory: /Users/abhijithka/Documents/CPP_Projects/IPAddressLookUpDataStructures/IPAddressLookUpDataStructures/src/Models/DSModelTreeImpl
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

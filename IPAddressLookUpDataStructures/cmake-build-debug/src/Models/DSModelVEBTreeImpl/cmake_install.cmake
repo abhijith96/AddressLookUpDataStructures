@@ -1,4 +1,4 @@
-# Install script for directory: /Users/abhijithka/Documents/CSCISpecialTopicAdvancedNetworkConcepts/csci5901researchprojectdevbranch/IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl
+# Install script for directory: /Users/abhijithka/Documents/CPP_Projects/IPAddressLookUpDataStructures/IPAddressLookUpDataStructures/src/Models/DSModelVEBTreeImpl
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,6 +39,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/abhijithka/Documents/CSCISpecialTopicAdvancedNetworkConcepts/csci5901researchprojectdevbranch/IPAddressLookUpDataStructures/cmake-build-debug/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/cmake_install.cmake")
+  include("/Users/abhijithka/Documents/CPP_Projects/IPAddressLookUpDataStructures/IPAddressLookUpDataStructures/cmake-build-debug/src/Models/DSModelVEBTreeImpl/VEBTreeImplementations/cmake_install.cmake")
 endif()
 

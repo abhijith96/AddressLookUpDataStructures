@@ -1,4 +1,4 @@
-# Install script for directory: /Users/abhijithka/Documents/CSCISpecialTopicAdvancedNetworkConcepts/csci5901researchprojectdevbranch/IPAddressLookUpDataStructures/Tests/ArrayImplTests
+# Install script for directory: /Users/abhijithka/Documents/CPP_Projects/IPAddressLookUpDataStructures/IPAddressLookUpDataStructures/Tests/ArrayImplTests
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
