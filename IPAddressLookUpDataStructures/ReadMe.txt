@@ -1,4 +1,4 @@
-This is the DHCP Allocator project.
+This is the IP AddressLookup Data Structures project.
 
 Requirements some C++ compiler, cmake, conan ,python
 
